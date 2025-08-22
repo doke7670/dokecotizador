@@ -1,0 +1,21 @@
+[
+  {
+    "id": "CAT-01",
+    "nombre": "Vinil",
+    "isActive": true
+
+  },
+  {
+    "id": "CAT-02",
+    "nombre": "Wrapping",
+    "isActive": true
+
+  },
+  {
+    "id": "CAT-03",
+    "nombre": "Polarizado",
+    "isActive": true
+
+  }
+]
+
