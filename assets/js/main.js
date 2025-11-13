@@ -249,7 +249,7 @@ function handleDownloadPdf() {
     }
 }
 
-function handleDownloadSimplePdf() {
+async function handleDownloadSimplePdf() {
     const summary = calculateSummary(state.quoteItems, state.additionalCosts, state.materials);
     
     const quoteData = {
@@ -267,7 +267,13 @@ function handleDownloadSimplePdf() {
         total: `S/. ${summary.grandTotal.toFixed(2)}`
     };
     
-    generateSimplePdf(quoteData, `Cotizacion-${Date.now()}.pdf`);
+    try {
+        await generateSimplePdf(quoteData, `Cotizacion-${Date.now()}.pdf`);
+        console.log('✅ PDF simple generado con logo');
+    } catch (error) {
+        console.error('❌ Error generando PDF simple:', error);
+        alert('Error al generar el PDF. Inténtalo de nuevo.');
+    }
 }
 
 function handleExportData() {

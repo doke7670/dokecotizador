@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,18 +15,22 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
         input[type="number"] {
             -moz-appearance: textfield;
         }
     </style>
 </head>
+
 <body class="bg-black text-gray-200 font-sans">
 
     <div class="container mx-auto p-4 md:p-8">
         <header class="mb-8">
 
-           <svg class="h-12 text-white" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2234.000000 700.000000" preserveAspectRatio="xMidYMid meet">
-                <g transform="translate(0.000000,640.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+            <svg class="h-12 text-white" version="1.0" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 2234.000000 700.000000" preserveAspectRatio="xMidYMid meet">
+                <g transform="translate(0.000000,640.000000) scale(0.100000,-0.100000)" fill="currentColor"
+                    stroke="none">
                     <path d="M1111 5778 c-409 -4 -746 -10 -748 -12 -2 -2 191 -288 429 -635 l433
                 -632 1065 6 c1577 10 1686 2 1942 -151 95 -57 254 -208 315 -299 144 -215 213
                 -448 213 -718 0 -321 -81 -545 -284 -789 -108 -130 -246 -227 -400 -279 -145
@@ -72,7 +77,8 @@
                     <path d="M20970 1400 l0 -580 660 0 660 0 0 580 0 580 -660 0 -660 0 0 -580z" />
                 </g>
             </svg>
-            <p class="text-gray-400 mt-2">Crea cotizaciones para vinil, stickers, wrapping y polarizados de forma rápida y precisa.</p>
+            <p class="text-gray-400 mt-2">Crea cotizaciones para vinil, stickers, wrapping y polarizados de forma rápida
+                y precisa.</p>
         </header>
 
         <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -87,19 +93,33 @@
                 <form id="add-item-form" class="relative p-4 border border-gray-700 rounded-lg mb-6 bg-gray-900">
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                         <div class="md:col-span-2">
-                            <label for="category-select" class="block text-sm font-medium text-gray-300">Categoría</label>
-                            <select id="category-select" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"></select>
+                            <label for="category-select"
+                                class="block text-sm font-medium text-gray-300">Categoría</label>
+                            <select id="category-select" required
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"></select>
                         </div>
                         <div class="md:col-span-3">
-                            <label for="material-select" class="block text-sm font-medium text-gray-300">Material</label>
-                            <select id="material-select" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500" disabled></select>
+                            <label for="material-select"
+                                class="block text-sm font-medium text-gray-300">Material</label>
+                            <select id="material-select" required
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                                disabled></select>
                         </div>
-                        <div><label for="item-width-input" class="block text-sm font-medium text-gray-300">Ancho (cm)</label><input type="number" id="item-width-input" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md" placeholder="0"></div>
-                        <div><label for="item-height-input" class="block text-sm font-medium text-gray-300">Alto (cm)</label><input type="number" id="item-height-input" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md" placeholder="0"></div>
-                        <div class="md:col-span-1"><button type="submit" id="add-item-submit-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">+ Agregar</button></div>
+                        <div><label for="item-width-input" class="block text-sm font-medium text-gray-300">Ancho
+                                (cm)</label><input type="number" id="item-width-input" required
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"
+                                placeholder="0"></div>
+                        <div><label for="item-height-input" class="block text-sm font-medium text-gray-300">Alto
+                                (cm)</label><input type="number" id="item-height-input" required
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"
+                                placeholder="0"></div>
+                        <div class="md:col-span-1"><button type="submit" id="add-item-submit-btn"
+                                class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">+
+                                Agregar</button></div>
                     </div>
                     <div id="edit-mode-controls" class="mt-2 text-center hidden">
-                        <button type="button" id="cancel-edit-btn" class="text-sm text-gray-400 hover:text-white underline">Cancelar Edición</button>
+                        <button type="button" id="cancel-edit-btn"
+                            class="text-sm text-gray-400 hover:text-white underline">Cancelar Edición</button>
                     </div>
                 </form>
 
@@ -117,7 +137,8 @@
                         <tbody id="quote-table-body">
                             <!-- Las filas se insertarán aquí dinámicamente -->
                             <tr id="empty-row" class="text-center">
-                                <td colspan="5" class="p-8 text-gray-500">Aún no has agregado piezas. Utiliza el formulario de arriba.</td>
+                                <td colspan="5" class="p-8 text-gray-500">Aún no has agregado piezas. Utiliza el
+                                    formulario de arriba.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -128,20 +149,26 @@
             <div class="lg:col-span-1">
                 <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
                     <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-2">Resumen de Costos</h2>
-                    
+
                     <!-- Costos Adicionales -->
                     <div class="space-y-4 mb-6">
                         <div>
-                            <label for="waste-input" class="block text-sm font-medium text-gray-300">Desperdicio (%)</label>
-                            <input type="number" id="waste-input" value="10" class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+                            <label for="waste-input" class="block text-sm font-medium text-gray-300">Desperdicio
+                                (%)</label>
+                            <input type="number" id="waste-input" value="10"
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         <div>
-                            <label for="labor-input" class="block text-sm font-medium text-gray-300">Mano de Obra (S/.)</label>
-                            <input type="number" id="labor-input" value="50" class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+                            <label for="labor-input" class="block text-sm font-medium text-gray-300">Mano de Obra
+                                (S/.)</label>
+                            <input type="number" id="labor-input" value="50"
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
                         </div>
-                         <div>
-                            <label for="margin-input" class="block text-sm font-medium text-gray-300">Margen de Ganancia (%)</label>
-                            <input type="number" id="margin-input" value="20" class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+                        <div>
+                            <label for="margin-input" class="block text-sm font-medium text-gray-300">Margen de Ganancia
+                                (%)</label>
+                            <input type="number" id="margin-input" value="20"
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
                         </div>
                     </div>
 
@@ -159,7 +186,7 @@
                             <span>(+) Mano de Obra:</span>
                             <span id="summary-labor">S/. 0.00</span>
                         </div>
-                         <div class="flex justify-between text-sm text-gray-400 border-t border-gray-600 pt-2 mt-2">
+                        <div class="flex justify-between text-sm text-gray-400 border-t border-gray-600 pt-2 mt-2">
                             <span>Subtotal Proyecto:</span>
                             <span id="summary-project-subtotal">S/. 0.00</span>
                         </div>
@@ -167,29 +194,34 @@
                             <span>(+) Margen Ganancia:</span>
                             <span id="summary-margin">S/. 0.00</span>
                         </div>
-                        <div class="flex justify-between text-2xl font-bold text-white border-t-2 border-orange-500 pt-2 mt-2">
+                        <div
+                            class="flex justify-between text-2xl font-bold text-white border-t-2 border-orange-500 pt-2 mt-2">
                             <span>TOTAL:</span>
                             <span id="summary-total">S/. 0.00</span>
                         </div>
                     </div>
 
-                    <button id="generate-pdf-btn" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-colors text-lg">
+                    <button id="generate-pdf-btn"
+                        class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-colors text-lg">
                         📄 Generar Boleta (PDF)
                     </button>
-                    
-                    <button id="simple-pdf-btn" class="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm">
+
+                    <button id="simple-pdf-btn"
+                        class="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm">
                         📄 PDF Simple (Alternativo)
                     </button>
-                    
-                    <button id="export-data-btn" class="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+
+                    <button id="export-data-btn"
+                        class="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                         📥 Exportar Datos (JSON)
                     </button>
                 </div>
-                 <div class="mt-4 text-center space-y-2">
+                <div class="mt-4 text-center space-y-2">
                     <button id="open-catalog-modal-btn" class="text-orange-400 hover:text-orange-300 font-semibold">
                         Ver y Administrar Catálogo de Materiales
                     </button>
-                    <button id="open-category-modal-btn" class="block mx-auto text-sm text-gray-400 hover:text-gray-200">
+                    <button id="open-category-modal-btn"
+                        class="block mx-auto text-sm text-gray-400 hover:text-gray-200">
                         Administrar Categorías
                     </button>
                 </div>
@@ -199,14 +231,18 @@
 
     <!-- Modal: Catálogo de Materiales -->
     <div id="catalog-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
+        <div
+            class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-gray-700 flex justify-between items-center">
                 <h3 class="text-2xl font-semibold">Catálogo de Materiales</h3>
                 <div class="flex items-center gap-4">
-                    <input type="search" id="catalog-search-input" placeholder="Buscar por nombre..." class="w-72 p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-orange-500 focus:border-orange-500">
+                    <input type="search" id="catalog-search-input" placeholder="Buscar por nombre..."
+                        class="w-72 p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-orange-500 focus:border-orange-500">
                     <div id="catalog-filter-controls" class="flex gap-2">
-                        <button data-filter="active" class="px-3 py-1 rounded-md bg-orange-500 text-white">Activos</button>
-                        <button data-filter="deleted" class="px-3 py-1 rounded-md bg-gray-600 hover:bg-gray-500 text-white">Eliminados</button>
+                        <button data-filter="active"
+                            class="px-3 py-1 rounded-md bg-orange-500 text-white">Activos</button>
+                        <button data-filter="deleted"
+                            class="px-3 py-1 rounded-md bg-gray-600 hover:bg-gray-500 text-white">Eliminados</button>
                     </div>
                 </div>
                 <button id="close-catalog-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
@@ -217,7 +253,8 @@
                 </div>
             </div>
             <div class="p-6 border-t border-gray-700 bg-gray-900 rounded-b-xl">
-                <button id="open-add-material-modal-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">
+                <button id="open-add-material-modal-btn"
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">
                     + Agregar Nuevo Material al Catálogo
                 </button>
             </div>
@@ -225,59 +262,79 @@
     </div>
 
     <!-- Modal: Agregar/Editar Nuevo Material -->
-    <div id="add-material-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
+    <div id="add-material-modal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
         <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg">
             <form id="add-material-form" class="p-8">
                 <h3 id="material-modal-title" class="text-2xl font-semibold mb-6">Agregar Nuevo Material</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="material-nombre" class="block text-sm font-medium text-gray-300">Nombre</label>
-                        <input type="text" id="material-nombre" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
+                        <input type="text" id="material-nombre" required
+                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
                     </div>
                     <div>
-                        <label for="material-categoria-select" class="block text-sm font-medium text-gray-300">Categoría</label>
-                        <select id="material-categoria-select" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"></select>
+                        <label for="material-categoria-select"
+                            class="block text-sm font-medium text-gray-300">Categoría</label>
+                        <select id="material-categoria-select" required
+                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"></select>
                     </div>
                     <div>
-                        <label for="material-ancho" class="block text-sm font-medium text-gray-300">Ancho Rollo (cm)</label>
-                        <input type="number" id="material-ancho" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
+                        <label for="material-ancho" class="block text-sm font-medium text-gray-300">Ancho Rollo
+                            (cm)</label>
+                        <input type="number" id="material-ancho" required
+                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
                     </div>
                     <div>
-                        <label for="material-alto" class="block text-sm font-medium text-gray-300">Alto Rollo (cm)</label>
-                        <input type="number" id="material-alto" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
+                        <label for="material-alto" class="block text-sm font-medium text-gray-300">Alto Rollo
+                            (cm)</label>
+                        <input type="number" id="material-alto" required
+                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
                     </div>
                     <div class="md:col-span-2">
-                        <label for="material-costo" class="block text-sm font-medium text-gray-300">Costo Rollo (S/.)</label>
-                        <input type="number" step="0.01" id="material-costo" required class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
+                        <label for="material-costo" class="block text-sm font-medium text-gray-300">Costo Rollo
+                            (S/.)</label>
+                        <input type="number" step="0.01" id="material-costo" required
+                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
                     </div>
                     <div class="md:col-span-2">
-                        <label for="material-descripcion" class="block text-sm font-medium text-gray-300">Descripción</label>
-                        <textarea id="material-descripcion" rows="2" class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"></textarea>
+                        <label for="material-descripcion"
+                            class="block text-sm font-medium text-gray-300">Descripción</label>
+                        <textarea id="material-descripcion" rows="2"
+                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"></textarea>
                     </div>
-                     <div class="md:col-span-2">
-                        <label for="material-imagen-input" class="block text-sm font-medium text-gray-300">Imagen</label>
-                        <input type="file" id="material-imagen-input" accept="image/*" class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600">
+                    <div class="md:col-span-2">
+                        <label for="material-imagen-input"
+                            class="block text-sm font-medium text-gray-300">Imagen</label>
+                        <input type="file" id="material-imagen-input" accept="image/*"
+                            class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600">
                     </div>
                 </div>
                 <div class="mt-8 flex justify-end space-x-4">
-                    <button type="button" id="cancel-add-material-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                    <button type="button" id="cancel-add-material-btn"
+                        class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
                         Cancelar
                     </button>
-                    <button type="submit" id="material-submit-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">
+                    <button type="submit" id="material-submit-btn"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">
                         Guardar Material
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    
+
     <!-- Modal: Vista Previa de Boleta -->
-    <div id="pdf-preview-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div class="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div id="pdf-preview-modal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
                 <h3 class="text-xl font-semibold">Vista Previa de Boleta</h3>
                 <div>
-                    <button id="download-pdf-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mr-2">Descargar PDF</button>
+                    <button id="download-pdf-btn"
+                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mr-2">Descargar
+                        PDF</button>
                     <button id="close-pdf-preview-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
                 </div>
             </div>
@@ -290,7 +347,8 @@
     </div>
 
     <!-- Modal: Ver Detalles de Pieza -->
-    <div id="view-item-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
+    <div id="view-item-modal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
         <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg">
             <div class="p-6 border-b border-gray-700 flex justify-between items-center">
                 <h3 id="view-item-modal-title" class="text-2xl font-semibold">Detalles de la Pieza</h3>
@@ -303,8 +361,10 @@
     </div>
 
     <!-- Modal: Administrar Categorías -->
-    <div id="category-management-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div id="category-management-modal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-gray-700 flex justify-between items-center">
                 <h3 class="text-2xl font-semibold">Administrar Categorías</h3>
                 <button id="close-category-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
@@ -313,11 +373,16 @@
                 <!-- Form to add/edit category -->
                 <form id="category-form" class="flex flex-wrap gap-4 mb-6 items-end">
                     <div class="flex-grow">
-                        <label for="category-name-input" class="block text-sm font-medium text-gray-300">Nombre de Categoría</label>
-                        <input type="text" id="category-name-input" placeholder="Ej: Stickers" required class="mt-1 w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
+                        <label for="category-name-input" class="block text-sm font-medium text-gray-300">Nombre de
+                            Categoría</label>
+                        <input type="text" id="category-name-input" placeholder="Ej: Stickers" required
+                            class="mt-1 w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
                     </div>
-                    <button type="submit" id="category-submit-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Agregar</button>
-                    <button type="button" id="cancel-category-edit-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hidden">Cancelar Edición</button>
+                    <button type="submit" id="category-submit-btn"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Agregar</button>
+                    <button type="button" id="cancel-category-edit-btn"
+                        class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hidden">Cancelar
+                        Edición</button>
                 </form>
                 <!-- List of categories -->
                 <div class="space-y-6">
@@ -326,7 +391,8 @@
                         <ul id="active-categories-list" class="space-y-2 pt-2"></ul>
                     </div>
                     <div>
-                        <h4 class="text-lg font-semibold mt-6 mb-2 border-b border-gray-600 pb-1">Categorías Eliminadas</h4>
+                        <h4 class="text-lg font-semibold mt-6 mb-2 border-b border-gray-600 pb-1">Categorías Eliminadas
+                        </h4>
                         <ul id="deleted-categories-list" class="space-y-2 pt-2"></ul>
                     </div>
                 </div>
@@ -335,7 +401,8 @@
     </div>
 
     <!-- Modal: Ver Detalles de Pieza -->
-    <div id="view-item-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
+    <div id="view-item-modal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
         <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg">
             <div class="p-6 border-b border-gray-700 flex justify-between items-center">
                 <h3 id="view-item-modal-title" class="text-2xl font-semibold">Detalles de la Pieza</h3>
@@ -348,8 +415,10 @@
     </div>
 
     <!-- Modal: Administrar Categorías -->
-    <div id="category-management-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div id="category-management-modal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-gray-700 flex justify-between items-center">
                 <h3 class="text-2xl font-semibold">Administrar Categorías</h3>
                 <button id="close-category-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
@@ -358,11 +427,16 @@
                 <!-- Form to add/edit category -->
                 <form id="category-form" class="flex flex-wrap gap-4 mb-6 items-end">
                     <div class="flex-grow">
-                        <label for="category-name-input" class="block text-sm font-medium text-gray-300">Nombre de Categoría</label>
-                        <input type="text" id="category-name-input" placeholder="Ej: Stickers" required class="mt-1 w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
+                        <label for="category-name-input" class="block text-sm font-medium text-gray-300">Nombre de
+                            Categoría</label>
+                        <input type="text" id="category-name-input" placeholder="Ej: Stickers" required
+                            class="mt-1 w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
                     </div>
-                    <button type="submit" id="category-submit-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Agregar</button>
-                    <button type="button" id="cancel-category-edit-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hidden">Cancelar Edición</button>
+                    <button type="submit" id="category-submit-btn"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Agregar</button>
+                    <button type="button" id="cancel-category-edit-btn"
+                        class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hidden">Cancelar
+                        Edición</button>
                 </form>
                 <!-- List of categories -->
                 <div class="space-y-6">
@@ -371,7 +445,8 @@
                         <ul id="active-categories-list" class="space-y-2 pt-2"></ul>
                     </div>
                     <div>
-                        <h4 class="text-lg font-semibold mt-6 mb-2 border-b border-gray-600 pb-1">Categorías Eliminadas</h4>
+                        <h4 class="text-lg font-semibold mt-6 mb-2 border-b border-gray-600 pb-1">Categorías Eliminadas
+                        </h4>
                         <ul id="deleted-categories-list" class="space-y-2 pt-2"></ul>
                     </div>
                 </div>
@@ -381,4 +456,5 @@
 
     <script type="module" src="assets/js/main.js"></script>
 </body>
+
 </html>

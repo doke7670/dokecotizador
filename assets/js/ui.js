@@ -415,6 +415,7 @@ export function renderPdfPreview() {
 
     contentDiv.innerHTML = `
         <div class="text-center mb-8">
+            <img src="assets/images/logo.svg" alt="Logo" class="h-16 mx-auto mb-4">
             <h1 class="text-2xl font-bold">COTIZACIÓN</h1>
             <p>Fecha: ${now.toLocaleDateString('es-ES')} ${now.toLocaleTimeString('es-ES')}</p>
         </div>

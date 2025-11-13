@@ -5,6 +5,44 @@
  */
 
 /**
+ * Carga el logo en el PDF de forma asíncrona
+ * @param {jsPDF} doc - Documento PDF
+ * @param {number} pageWidth - Ancho de la página
+ * @param {number} yPosition - Posición Y donde colocar el logo
+ */
+function loadLogoToPdf(doc, pageWidth, yPosition) {
+    return new Promise((resolve, reject) => {
+        const logoImg = new Image();
+        logoImg.onload = function() {
+            try {
+                const logoWidth = 40;
+                const logoHeight = 20;
+                const logoX = (pageWidth - logoWidth) / 2;
+                
+                // Convertir SVG a canvas primero para mejor compatibilidad
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = logoWidth * 2;
+                canvas.height = logoHeight * 2;
+                
+                ctx.drawImage(logoImg, 0, 0, canvas.width, canvas.height);
+                const imgData = canvas.toDataURL('image/png');
+                
+                doc.addImage(imgData, 'PNG', logoX, yPosition, logoWidth, logoHeight);
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        };
+        logoImg.onerror = () => reject(new Error('No se pudo cargar el logo'));
+        logoImg.src = 'assets/images/logo.svg';
+        
+        // Timeout de 3 segundos
+        setTimeout(() => reject(new Error('Timeout cargando logo')), 3000);
+    });
+}
+
+/**
  * Genera y descarga un PDF a partir de un elemento HTML.
  * @param {string} elementId - El ID del elemento HTML que contiene el preview.
  * @param {string} fileName - El nombre del archivo PDF a generar.
@@ -58,7 +96,7 @@ export async function generatePdfFromHtml(elementId, fileName = 'cotizacion.pdf'
  * @param {object} quoteData - Datos de la cotización
  * @param {string} fileName - Nombre del archivo
  */
-export function generateSimplePdf(quoteData, fileName = 'cotizacion.pdf') {
+export async function generateSimplePdf(quoteData, fileName = 'cotizacion.pdf') {
     try {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -67,6 +105,14 @@ export function generateSimplePdf(quoteData, fileName = 'cotizacion.pdf') {
         let yPosition = 20;
         const lineHeight = 7;
         const pageWidth = doc.internal.pageSize.getWidth();
+        
+        // Intentar cargar el logo
+        try {
+            await loadLogoToPdf(doc, pageWidth, yPosition);
+            yPosition += 25; // Espacio para el logo
+        } catch (error) {
+            console.log('Logo no disponible para PDF simple, continuando sin logo');
+        }
         
         // Título
         doc.setFontSize(20);

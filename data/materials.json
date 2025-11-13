@@ -9,7 +9,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/FFFFFF/000000?text=Vinil+Blanco",
     "descripcion": "Vinil adhesivo todos los colores .",
     "isActive": true
-
   },
   {
     "codigo": "VINIL-002",
@@ -21,7 +20,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/CCCCCC/000000?text=Vinil+Transp",
     "descripcion": "Vinil adhesivo rainbow todos los colores.",
     "isActive": true
-
   },
   {
     "codigo": "VINIL-003",
@@ -33,9 +31,8 @@
     "ruta_imagen": "https://via.placeholder.com/150/FFFFFF/000000?text=Vinil+Blanco",
     "descripcion": "Vinil adhesivo reflectivo todos los colores .",
     "isActive": true
-
   },
-   {
+  {
     "codigo": "VINIL-004",
     "nombre": "Vinil Cromados/tornasol",
     "categoria_id": "CAT-01",
@@ -45,7 +42,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/CCCCCC/000000?text=Vinil+Transp",
     "descripcion": "Vinil adhesivo cromados/tornasol.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-001",
@@ -57,7 +53,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura lija.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-002",
@@ -69,9 +64,8 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 3D.",
     "isActive": true
-
   },
-   {
+  {
     "codigo": "WRAP-003",
     "nombre": "Fibra De Carbono 3D Signcal",
     "categoria_id": "CAT-02",
@@ -81,7 +75,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 3D.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-004",
@@ -93,7 +86,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 4D.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-005",
@@ -105,9 +97,8 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 5D.",
     "isActive": true
-
   },
-   {
+  {
     "codigo": "WRAP-006",
     "nombre": "Fibra De Carbono 6D ",
     "categoria_id": "CAT-02",
@@ -117,7 +108,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 6D.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-007",
@@ -129,7 +119,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 3D Camaleon.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-008",
@@ -141,7 +130,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra Tipo letra china.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-009",
@@ -153,7 +141,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura lisa negro piano.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-010",
@@ -165,7 +152,6 @@
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping moldeable cromado.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-011",
@@ -173,11 +159,10 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo":40.00,
+    "costo_crudo": 40.00,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping estilo militar.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-012",
@@ -185,11 +170,10 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo":70.00,
+    "costo_crudo": 70.00,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping color negro tornasol.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-013",
@@ -197,11 +181,10 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo":45.00,
+    "costo_crudo": 45.00,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping color morado satinado mate.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-014",
@@ -209,11 +192,10 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 137,
     "alto_cm": 100,
-    "costo_crudo":80.00,
+    "costo_crudo": 80.00,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping color verde/rojo tornasol rainbow.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-015",
@@ -221,11 +203,10 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo":45.00,
+    "costo_crudo": 45.00,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping fibra de carbono tornasol modelos:fibra negro tornasol , fibra panal, fibra forjada tornasol, fibra morado forjado.",
     "isActive": true
-
   },
   {
     "codigo": "WRAP-016",
@@ -233,14 +214,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo":50.00,
+    "costo_crudo": 50.00,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping letra china tornasol.",
     "isActive": true
-
   },
-  
-  
   {
     "codigo": "POL-001",
     "nombre": "Polarizado Tono Medio",
@@ -251,7 +229,5 @@
     "ruta_imagen": "https://via.placeholder.com/150/111111/FFFFFF?text=Polarizado",
     "descripcion": "Lámina de polarizado para ventanas, protección UV del 99%.",
     "isActive": true
-
   }
 ]
-
