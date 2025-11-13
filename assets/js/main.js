@@ -8,9 +8,11 @@
 
 console.log("✅ main.js cargado y ejecutándose...");
 
-import { state, setMaterials, addQuoteItem, removeQuoteItem, updateAdditionalCosts, setCategories, updateQuoteItem, updateMaterial, addCategory, updateCategory } from './state.js';
+import { state, setMaterials, addQuoteItem, removeQuoteItem, updateAdditionalCosts, setCategories, updateQuoteItem, updateMaterial, addCategory, updateCategory, addMaterial } from './state.js';
 import { updateUI, toggleModal, resetMaterialForm, renderCatalog, renderPdfPreview, populateCategorySelect, updateMaterialSelect, resetAddItemForm, renderItemDetailsModal, populateFormForEdit, cancelEditMode, populateMaterialFormForEdit, renderCategoryManagementModal, populateCategoryFormForEdit, cancelCategoryEditMode } from './ui.js';
-import { generatePdfFromHtml } from './pdfGenerator.js';
+import { generatePdfFromHtml, generateSimplePdf } from './pdfGenerator.js';
+import { downloadMaterials, downloadCategories } from './dataExport.js';
+import { calculateSummary, calculateItemCost, calculateProratedItemCost } from './calculations.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
@@ -21,9 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function initializeApp() {
     try {
-        // Siempre carga los datos desde los archivos JSON base.
-        // Cualquier cambio (agregar/eliminar materiales) se perderá al recargar.
-        console.log("Cargando datos desde archivos JSON base para la sesión actual...");
+        // Carga los datos desde los archivos JSON base
+        console.log("📁 Cargando datos desde archivos JSON...");
         const [materialsRes, categoriesRes] = await Promise.all([
             fetch('data/materials.json'),
             fetch('data/categories.json')
@@ -88,7 +89,13 @@ function setupEventListeners() {
     // Generación de PDF
     document.getElementById('generate-pdf-btn').addEventListener('click', handleGeneratePdf);
     document.getElementById('close-pdf-preview-btn').addEventListener('click', () => toggleModal('pdf-preview-modal', false));
-    document.getElementById('download-pdf-btn').addEventListener('click', () => generatePdfFromHtml('pdf-content', `Cotizacion-${Date.now()}.pdf`));
+    document.getElementById('download-pdf-btn').addEventListener('click', handleDownloadPdf);
+    
+    // Exportar datos
+    document.getElementById('export-data-btn').addEventListener('click', handleExportData);
+    
+    // PDF simple alternativo
+    document.getElementById('simple-pdf-btn').addEventListener('click', handleDownloadSimplePdf);
 
     // Listeners del Catálogo de Materiales
     document.getElementById('catalog-search-input').addEventListener('input', handleCatalogSearch);
@@ -217,7 +224,7 @@ async function handleAddMaterialSubmit(e) {
             isActive: true,
             ruta_imagen: imageUrl || 'https://via.placeholder.com/150/808080/FFFFFF?text=Custom',
         };
-        state.materials.push(newMaterial);
+        addMaterial(newMaterial);
     }
     
     toggleModal('add-material-modal', false);
@@ -229,6 +236,48 @@ async function handleAddMaterialSubmit(e) {
 function handleGeneratePdf() {
     renderPdfPreview();
     toggleModal('pdf-preview-modal', true);
+}
+
+function handleDownloadPdf() {
+    try {
+        // Intentar generar PDF con html2canvas primero
+        generatePdfFromHtml('pdf-content', `Cotizacion-${Date.now()}.pdf`);
+    } catch (error) {
+        console.error('Error con método principal, usando método alternativo:', error);
+        // Si falla, usar el método simple
+        handleDownloadSimplePdf();
+    }
+}
+
+function handleDownloadSimplePdf() {
+    const summary = calculateSummary(state.quoteItems, state.additionalCosts, state.materials);
+    
+    const quoteData = {
+        items: state.quoteItems.map(item => {
+            const material = state.materials.find(m => m.codigo === item.materialCode);
+            const rawItemCost = calculateItemCost(item, state.materials);
+            const finalItemCost = calculateProratedItemCost(rawItemCost, summary.subtotal, summary.grandTotal);
+            
+            return {
+                name: material?.nombre || 'N/A',
+                dimensions: `${item.width}cm x ${item.height}cm`,
+                price: `S/. ${finalItemCost.toFixed(2)}`
+            };
+        }),
+        total: `S/. ${summary.grandTotal.toFixed(2)}`
+    };
+    
+    generateSimplePdf(quoteData, `Cotizacion-${Date.now()}.pdf`);
+}
+
+function handleExportData() {
+    if (confirm('¿Deseas descargar los archivos JSON actualizados?\n\nEsto descargará materials.json y categories.json con todos tus cambios.\nLuego deberás reemplazar manualmente los archivos en la carpeta data/.')) {
+        downloadMaterials(state.materials);
+        setTimeout(() => {
+            downloadCategories(state.categories);
+            alert('📁 Archivos descargados exitosamente!\n\n1. Ve a tu carpeta de Descargas\n2. Reemplaza materials.json y categories.json en la carpeta data/\n3. Los cambios serán permanentes');
+        }, 500);
+    }
 }
 
 function readFileAsDataURL(file) {

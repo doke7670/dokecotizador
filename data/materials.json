@@ -215,6 +215,31 @@
     "isActive": true
 
   },
+  {
+    "codigo": "WRAP-015",
+    "nombre": "Fibra de Carbono Tornasol",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo":45.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping fibra de carbono tornasol modelos:fibra negro tornasol , fibra panal, fibra forjada tornasol, fibra morado forjado.",
+    "isActive": true
+
+  },
+  {
+    "codigo": "WRAP-016",
+    "nombre": "Fibra Tipo Letra China tornasol",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo":50.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping letra china tornasol.",
+    "isActive": true
+
+  },
+  
   
   {
     "codigo": "POL-001",

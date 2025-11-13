@@ -160,7 +160,9 @@ export function updateMaterialSelect(selectedCategoryId) {
         return;
     }
 
-    const filteredMaterials = state.materials.filter(m => m.categoria_id === selectedCategoryId && (m.isActive ?? true));
+    const filteredMaterials = state.materials
+        .filter(m => m.categoria_id === selectedCategoryId && (m.isActive ?? true))
+        .sort((a, b) => a.nombre.localeCompare(b.nombre)); // Ordenar alfabéticamente
     
     filteredMaterials.forEach(material => {
         const option = document.createElement('option');

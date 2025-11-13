@@ -21,6 +21,8 @@ export const state = {
     editingCategoryId: null, // ID de la categoría que se está editando.
 };
 
+// --- Funciones para modificar el estado (solo en memoria) ---
+
 // --- Funciones para modificar el estado (Mutations) ---
 
 export function setMaterials(materials) {
@@ -66,4 +68,8 @@ export function updateMaterial(materialCode, updatedValues) {
     if (materialIndex !== -1) {
         state.materials[materialIndex] = { ...state.materials[materialIndex], ...updatedValues };
     }
+}
+
+export function addMaterial(material) {
+    state.materials.push(material);
 }
