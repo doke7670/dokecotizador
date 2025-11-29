@@ -220,6 +220,83 @@
     "isActive": true
   },
   {
+    "codigo": "WRAP-017",
+    "nombre": "Fibra FORJADA",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo": 50.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping forjado color:negro.",
+    "isActive": true
+  },
+  {
+    "codigo": "WRAP-018",
+    "nombre": "Fibra FORJADA TORNASOL",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo": 50.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping forjado color:negro tornasol.",
+    "isActive": true
+  },
+  {
+    "codigo": "WRAP-019",
+    "nombre": "Fibra 5D NEGRO TORNASOL",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo": 50.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping tipo fibra de carbono 5d color:nero tornasol.",
+    "isActive": true
+  },
+  {
+    "codigo": "WRAP-020",
+    "nombre": "Fibra LETRA CHINA TORNASOL",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo": 60.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping tipo letra china:color plomo tornasol.",
+    "isActive": true
+  },
+  {
+    "codigo": "WRAP-021",
+    "nombre": "Fibra MORADO FORJADO",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo": 50.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping forjado color morado",
+    "isActive": true
+  },
+  {
+    "codigo": "WRAP-022",
+    "nombre": "Fibra HEXAGONO",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo": 50.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping tipo fibra HEXAGONO,color:negro.",
+    "isActive": true
+  },
+  {
+    "codigo": "WRAP-023",
+    "nombre": "Fibra CAMALEON",
+    "categoria_id": "CAT-02",
+    "ancho_cm": 150,
+    "alto_cm": 100,
+    "costo_crudo": 60.00,
+    "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
+    "descripcion": "Vinil para wrapping estilo camaleon",
+    "isActive": true
+  },
+  {
     "codigo": "POL-001",
     "nombre": "Polarizado Tono Medio",
     "categoria_id": "CAT-03",

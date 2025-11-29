@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <style>
         /* Estilos para una mejor apariencia de los inputs numéricos */
         input[type="number"]::-webkit-inner-spin-button,
@@ -18,6 +20,114 @@
 
         input[type="number"] {
             -moz-appearance: textfield;
+        }
+
+        /* Estilos para el dropdown de sugerencias de materiales */
+        #material-suggestions {
+            position: absolute;
+            z-index: 50;
+            background: #374151;
+            border: 1px solid #4B5563;
+            border-radius: 0.375rem;
+            margin-top: 0.25rem;
+            max-height: 12rem;
+            overflow-y: auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        #material-suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #material-suggestions::-webkit-scrollbar-track {
+            background: #4B5563;
+        }
+
+        #material-suggestions::-webkit-scrollbar-thumb {
+            background: #6B7280;
+            border-radius: 3px;
+        }
+
+        #material-suggestions::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF;
+        }
+
+        mark {
+            background-color: #F97316;
+            color: white;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* Estilos personalizados para Choices.js tema dark */
+        .choices {
+            margin-bottom: 0;
+        }
+
+        .choices__inner {
+            background-color: #374151 !important;
+            border: 1px solid #4B5563 !important;
+            border-radius: 0.375rem !important;
+            color: white !important;
+            min-height: 42px !important;
+            padding: 7.5px 12px !important;
+        }
+
+        .choices__input {
+            background-color: transparent !important;
+            color: white !important;
+        }
+
+        .choices__input::placeholder {
+            color: #9CA3AF !important;
+        }
+
+        .choices__list--dropdown {
+            background-color: #374151 !important;
+            border: 1px solid #4B5563 !important;
+            border-radius: 0.375rem !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .choices__item--choice {
+            color: white !important;
+            padding: 8px 12px !important;
+        }
+
+        .choices__item--choice:hover,
+        .choices__item--choice.is-highlighted {
+            background-color: #F97316 !important;
+            color: white !important;
+        }
+
+        .choices__item--choice.is-selected {
+            background-color: #4B5563 !important;
+            color: #9CA3AF !important;
+        }
+
+        .choices[data-type*="select-one"] .choices__button {
+            background-color: #EF4444 !important;
+            border-left: 1px solid #DC2626 !important;
+            color: white !important;
+        }
+
+        .choices[data-type*="select-one"] .choices__button:hover {
+            background-color: #DC2626 !important;
+        }
+
+        .choices__placeholder {
+            color: #9CA3AF !important;
+        }
+
+        .choices.is-focused .choices__inner {
+            border-color: #F97316 !important;
+            box-shadow: 0 0 0 1px #F97316 !important;
+        }
+
+        .choices.is-disabled .choices__inner {
+            background-color: #4B5563 !important;
+            color: #6B7280 !important;
+            cursor: not-allowed !important;
         }
     </style>
 </head>
@@ -98,12 +208,13 @@
                             <select id="category-select" required
                                 class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"></select>
                         </div>
-                        <div class="md:col-span-3">
+                        <div class="md:col-span-3 relative">
                             <label for="material-select"
                                 class="block text-sm font-medium text-gray-300">Material</label>
-                            <select id="material-select" required
-                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
-                                disabled></select>
+                            <select id="material-select" required disabled
+                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+                                <option value="">Primero selecciona una categoría...</option>
+                            </select>
                         </div>
                         <div><label for="item-width-input" class="block text-sm font-medium text-gray-300">Ancho
                                 (cm)</label><input type="number" id="item-width-input" required
@@ -155,19 +266,19 @@
                         <div>
                             <label for="waste-input" class="block text-sm font-medium text-gray-300">Desperdicio
                                 (%)</label>
-                            <input type="number" id="waste-input" value="10"
+                            <input type="number" id="waste-input" placeholder="10"
                                 class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         <div>
                             <label for="labor-input" class="block text-sm font-medium text-gray-300">Mano de Obra
                                 (S/.)</label>
-                            <input type="number" id="labor-input" value="50"
+                            <input type="number" id="labor-input" placeholder="50"
                                 class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         <div>
                             <label for="margin-input" class="block text-sm font-medium text-gray-300">Margen de Ganancia
                                 (%)</label>
-                            <input type="number" id="margin-input" value="20"
+                            <input type="number" id="margin-input" placeholder="20"
                                 class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
                         </div>
                     </div>

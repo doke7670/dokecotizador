@@ -10,13 +10,10 @@ import { calculateItemCost, calculateSummary, calculateProratedItemCost } from '
 
 const categorySelect = document.getElementById('category-select');
 const materialSelect = document.getElementById('material-select');
+let materialChoices = null;
 const addItemForm = document.getElementById('add-item-form');
 const quoteTableBody = document.getElementById('quote-table-body');
 const emptyRow = document.getElementById('empty-row');
-const summaryContainer = document.getElementById('summary-container');
-const catalogModal = document.getElementById('catalog-modal');
-const addMaterialModal = document.getElementById('add-material-modal');
-const pdfPreviewModal = document.getElementById('pdf-preview-modal');
 
 const formatCurrency = (value) => `S/. ${Number(value).toFixed(2)}`;
 
@@ -149,30 +146,66 @@ export function populateCategorySelectInModal() {
 }
 
 /**
- * Actualiza el select de materiales basado en la categoría seleccionada.
+ * Actualiza el input de materiales basado en la categoría seleccionada.
  * @param {string} selectedCategoryId - El ID de la categoría elegida.
  */
 export function updateMaterialSelect(selectedCategoryId) {
-    materialSelect.innerHTML = '<option value="">Seleccionar material...</option>';
+    // Destruir la instancia anterior de Choices.js si existe
+    if (materialChoices) {
+        materialChoices.destroy();
+        materialChoices = null;
+    }
+
+    // Limpiar el select
+    materialSelect.innerHTML = '';
 
     if (!selectedCategoryId) {
         materialSelect.disabled = true;
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Primero selecciona una categoría...';
+        materialSelect.appendChild(defaultOption);
         return;
     }
 
+    // Filtrar materiales por categoría
     const filteredMaterials = state.materials
         .filter(m => m.categoria_id === selectedCategoryId && (m.isActive ?? true))
-        .sort((a, b) => a.nombre.localeCompare(b.nombre)); // Ordenar alfabéticamente
-    
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+    // Agregar opción por defecto
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Buscar por código o nombre...';
+    materialSelect.appendChild(defaultOption);
+
+    // Agregar opciones de materiales
     filteredMaterials.forEach(material => {
         const option = document.createElement('option');
         option.value = material.codigo;
-        option.textContent = material.nombre;
+        option.textContent = `${material.codigo} - ${material.nombre}`;
         materialSelect.appendChild(option);
     });
 
+    // Habilitar el select
     materialSelect.disabled = false;
+
+    // Inicializar Choices.js
+    materialChoices = new Choices(materialSelect, {
+        searchEnabled: true,
+        searchChoices: true,
+        searchPlaceholderValue: 'Buscar material...',
+        noResultsText: 'No se encontraron materiales',
+        noChoicesText: 'No hay materiales disponibles',
+        itemSelectText: 'Presiona para seleccionar',
+        removeItemButton: true,
+        shouldSort: false,
+        placeholder: true,
+        placeholderValue: 'Buscar por código o nombre...'
+    });
 }
+
+
 
 /**
  * Limpia y resetea el formulario de "Agregar Pieza".
@@ -203,10 +236,10 @@ export function resetMaterialForm() {
     state.editingMaterialCode = null;
     const form = document.getElementById('add-material-form');
     form.reset();
-    
+
     const title = document.getElementById('material-modal-title');
     title.textContent = 'Agregar Nuevo Material';
-    
+
     const submitBtn = document.getElementById('material-submit-btn');
     submitBtn.textContent = 'Guardar Material';
     submitBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
@@ -260,9 +293,15 @@ export function populateFormForEdit(itemId) {
 
     document.getElementById('form-title').textContent = 'Editando Pieza';
     categorySelect.value = material.categoria_id;
-    
+
     updateMaterialSelect(material.categoria_id);
-    materialSelect.value = itemToEdit.materialCode;
+
+    // Esperar a que Choices.js se inicialice antes de establecer el valor
+    setTimeout(() => {
+        if (materialChoices) {
+            materialChoices.setChoiceByValue(material.codigo);
+        }
+    }, 100);
 
     document.getElementById('item-width-input').value = itemToEdit.width;
     document.getElementById('item-height-input').value = itemToEdit.height;
@@ -271,9 +310,9 @@ export function populateFormForEdit(itemId) {
     submitBtn.textContent = 'Actualizar';
     submitBtn.classList.remove('bg-orange-500', 'hover:bg-orange-600');
     submitBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
-    
+
     document.getElementById('edit-mode-controls').classList.remove('hidden');
-    
+
     addItemForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     document.getElementById('item-width-input').focus();
 }
@@ -283,7 +322,7 @@ export function populateFormForEdit(itemId) {
  */
 export function cancelEditMode() {
     state.editingItemId = null;
-    
+
     addItemForm.reset();
     updateMaterialSelect('');
 
@@ -308,7 +347,7 @@ export function populateMaterialFormForEdit(materialCode) {
     populateCategorySelectInModal();
 
     state.editingMaterialCode = materialCode;
-    
+
     document.getElementById('material-modal-title').textContent = 'Editar Material';
     document.getElementById('material-nombre').value = material.nombre;
     document.getElementById('material-categoria-select').value = material.categoria_id;
@@ -340,7 +379,7 @@ export function renderCategoryManagementModal() {
             ? `<button data-action="restore-category" title="Restaurar" class="text-green-400 hover:text-green-300 text-lg">♻️</button>`
             : `<button data-action="edit-category" title="Editar" class="text-yellow-400 hover:text-yellow-300 text-lg">✏️</button>
                <button data-action="delete-category" title="Eliminar" class="text-red-500 hover:text-red-400 text-lg">🗑️</button>`;
-        
+
         return `
             <li data-category-id="${category.id}" class="flex justify-between items-center p-2 bg-gray-700 rounded-md">
                 <span>${category.nombre}</span>

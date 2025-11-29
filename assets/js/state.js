@@ -11,9 +11,9 @@ export const state = {
     categories: [], // Catálogo de categorías.
     quoteItems: [], // Piezas en la cotización actual.
     additionalCosts: {
-        waste: 10,   // %
-        labor: 50,   // S/.
-        margin: 20,  // %
+        waste: 0,   // %
+        labor: 0,   // S/.
+        margin: 0,  // %
     },
     nextId: 1, // Para IDs únicos en las filas de la cotización.
     editingItemId: null, // ID del item que se está editando, o null si no hay ninguno.

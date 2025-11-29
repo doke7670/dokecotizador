@@ -39,10 +39,12 @@ async function initializeApp() {
         setCategories(allCategoriesWithStatus);
         setMaterials(allMaterialsWithStatus);
 
-        // Sincronizar los inputs de costos adicionales con el estado inicial
-        document.getElementById('waste-input').value = state.additionalCosts.waste;
-        document.getElementById('labor-input').value = state.additionalCosts.labor;
-        document.getElementById('margin-input').value = state.additionalCosts.margin;
+        // Los inputs de costos adicionales empiezan vacíos (solo con placeholders)
+        // Sincronizar el estado con los inputs vacíos al inicio
+        const waste = Number(document.getElementById('waste-input').value) || 0;
+        const labor = Number(document.getElementById('labor-input').value) || 0;
+        const margin = Number(document.getElementById('margin-input').value) || 0;
+        updateAdditionalCosts({ waste, labor, margin });
 
         setupEventListeners();
         updateUI();
@@ -52,6 +54,14 @@ async function initializeApp() {
         console.error('Error al inicializar la aplicación:', error);
         alert('No se pudo cargar el catálogo de materiales. Por favor, recarga la página.');
     }
+}
+
+function handleAdditionalCostsChange() {
+    const waste = Number(document.getElementById('waste-input').value) || 0;
+    const labor = Number(document.getElementById('labor-input').value) || 0;
+    const margin = Number(document.getElementById('margin-input').value) || 0;
+    updateAdditionalCosts({ waste, labor, margin });
+    updateUI();
 }
 
 /**
@@ -114,7 +124,8 @@ function setupEventListeners() {
 function handleAddItemFormSubmit(e) {
     e.preventDefault();
     const form = e.target;
-    const materialCode = form.elements['material-select'].value;
+    const materialSelect = document.getElementById('material-select');
+    const materialCode = materialSelect.value;
     const width = Number(form.elements['item-width-input'].value);
     const height = Number(form.elements['item-height-input'].value);
 
@@ -175,14 +186,6 @@ function handleCategoryChange(e) {
 
 function handleCancelEdit() {
     cancelEditMode();
-}
-
-function handleAdditionalCostsChange() {
-    const waste = Number(document.getElementById('waste-input').value) || 0;
-    const labor = Number(document.getElementById('labor-input').value) || 0;
-    const margin = Number(document.getElementById('margin-input').value) || 0;
-    updateAdditionalCosts({ waste, labor, margin });
-    updateUI();
 }
 
 async function handleAddMaterialSubmit(e) {
@@ -368,7 +371,6 @@ function handleCategoryFormSubmit(e) {
     cancelCategoryEditMode();
     renderCategoryManagementModal();
     populateCategorySelect();
-    populateCategorySelectInModal();
 }
 
 function handleCancelCategoryEdit() {
@@ -400,12 +402,10 @@ function handleCategoryActions(e) {
             updateCategory(categoryId, { isActive: false });
             renderCategoryManagementModal();
             populateCategorySelect();
-            populateCategorySelectInModal();
         }
     } else if (action === 'restore-category') {
         updateCategory(categoryId, { isActive: true });
         renderCategoryManagementModal();
         populateCategorySelect();
-        populateCategorySelectInModal();
     }
 }
