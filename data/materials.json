@@ -5,10 +5,23 @@
     "categoria_id": "CAT-01",
     "ancho_cm": 100,
     "alto_cm": 60,
-    "costo_crudo": 5.00,
+    "costo_crudo": 5,
     "ruta_imagen": "https://via.placeholder.com/150/FFFFFF/000000?text=Vinil+Blanco",
     "descripcion": "Vinil adhesivo todos los colores .",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-001",
+      "COLOR-002",
+      "COLOR-003",
+      "COLOR-004",
+      "COLOR-005",
+      "COLOR-006",
+      "COLOR-007",
+      "COLOR-008",
+      "COLOR-009",
+      "COLOR-010"
+    ],
+    "isActive": true,
+    "precio_venta": 15
   },
   {
     "codigo": "VINIL-002",
@@ -16,10 +29,20 @@
     "categoria_id": "CAT-01",
     "ancho_cm": 60,
     "alto_cm": 100,
-    "costo_crudo": 18.00,
+    "costo_crudo": 18,
     "ruta_imagen": "https://via.placeholder.com/150/CCCCCC/000000?text=Vinil+Transp",
     "descripcion": "Vinil adhesivo rainbow todos los colores.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-003",
+      "COLOR-004",
+      "COLOR-005",
+      "COLOR-006",
+      "COLOR-007",
+      "COLOR-008",
+      "COLOR-009"
+    ],
+    "isActive": true,
+    "precio_venta": 30.6
   },
   {
     "codigo": "VINIL-003",
@@ -27,10 +50,18 @@
     "categoria_id": "CAT-01",
     "ancho_cm": 100,
     "alto_cm": 60,
-    "costo_crudo": 12.00,
+    "costo_crudo": 12,
     "ruta_imagen": "https://via.placeholder.com/150/FFFFFF/000000?text=Vinil+Blanco",
     "descripcion": "Vinil adhesivo reflectivo todos los colores .",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-001",
+      "COLOR-002",
+      "COLOR-006",
+      "COLOR-007",
+      "COLOR-012"
+    ],
+    "isActive": true,
+    "precio_venta": 20.4
   },
   {
     "codigo": "VINIL-004",
@@ -38,10 +69,16 @@
     "categoria_id": "CAT-01",
     "ancho_cm": 60,
     "alto_cm": 100,
-    "costo_crudo": 8.00,
+    "costo_crudo": 8,
     "ruta_imagen": "https://via.placeholder.com/150/CCCCCC/000000?text=Vinil+Transp",
     "descripcion": "Vinil adhesivo cromados/tornasol.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-012",
+      "COLOR-013",
+      "COLOR-010"
+    ],
+    "isActive": true,
+    "precio_venta": 20
   },
   {
     "codigo": "WRAP-001",
@@ -49,10 +86,16 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 152,
     "alto_cm": 100,
-    "costo_crudo": 38.00,
+    "costo_crudo": 38,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura lija.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-002",
+      "COLOR-010",
+      "COLOR-001"
+    ],
+    "isActive": true,
+    "precio_venta": 64.6
   },
   {
     "codigo": "WRAP-002",
@@ -60,10 +103,16 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 152,
     "alto_cm": 100,
-    "costo_crudo": 30.00,
+    "costo_crudo": 30,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 3D.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-002",
+      "COLOR-004",
+      "COLOR-003"
+    ],
+    "isActive": true,
+    "precio_venta": 51
   },
   {
     "codigo": "WRAP-003",
@@ -71,10 +120,15 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 127,
     "alto_cm": 100,
-    "costo_crudo": 20.00,
+    "costo_crudo": 20,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 3D.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-002",
+      "COLOR-010"
+    ],
+    "isActive": true,
+    "precio_venta": 34
   },
   {
     "codigo": "WRAP-004",
@@ -82,10 +136,16 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 40.00,
+    "costo_crudo": 40,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 4D.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-002",
+      "COLOR-004",
+      "COLOR-010"
+    ],
+    "isActive": true,
+    "precio_venta": 68
   },
   {
     "codigo": "WRAP-005",
@@ -93,10 +153,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 5D.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-006",
@@ -104,10 +165,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 55.00,
+    "costo_crudo": 55,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 6D.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 93.5
   },
   {
     "codigo": "WRAP-007",
@@ -115,10 +177,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra de carbono 3D Camaleon.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-008",
@@ -126,10 +189,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 45.00,
+    "costo_crudo": 45,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura de fibra Tipo letra china.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 76.5
   },
   {
     "codigo": "WRAP-009",
@@ -137,10 +201,14 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 135,
     "alto_cm": 100,
-    "costo_crudo": 40.00,
+    "costo_crudo": 40,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping con textura lisa negro piano.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-002"
+    ],
+    "isActive": true,
+    "precio_venta": 68
   },
   {
     "codigo": "WRAP-010",
@@ -148,10 +216,15 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 60.00,
+    "costo_crudo": 60,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping moldeable cromado.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-012",
+      "COLOR-013"
+    ],
+    "isActive": true,
+    "precio_venta": 102
   },
   {
     "codigo": "WRAP-011",
@@ -159,10 +232,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 40.00,
+    "costo_crudo": 40,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping estilo militar.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 68
   },
   {
     "codigo": "WRAP-012",
@@ -170,10 +244,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 70.00,
+    "costo_crudo": 70,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping color negro tornasol.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 119
   },
   {
     "codigo": "WRAP-013",
@@ -181,10 +256,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 45.00,
+    "costo_crudo": 45,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping color morado satinado mate.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 76.5
   },
   {
     "codigo": "WRAP-014",
@@ -192,10 +268,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 137,
     "alto_cm": 100,
-    "costo_crudo": 80.00,
+    "costo_crudo": 80,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping color verde/rojo tornasol rainbow.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 136
   },
   {
     "codigo": "WRAP-015",
@@ -203,10 +280,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 45.00,
+    "costo_crudo": 45,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping fibra de carbono tornasol modelos:fibra negro tornasol , fibra panal, fibra forjada tornasol, fibra morado forjado.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 76.5
   },
   {
     "codigo": "WRAP-016",
@@ -214,10 +292,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping letra china tornasol.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-017",
@@ -225,10 +304,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping forjado color:negro.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-018",
@@ -236,10 +316,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping forjado color:negro tornasol.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-019",
@@ -247,10 +328,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping tipo fibra de carbono 5d color:nero tornasol.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-020",
@@ -258,10 +340,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 60.00,
+    "costo_crudo": 60,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping tipo letra china:color plomo tornasol.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 102
   },
   {
     "codigo": "WRAP-021",
@@ -269,10 +352,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping forjado color morado",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-022",
@@ -280,10 +364,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping tipo fibra HEXAGONO,color:negro.",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 85
   },
   {
     "codigo": "WRAP-023",
@@ -291,10 +376,11 @@
     "categoria_id": "CAT-02",
     "ancho_cm": 150,
     "alto_cm": 100,
-    "costo_crudo": 60.00,
+    "costo_crudo": 60,
     "ruta_imagen": "https://via.placeholder.com/150/333333/FFFFFF?text=Carbon+Fiber",
     "descripcion": "Vinil para wrapping estilo camaleon",
-    "isActive": true
+    "isActive": true,
+    "precio_venta": 102
   },
   {
     "codigo": "POL-001",
@@ -302,9 +388,15 @@
     "categoria_id": "CAT-03",
     "ancho_cm": 100,
     "alto_cm": 100,
-    "costo_crudo": 50.00,
+    "costo_crudo": 50,
     "ruta_imagen": "https://via.placeholder.com/150/111111/FFFFFF?text=Polarizado",
     "descripcion": "Lámina de polarizado para ventanas, protección UV del 99%.",
-    "isActive": true
+    "colores_disponibles": [
+      "COLOR-002",
+      "COLOR-010",
+      "COLOR-011"
+    ],
+    "isActive": true,
+    "precio_venta": 85
   }
 ]

@@ -9,9 +9,10 @@
  * Calcula el costo de una sola pieza de la cotización.
  * @param {object} item - El ítem de la cotización.
  * @param {Array} materials - El catálogo de materiales.
+ * @param {string} priceType - Tipo de precio a usar ('costo_crudo' o 'precio_venta').
  * @returns {number} - El costo calculado para la pieza.
  */
-export function calculateItemCost(item, materials) {
+export function calculateItemCost(item, materials, priceType = 'costo_crudo') {
     if (!item.materialCode || !item.width || !item.height) {
         return 0;
     }
@@ -24,7 +25,9 @@ export function calculateItemCost(item, materials) {
     const materialArea = material.ancho_cm * material.alto_cm;
     if (materialArea === 0) return 0;
 
-    const unitCost = material.costo_crudo / materialArea; // Costo por cm²
+    // Usar el tipo de precio seleccionado
+    const materialPrice = material[priceType] || material.costo_crudo;
+    const unitCost = materialPrice / materialArea; // Costo por cm²
     const itemArea = item.width * item.height;
     
     return itemArea * unitCost;
@@ -38,7 +41,12 @@ export function calculateItemCost(item, materials) {
  * @returns {object} - Un objeto con todos los totales calculados.
  */
 export function calculateSummary(quoteItems, additionalCosts, materials) {
-    const subtotal = quoteItems.reduce((acc, item) => acc + calculateItemCost(item, materials), 0);
+    // Calcular subtotal usando el tipo de precio individual de cada item
+    const subtotal = quoteItems.reduce((acc, item) => {
+        const itemPriceType = item.priceType === 'client' ? 'precio_venta' : 'costo_crudo';
+        return acc + calculateItemCost(item, materials, itemPriceType);
+    }, 0);
+    
     const wasteCost = subtotal * (additionalCosts.waste / 100);
     const laborCost = Number(additionalCosts.labor);
     const projectSubtotal = subtotal + wasteCost + laborCost;

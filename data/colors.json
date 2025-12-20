@@ -1,0 +1,80 @@
+[
+  {
+    "id": "COLOR-001",
+    "nombre": "Blanco",
+    "codigo_hex": "#FFFFFF",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-002",
+    "nombre": "Negro",
+    "codigo_hex": "#000000",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-003",
+    "nombre": "Rojo",
+    "codigo_hex": "#FF0000",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-004",
+    "nombre": "Azul",
+    "codigo_hex": "#0000FF",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-005",
+    "nombre": "Verde",
+    "codigo_hex": "#00FF00",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-006",
+    "nombre": "Amarillo",
+    "codigo_hex": "#FFFF00",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-007",
+    "nombre": "Naranja",
+    "codigo_hex": "#FFA500",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-008",
+    "nombre": "Rosa",
+    "codigo_hex": "#FF69B4",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-009",
+    "nombre": "Morado",
+    "codigo_hex": "#800080",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-010",
+    "nombre": "Gris",
+    "codigo_hex": "#808080",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-011",
+    "nombre": "Transparente",
+    "codigo_hex": "transparent",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-012",
+    "nombre": "Plateado",
+    "codigo_hex": "#C0C0C0",
+    "isActive": true
+  },
+  {
+    "id": "COLOR-013",
+    "nombre": "Dorado",
+    "codigo_hex": "#FFD700",
+    "isActive": true
+  }
+]

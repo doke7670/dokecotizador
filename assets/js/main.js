@@ -8,8 +8,8 @@
 
 console.log("✅ main.js cargado y ejecutándose...");
 
-import { state, setMaterials, addQuoteItem, removeQuoteItem, updateAdditionalCosts, setCategories, updateQuoteItem, updateMaterial, addCategory, updateCategory, addMaterial } from './state.js';
-import { updateUI, toggleModal, resetMaterialForm, renderCatalog, renderPdfPreview, populateCategorySelect, updateMaterialSelect, resetAddItemForm, renderItemDetailsModal, populateFormForEdit, cancelEditMode, populateMaterialFormForEdit, renderCategoryManagementModal, populateCategoryFormForEdit, cancelCategoryEditMode } from './ui.js';
+import { state, setMaterials, addQuoteItem, removeQuoteItem, updateAdditionalCosts, setCategories, setColors, updateQuoteItem, updateMaterial, addCategory, updateCategory, addMaterial } from './state.js';
+import { updateUI, toggleModal, resetMaterialForm, renderCatalog, renderPdfPreview, initializeMaterialSearch, resetAddItemForm, renderItemDetailsModal, populateFormForEdit, cancelEditMode, populateMaterialFormForEdit, renderCategoryManagementModal, populateCategoryFormForEdit, cancelCategoryEditMode, getSelectedMaterial, getSelectedPriceType, getEffectivePrice } from './ui.js';
 import { generatePdfFromHtml, generateSimplePdf } from './pdfGenerator.js';
 import { downloadMaterials, downloadCategories } from './dataExport.js';
 import { calculateSummary, calculateItemCost, calculateProratedItemCost } from './calculations.js';
@@ -25,19 +25,23 @@ async function initializeApp() {
     try {
         // Carga los datos desde los archivos JSON base
         console.log("📁 Cargando datos desde archivos JSON...");
-        const [materialsRes, categoriesRes] = await Promise.all([
+        const [materialsRes, categoriesRes, colorsRes] = await Promise.all([
             fetch('data/materials.json'),
-            fetch('data/categories.json')
+            fetch('data/categories.json'),
+            fetch('data/colors.json')
         ]);
         const materials = await materialsRes.json();
         const categories = await categoriesRes.json();
+        const colors = await colorsRes.json();
 
         // Establece el estado, asegurando que la propiedad `isActive` exista.
         const allCategoriesWithStatus = categories.map(c => ({ ...c, isActive: c.isActive ?? true }));
         const allMaterialsWithStatus = materials.map(m => ({ ...m, isActive: m.isActive ?? true }));
+        const allColorsWithStatus = colors.map(c => ({ ...c, isActive: c.isActive ?? true }));
 
         setCategories(allCategoriesWithStatus);
         setMaterials(allMaterialsWithStatus);
+        setColors(allColorsWithStatus);
 
         // Los inputs de costos adicionales empiezan vacíos (solo con placeholders)
         // Sincronizar el estado con los inputs vacíos al inicio
@@ -48,7 +52,7 @@ async function initializeApp() {
 
         setupEventListeners();
         updateUI();
-        populateCategorySelect();
+        initializeMaterialSearch();
         renderCatalog();
     } catch (error) {
         console.error('Error al inicializar la aplicación:', error);
@@ -70,7 +74,6 @@ function handleAdditionalCostsChange() {
 function setupEventListeners() {
     // Formulario para agregar piezas
     document.getElementById('add-item-form').addEventListener('submit', handleAddItemFormSubmit);
-    document.getElementById('category-select').addEventListener('change', handleCategoryChange);
     document.getElementById('cancel-edit-btn').addEventListener('click', handleCancelEdit);
 
     // Event delegation para la tabla de cotización
@@ -124,17 +127,22 @@ function setupEventListeners() {
 function handleAddItemFormSubmit(e) {
     e.preventDefault();
     const form = e.target;
-    const materialSelect = document.getElementById('material-select');
-    const materialCode = materialSelect.value;
+    const selectedMaterial = getSelectedMaterial();
+    const selectedPriceType = getSelectedPriceType();
     const width = Number(form.elements['item-width-input'].value);
     const height = Number(form.elements['item-height-input'].value);
 
-    if (!materialCode || width <= 0 || height <= 0) {
-        alert('Por favor, completa todos los campos del formulario con valores válidos.');
+    if (!selectedMaterial || !selectedPriceType || width <= 0 || height <= 0) {
+        alert('Por favor, selecciona un material, un tipo de precio y completa las dimensiones con valores válidos.');
         return;
     }
 
-    const itemData = { materialCode, width, height };
+    const itemData = { 
+        materialCode: selectedMaterial.codigo, 
+        width, 
+        height,
+        priceType: selectedPriceType // Guardar el tipo de precio usado
+    };
 
     if (state.editingItemId !== null) {
         // Actualizar ítem existente
@@ -178,10 +186,6 @@ function handleTableClick(e) {
     } else if (action === 'edit-item') {
         populateFormForEdit(itemId);
     }
-}
-
-function handleCategoryChange(e) {
-    updateMaterialSelect(e.target.value);
 }
 
 function handleCancelEdit() {
@@ -232,7 +236,6 @@ async function handleAddMaterialSubmit(e) {
     
     toggleModal('add-material-modal', false);
     renderCatalog();
-    populateCategorySelect();
     updateUI(); 
 }
 
@@ -258,7 +261,8 @@ async function handleDownloadSimplePdf() {
     const quoteData = {
         items: state.quoteItems.map(item => {
             const material = state.materials.find(m => m.codigo === item.materialCode);
-            const rawItemCost = calculateItemCost(item, state.materials);
+            const itemPriceType = item.priceType === 'client' ? 'precio_venta' : 'costo_crudo';
+            const rawItemCost = calculateItemCost(item, state.materials, itemPriceType);
             const finalItemCost = calculateProratedItemCost(rawItemCost, summary.subtotal, summary.grandTotal);
             
             return {
@@ -370,7 +374,6 @@ function handleCategoryFormSubmit(e) {
 
     cancelCategoryEditMode();
     renderCategoryManagementModal();
-    populateCategorySelect();
 }
 
 function handleCancelCategoryEdit() {
@@ -401,11 +404,9 @@ function handleCategoryActions(e) {
         if (confirm('¿Seguro que quieres eliminar esta categoría? Quedará oculta y podrás restaurarla.')) {
             updateCategory(categoryId, { isActive: false });
             renderCategoryManagementModal();
-            populateCategorySelect();
         }
     } else if (action === 'restore-category') {
         updateCategory(categoryId, { isActive: true });
         renderCategoryManagementModal();
-        populateCategorySelect();
     }
 }

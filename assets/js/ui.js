@@ -8,12 +8,19 @@
 import { state } from './state.js';
 import { calculateItemCost, calculateSummary, calculateProratedItemCost } from './calculations.js';
 
-const categorySelect = document.getElementById('category-select');
-const materialSelect = document.getElementById('material-select');
-let materialChoices = null;
+// Referencias a elementos del DOM
+const materialSearchInput = document.getElementById('material-search-input');
+const materialSuggestions = document.getElementById('material-suggestions');
+const selectedMaterialInfo = document.getElementById('selected-material-info');
 const addItemForm = document.getElementById('add-item-form');
 const quoteTableBody = document.getElementById('quote-table-body');
 const emptyRow = document.getElementById('empty-row');
+
+// Estado local para el material seleccionado
+let selectedMaterial = null;
+let selectedPriceType = null; // 'provider' o 'client'
+let highlightedIndex = -1;
+let filteredMaterials = [];
 
 const formatCurrency = (value) => `S/. ${Number(value).toFixed(2)}`;
 
@@ -30,13 +37,21 @@ export function renderQuoteTable(summary) {
     }
 
     state.quoteItems.forEach(item => {
-        const rawItemCost = calculateItemCost(item, state.materials); // Muestra el costo crudo
+        // Usar el tipo de precio guardado con cada item individual
+        const itemPriceType = item.priceType === 'client' ? 'precio_venta' : 'costo_crudo';
+        const rawItemCost = calculateItemCost(item, state.materials, itemPriceType);
         const row = document.createElement('tr');
         row.className = 'border-b border-gray-700';
         row.dataset.itemId = item.id;
 
+        const material = state.materials.find(m => m.codigo === item.materialCode);
+        const priceTypeLabel = item.priceType === 'client' ? '(Cliente)' : '(Proveedor)';
+
         row.innerHTML = `
-            <td class="p-3">${state.materials.find(m => m.codigo === item.materialCode)?.nombre || 'N/A'}</td>
+            <td class="p-3">
+                ${material?.nombre || 'N/A'}
+                <span class="text-xs text-gray-400 block">${priceTypeLabel}</span>
+            </td>
             <td class="p-3">${item.width}</td>
             <td class="p-3">${item.height}</td>
             <td class="p-3 font-semibold text-right">
@@ -117,104 +132,364 @@ export function renderCatalog(filter = 'active', searchTerm = '') {
 }
 
 /**
- * Popula el select de categorías con valores únicos del catálogo.
+ * Inicializa el sistema de búsqueda de materiales
  */
-export function populateCategorySelect() {
-    const activeCategories = state.categories.filter(c => c.isActive ?? true);
-    categorySelect.innerHTML = '<option value="">Seleccionar categoría...</option>';
-    activeCategories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = category.nombre;
-        categorySelect.appendChild(option);
-    });
+export function initializeMaterialSearch() {
+    if (!materialSearchInput) return;
+
+    // Event listeners para el input de búsqueda
+    materialSearchInput.addEventListener('input', handleMaterialSearch);
+    materialSearchInput.addEventListener('keydown', handleMaterialSearchKeydown);
+    materialSearchInput.addEventListener('blur', handleMaterialSearchBlur);
+    materialSearchInput.addEventListener('focus', handleMaterialSearchFocus);
+
+    // Event listeners para sugerencias (soporte táctil mejorado)
+    materialSuggestions.addEventListener('click', handleSuggestionClick);
+    materialSuggestions.addEventListener('touchstart', handleSuggestionTouchStart, { passive: true });
+    
+    // Event listener global para ocultar sugerencias al hacer clic fuera
+    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('touchstart', handleDocumentClick, { passive: true });
 }
 
 /**
- * Popula el select de categorías en el modal de agregar material.
+ * Maneja el inicio del toque en sugerencias (móvil)
  */
-export function populateCategorySelectInModal() {
-    const activeCategories = state.categories.filter(c => c.isActive ?? true);
-    const modalCategorySelect = document.getElementById('material-categoria-select');
-    modalCategorySelect.innerHTML = '<option value="">Seleccionar categoría...</option>';
-    activeCategories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = category.nombre;
-        modalCategorySelect.appendChild(option);
-    });
-}
-
-/**
- * Actualiza el input de materiales basado en la categoría seleccionada.
- * @param {string} selectedCategoryId - El ID de la categoría elegida.
- */
-export function updateMaterialSelect(selectedCategoryId) {
-    // Destruir la instancia anterior de Choices.js si existe
-    if (materialChoices) {
-        materialChoices.destroy();
-        materialChoices = null;
+function handleSuggestionTouchStart(e) {
+    // Prevenir el scroll accidental durante la selección
+    const suggestionItem = e.target.closest('.material-suggestion-item');
+    if (suggestionItem) {
+        suggestionItem.style.backgroundColor = '#F97316';
     }
+}
 
-    // Limpiar el select
-    materialSelect.innerHTML = '';
+/**
+ * Maneja clics/toques fuera del área de búsqueda
+ */
+function handleDocumentClick(e) {
+    const searchContainer = materialSearchInput.closest('.relative');
+    if (!searchContainer.contains(e.target)) {
+        hideMaterialSuggestions();
+    }
+}
 
-    if (!selectedCategoryId) {
-        materialSelect.disabled = true;
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'Primero selecciona una categoría...';
-        materialSelect.appendChild(defaultOption);
+/**
+ * Maneja la búsqueda de materiales en tiempo real
+ */
+function handleMaterialSearch(e) {
+    const query = e.target.value.trim().toLowerCase();
+    
+    if (query.length === 0) {
+        hideMaterialSuggestions();
+        clearSelectedMaterial();
         return;
     }
 
-    // Filtrar materiales por categoría
-    const filteredMaterials = state.materials
-        .filter(m => m.categoria_id === selectedCategoryId && (m.isActive ?? true))
-        .sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-    // Agregar opción por defecto
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = 'Buscar por código o nombre...';
-    materialSelect.appendChild(defaultOption);
-
-    // Agregar opciones de materiales
-    filteredMaterials.forEach(material => {
-        const option = document.createElement('option');
-        option.value = material.codigo;
-        option.textContent = `${material.codigo} - ${material.nombre}`;
-        materialSelect.appendChild(option);
+    // Filtrar materiales activos
+    filteredMaterials = state.materials.filter(material => {
+        if (!(material.isActive ?? true)) return false;
+        
+        const matchesCode = material.codigo.toLowerCase().includes(query);
+        const matchesName = material.nombre.toLowerCase().includes(query);
+        const category = state.categories.find(c => c.id === material.categoria_id);
+        const matchesCategory = category?.nombre.toLowerCase().includes(query) || false;
+        
+        return matchesCode || matchesName || matchesCategory;
     });
 
-    // Habilitar el select
-    materialSelect.disabled = false;
+    // Buscar coincidencia exacta por código
+    const exactMatch = filteredMaterials.find(m => m.codigo.toLowerCase() === query);
+    if (exactMatch) {
+        selectMaterial(exactMatch);
+        hideMaterialSuggestions();
+        return;
+    }
 
-    // Inicializar Choices.js
-    materialChoices = new Choices(materialSelect, {
-        searchEnabled: true,
-        searchChoices: true,
-        searchPlaceholderValue: 'Buscar material...',
-        noResultsText: 'No se encontraron materiales',
-        noChoicesText: 'No hay materiales disponibles',
-        itemSelectText: 'Presiona para seleccionar',
-        removeItemButton: true,
-        shouldSort: false,
-        placeholder: true,
-        placeholderValue: 'Buscar por código o nombre...'
+    // Mostrar sugerencias
+    if (filteredMaterials.length > 0) {
+        showMaterialSuggestions(filteredMaterials, query);
+    } else {
+        hideMaterialSuggestions();
+        clearSelectedMaterial();
+    }
+}
+
+/**
+ * Maneja las teclas de navegación en el input de búsqueda
+ */
+function handleMaterialSearchKeydown(e) {
+    if (!materialSuggestions.classList.contains('hidden')) {
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                highlightedIndex = Math.min(highlightedIndex + 1, filteredMaterials.length - 1);
+                updateHighlight();
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                highlightedIndex = Math.max(highlightedIndex - 1, -1);
+                updateHighlight();
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (highlightedIndex >= 0 && filteredMaterials[highlightedIndex]) {
+                    selectMaterial(filteredMaterials[highlightedIndex]);
+                    hideMaterialSuggestions();
+                    // Mover foco al siguiente campo
+                    document.getElementById('item-width-input').focus();
+                }
+                break;
+            case 'Escape':
+                hideMaterialSuggestions();
+                break;
+        }
+    }
+}
+
+/**
+ * Maneja cuando el input pierde el foco
+ */
+function handleMaterialSearchBlur(e) {
+    // No ocultar inmediatamente - dejar que el clic se procese primero
+    // El clic en la sugerencia manejará el ocultado
+}
+
+/**
+ * Maneja cuando el input recibe el foco
+ */
+function handleMaterialSearchFocus(e) {
+    if (e.target.value.trim() && filteredMaterials.length > 0) {
+        showMaterialSuggestions(filteredMaterials, e.target.value.trim().toLowerCase());
+    }
+}
+
+/**
+ * Maneja clics en las sugerencias
+ */
+function handleSuggestionClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const suggestionItem = e.target.closest('.material-suggestion-item');
+    if (!suggestionItem) return;
+
+    const materialCode = suggestionItem.dataset.materialCode;
+    const material = state.materials.find(m => m.codigo === materialCode);
+    
+    if (material) {
+        selectMaterial(material);
+        hideMaterialSuggestions();
+        // Pequeño delay para que el foco funcione correctamente
+        setTimeout(() => {
+            document.getElementById('item-width-input').focus();
+        }, 50);
+    }
+}
+
+/**
+ * Muestra las sugerencias de materiales
+ */
+function showMaterialSuggestions(materials, query) {
+    materialSuggestions.innerHTML = '';
+    highlightedIndex = -1;
+
+    materials.slice(0, 8).forEach((material, index) => {
+        const category = state.categories.find(c => c.id === material.categoria_id);
+        const categoryName = category?.nombre || 'Sin categoría';
+        
+        const suggestionItem = document.createElement('div');
+        suggestionItem.className = 'material-suggestion-item';
+        suggestionItem.dataset.materialCode = material.codigo;
+        suggestionItem.setAttribute('role', 'option');
+        suggestionItem.setAttribute('tabindex', '-1');
+        suggestionItem.setAttribute('aria-label', `${material.codigo} - ${material.nombre}, ${categoryName}`);
+        
+        // Resaltar texto coincidente
+        const highlightText = (text, query) => {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        };
+
+        suggestionItem.innerHTML = `
+            <div class="suggestion-main">
+                <img src="${material.ruta_imagen}" alt="${material.nombre}" class="suggestion-image">
+                <div class="suggestion-details">
+                    <div class="suggestion-title">${highlightText(material.codigo, query)} - ${highlightText(material.nombre, query)}</div>
+                    <div class="suggestion-subtitle">${highlightText(categoryName, query)} • ${material.ancho_cm}×${material.alto_cm}cm</div>
+                </div>
+                <div class="suggestion-price">${formatCurrency(material.costo_crudo)}</div>
+            </div>
+        `;
+        
+        materialSuggestions.appendChild(suggestionItem);
     });
+
+    materialSuggestions.classList.remove('hidden');
+    materialSuggestions.setAttribute('role', 'listbox');
+    materialSuggestions.setAttribute('aria-label', 'Sugerencias de materiales');
+}
+
+/**
+ * Oculta las sugerencias de materiales
+ */
+function hideMaterialSuggestions() {
+    materialSuggestions.classList.add('hidden');
+    highlightedIndex = -1;
+}
+
+/**
+ * Actualiza el resaltado de la sugerencia seleccionada
+ */
+function updateHighlight() {
+    const items = materialSuggestions.querySelectorAll('.material-suggestion-item');
+    items.forEach((item, index) => {
+        item.classList.toggle('highlighted', index === highlightedIndex);
+    });
+}
+
+/**
+ * Selecciona un material y muestra las tarjetas de precio
+ */
+function selectMaterial(material) {
+    selectedMaterial = material;
+    const category = state.categories.find(c => c.id === material.categoria_id);
+    
+    // Actualizar el input con el código del material
+    materialSearchInput.value = material.codigo;
+    
+    // Llenar ambas tarjetas con la información del material
+    const materialInfo = {
+        image: material.ruta_imagen,
+        name: `${material.codigo} - ${material.nombre}`,
+        details: `${category?.nombre || 'Sin categoría'} • ${material.ancho_cm}×${material.alto_cm}cm`,
+        providerCost: formatCurrency(material.costo_crudo),
+        clientCost: formatCurrency(material.precio_venta || material.costo_crudo * 1.7)
+    };
+    
+    // Tarjeta proveedor
+    document.getElementById('selected-material-image-provider').src = materialInfo.image;
+    document.getElementById('selected-material-image-provider').alt = material.nombre;
+    document.getElementById('selected-material-name-provider').textContent = materialInfo.name;
+    document.getElementById('selected-material-details-provider').textContent = materialInfo.details;
+    document.getElementById('selected-material-cost-provider').textContent = materialInfo.providerCost;
+    
+    // Tarjeta cliente
+    document.getElementById('selected-material-image-client').src = materialInfo.image;
+    document.getElementById('selected-material-image-client').alt = material.nombre;
+    document.getElementById('selected-material-name-client').textContent = materialInfo.name;
+    document.getElementById('selected-material-details-client').textContent = materialInfo.details;
+    document.getElementById('selected-material-cost-client').textContent = materialInfo.clientCost;
+    
+    // Mostrar las tarjetas
+    selectedMaterialInfo.classList.remove('hidden');
+    document.getElementById('price-selection-indicator').classList.remove('hidden');
+    
+    // Reset visual state
+    document.querySelectorAll('.price-card').forEach(card => {
+        card.classList.remove('selected-provider', 'selected-client');
+    });
+    
+    // Seleccionar automáticamente la tarjeta de proveedor por defecto
+    selectPriceType('provider');
+    
+    // Mostrar los campos de medidas y botón agregar
+    document.getElementById('dimensions-and-submit').classList.remove('hidden');
+    
+    // Setup click handlers for price cards con soporte táctil mejorado
+    const providerCard = document.getElementById('price-card-provider');
+    const clientCard = document.getElementById('price-card-client');
+    
+    // Limpiar event listeners existentes
+    providerCard.onclick = null;
+    clientCard.onclick = null;
+    
+    // Agregar event listeners con soporte táctil
+    providerCard.addEventListener('click', () => selectPriceType('provider'));
+    providerCard.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        selectPriceType('provider');
+    });
+    
+    clientCard.addEventListener('click', () => selectPriceType('client'));
+    clientCard.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        selectPriceType('client');
+    });
+    
+    // Scroll suave para asegurar que las tarjetas sean visibles en móvil
+    setTimeout(() => {
+        selectedMaterialInfo.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest',
+            inline: 'nearest'
+        });
+    }, 100);
+}
+
+/**
+ * Limpia la selección de material
+ */
+function clearSelectedMaterial() {
+    selectedMaterial = null;
+    selectedPriceType = null;
+    selectedMaterialInfo.classList.add('hidden');
+    
+    // Ocultar también los campos de medidas y botón
+    document.getElementById('dimensions-and-submit').classList.add('hidden');
+    
+    // Reset visual state
+    document.querySelectorAll('.price-card').forEach(card => {
+        card.classList.remove('selected-provider', 'selected-client');
+    });
+}
+
+/**
+ * Obtiene el material actualmente seleccionado y su tipo de precio
+ */
+export function getSelectedMaterial() {
+    return selectedMaterial;
+}
+
+/**
+ * Obtiene el tipo de precio seleccionado
+ */
+export function getSelectedPriceType() {
+    return selectedPriceType;
+}
+
+/**
+ * Obtiene el precio efectivo basado en la selección
+ */
+export function getEffectivePrice() {
+    if (!selectedMaterial || !selectedPriceType) return null;
+    
+    if (selectedPriceType === 'provider') {
+        return selectedMaterial.costo_crudo;
+    } else {
+        return selectedMaterial.precio_venta || selectedMaterial.costo_crudo * 1.7;
+    }
 }
 
 
 
 /**
  * Limpia y resetea el formulario de "Agregar Pieza".
- * Mantiene la categoría y material seleccionados.
  */
 export function resetAddItemForm() {
-    document.getElementById('item-width-input').value = '';
-    document.getElementById('item-height-input').value = '';
-    document.getElementById('item-width-input').focus();
+    // Limpiar campos de medidas de forma más explícita
+    const widthInput = document.getElementById('item-width-input');
+    const heightInput = document.getElementById('item-height-input');
+    
+    widthInput.value = '';
+    heightInput.value = '';
+    
+    // Forzar el reset de los valores
+    widthInput.setAttribute('value', '');
+    heightInput.setAttribute('value', '');
+    
+    // No limpiar el material seleccionado para mantener la velocidad
+    // Los campos de medidas permanecen visibles si hay un material seleccionado
+    widthInput.focus();
 }
 
 /**
@@ -246,6 +521,21 @@ export function resetMaterialForm() {
     submitBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
 
     populateCategorySelectInModal();
+}
+
+/**
+ * Popula el select de categorías en el modal de agregar material.
+ */
+export function populateCategorySelectInModal() {
+    const activeCategories = state.categories.filter(c => c.isActive ?? true);
+    const modalCategorySelect = document.getElementById('material-categoria-select');
+    modalCategorySelect.innerHTML = '<option value="">Seleccionar categoría...</option>';
+    activeCategories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.nombre;
+        modalCategorySelect.appendChild(option);
+    });
 }
 
 /**
@@ -292,16 +582,9 @@ export function populateFormForEdit(itemId) {
     state.editingItemId = itemId;
 
     document.getElementById('form-title').textContent = 'Editando Pieza';
-    categorySelect.value = material.categoria_id;
-
-    updateMaterialSelect(material.categoria_id);
-
-    // Esperar a que Choices.js se inicialice antes de establecer el valor
-    setTimeout(() => {
-        if (materialChoices) {
-            materialChoices.setChoiceByValue(material.codigo);
-        }
-    }, 100);
+    
+    // Seleccionar el material
+    selectMaterial(material);
 
     document.getElementById('item-width-input').value = itemToEdit.width;
     document.getElementById('item-height-input').value = itemToEdit.height;
@@ -323,8 +606,10 @@ export function populateFormForEdit(itemId) {
 export function cancelEditMode() {
     state.editingItemId = null;
 
-    addItemForm.reset();
-    updateMaterialSelect('');
+    materialSearchInput.value = '';
+    clearSelectedMaterial();
+    document.getElementById('item-width-input').value = '';
+    document.getElementById('item-height-input').value = '';
 
     document.getElementById('form-title').textContent = 'Agregar Pieza';
     const submitBtn = document.getElementById('add-item-submit-btn');
@@ -436,11 +721,11 @@ export function cancelCategoryEditMode() {
 export function renderPdfPreview() {
     const contentDiv = document.getElementById('pdf-content');
     const summary = calculateSummary(state.quoteItems, state.additionalCosts, state.materials);
-    const { waste, labor, margin } = state.additionalCosts;
     const now = new Date();
 
     let itemsHtml = state.quoteItems.map(item => {
-        const rawItemCost = calculateItemCost(item, state.materials);
+        const itemPriceType = item.priceType === 'client' ? 'precio_venta' : 'costo_crudo';
+        const rawItemCost = calculateItemCost(item, state.materials, itemPriceType);
         const finalItemCost = calculateProratedItemCost(rawItemCost, summary.subtotal, summary.grandTotal);
         return `
             <div class="grid grid-cols-4 gap-2 py-2 border-b">
@@ -488,11 +773,48 @@ export function renderPdfPreview() {
  * Actualiza toda la UI basándose en el estado actual.
  */
 export function updateUI() {
+    // Calcular el resumen usando los tipos de precio individuales de cada item
     const summary = calculateSummary(state.quoteItems, state.additionalCosts, state.materials);
     renderQuoteTable(summary);
     renderSummary(summary);
 }
-// ```<!--
-// [PROMPT_SUGGESTION]¿Cómo puedo añadir una alerta para que no se pueda eliminar una categoría si todavía hay materiales activos usándola?[/PROMPT_SUGGESTION]
-// [PROMPT_SUGGESTION]Implementa una función de búsqueda en el catálogo de materiales para filtrar por nombre.[/PROMPT_SUGGESTION]
-// -->
+
+/**
+ * Configura los event handlers para las tarjetas de precio
+ */
+function setupPriceCardHandlers() {
+    const providerCard = document.getElementById('price-card-provider');
+    const clientCard = document.getElementById('price-card-client');
+    
+    // Remove existing listeners
+    providerCard.replaceWith(providerCard.cloneNode(true));
+    clientCard.replaceWith(clientCard.cloneNode(true));
+    
+    // Get fresh references
+    const newProviderCard = document.getElementById('price-card-provider');
+    const newClientCard = document.getElementById('price-card-client');
+    
+    newProviderCard.addEventListener('click', () => selectPriceType('provider'));
+    newClientCard.addEventListener('click', () => selectPriceType('client'));
+}
+
+/**
+ * Selecciona el tipo de precio y actualiza la UI
+ */
+function selectPriceType(priceType) {
+    selectedPriceType = priceType;
+    
+    // Reset all cards
+    document.querySelectorAll('.price-card').forEach(card => {
+        card.classList.remove('selected-provider', 'selected-client');
+    });
+    
+    // Highlight selected card
+    if (priceType === 'provider') {
+        document.getElementById('price-card-provider').classList.add('selected-provider');
+        document.getElementById('selected-price-text').textContent = '💼 Calculando con precio de proveedor';
+    } else {
+        document.getElementById('price-card-client').classList.add('selected-client');
+        document.getElementById('selected-price-text').textContent = '💰 Calculando con precio de cliente';
+    }
+}
