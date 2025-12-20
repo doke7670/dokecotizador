@@ -9,12 +9,28 @@ import { state } from './state.js';
 import { calculateItemCost, calculateSummary, calculateProratedItemCost } from './calculations.js';
 
 // Referencias a elementos del DOM
-const materialSearchInput = document.getElementById('material-search-input');
-const materialSuggestions = document.getElementById('material-suggestions');
-const selectedMaterialInfo = document.getElementById('selected-material-info');
-const addItemForm = document.getElementById('add-item-form');
-const quoteTableBody = document.getElementById('quote-table-body');
-const emptyRow = document.getElementById('empty-row');
+let materialSearchInput;
+let materialSuggestions;
+let selectedMaterialInfo;
+let addItemForm;
+let quoteTableBody;
+let emptyRow;
+
+// Función para inicializar las referencias del DOM
+function initializeDOMReferences() {
+    materialSearchInput = document.getElementById('material-search-input');
+    materialSuggestions = document.getElementById('material-suggestions');
+    selectedMaterialInfo = document.getElementById('selected-material-info');
+    addItemForm = document.getElementById('add-item-form');
+    quoteTableBody = document.getElementById('quote-table-body');
+    emptyRow = document.getElementById('empty-row');
+    
+    console.log('🔗 Referencias DOM inicializadas:', {
+        materialSearchInput: !!materialSearchInput,
+        materialSuggestions: !!materialSuggestions,
+        selectedMaterialInfo: !!selectedMaterialInfo
+    });
+}
 
 // Estado local para el material seleccionado
 let selectedMaterial = null;
@@ -29,6 +45,8 @@ const formatCurrency = (value) => `S/. ${Number(value).toFixed(2)}`;
  * @param {object} summary - El objeto de resumen con los totales calculados.
  */
 export function renderQuoteTable(summary) {
+    if (!quoteTableBody) initializeDOMReferences();
+    
     quoteTableBody.innerHTML = '';
 
     if (state.quoteItems.length === 0) {
@@ -135,21 +153,44 @@ export function renderCatalog(filter = 'active', searchTerm = '') {
  * Inicializa el sistema de búsqueda de materiales
  */
 export function initializeMaterialSearch() {
-    if (!materialSearchInput) return;
-
+    console.log('🔍 Inicializando búsqueda de materiales...');
+    
+    // Obtener referencias directamente
+    const searchInput = document.getElementById('material-search-input');
+    const suggestionsContainer = document.getElementById('material-suggestions');
+    const materialInfo = document.getElementById('selected-material-info');
+    
+    console.log('🔍 Referencias obtenidas:', {
+        searchInput: !!searchInput,
+        suggestionsContainer: !!suggestionsContainer,
+        materialInfo: !!materialInfo
+    });
+    
+    if (!searchInput || !suggestionsContainer) {
+        console.error('❌ Elementos no encontrados');
+        return;
+    }
+    
+    // Asignar a variables globales
+    materialSearchInput = searchInput;
+    materialSuggestions = suggestionsContainer;
+    selectedMaterialInfo = materialInfo;
+    
     // Event listeners para el input de búsqueda
-    materialSearchInput.addEventListener('input', handleMaterialSearch);
-    materialSearchInput.addEventListener('keydown', handleMaterialSearchKeydown);
-    materialSearchInput.addEventListener('blur', handleMaterialSearchBlur);
-    materialSearchInput.addEventListener('focus', handleMaterialSearchFocus);
-
+    searchInput.addEventListener('input', handleMaterialSearch);
+    searchInput.addEventListener('keydown', handleMaterialSearchKeydown);
+    searchInput.addEventListener('blur', handleMaterialSearchBlur);
+    searchInput.addEventListener('focus', handleMaterialSearchFocus);
+    
     // Event listeners para sugerencias (soporte táctil mejorado)
-    materialSuggestions.addEventListener('click', handleSuggestionClick);
-    materialSuggestions.addEventListener('touchstart', handleSuggestionTouchStart, { passive: true });
+    suggestionsContainer.addEventListener('click', handleSuggestionClick);
+    suggestionsContainer.addEventListener('touchstart', handleSuggestionTouchStart, { passive: true });
     
     // Event listener global para ocultar sugerencias al hacer clic fuera
     document.addEventListener('click', handleDocumentClick);
     document.addEventListener('touchstart', handleDocumentClick, { passive: true });
+    
+    console.log('✅ Sistema de búsqueda completo inicializado');
 }
 
 /**
@@ -177,11 +218,21 @@ function handleDocumentClick(e) {
  * Maneja la búsqueda de materiales en tiempo real
  */
 function handleMaterialSearch(e) {
+    console.log('🔍 Búsqueda activada:', e.target.value);
+    console.log('🔍 Estado de materiales:', state.materials?.length || 0);
+    console.log('🔍 Estado de categorías:', state.categories?.length || 0);
+    
     const query = e.target.value.trim().toLowerCase();
     
     if (query.length === 0) {
         hideMaterialSuggestions();
         clearSelectedMaterial();
+        return;
+    }
+
+    // Verificar que tenemos datos
+    if (!state.materials || state.materials.length === 0) {
+        console.error('❌ No hay materiales cargados en el estado');
         return;
     }
 
@@ -197,9 +248,13 @@ function handleMaterialSearch(e) {
         return matchesCode || matchesName || matchesCategory;
     });
 
+    console.log('📋 Materiales filtrados:', filteredMaterials.length);
+    console.log('📋 Primeros 3 materiales:', filteredMaterials.slice(0, 3));
+
     // Buscar coincidencia exacta por código
     const exactMatch = filteredMaterials.find(m => m.codigo.toLowerCase() === query);
     if (exactMatch) {
+        console.log('✅ Coincidencia exacta encontrada:', exactMatch.codigo);
         selectMaterial(exactMatch);
         hideMaterialSuggestions();
         return;
@@ -207,8 +262,10 @@ function handleMaterialSearch(e) {
 
     // Mostrar sugerencias
     if (filteredMaterials.length > 0) {
+        console.log('📋 Mostrando sugerencias...');
         showMaterialSuggestions(filteredMaterials, query);
     } else {
+        console.log('📋 No hay sugerencias para mostrar');
         hideMaterialSuggestions();
         clearSelectedMaterial();
     }
@@ -250,8 +307,12 @@ function handleMaterialSearchKeydown(e) {
  * Maneja cuando el input pierde el foco
  */
 function handleMaterialSearchBlur(e) {
-    // No ocultar inmediatamente - dejar que el clic se procese primero
-    // El clic en la sugerencia manejará el ocultado
+    // Delay más corto para mejor UX
+    setTimeout(() => {
+        if (!materialSuggestions.matches(':hover')) {
+            hideMaterialSuggestions();
+        }
+    }, 150);
 }
 
 /**
@@ -264,36 +325,28 @@ function handleMaterialSearchFocus(e) {
 }
 
 /**
- * Maneja clics en las sugerencias
+ * Maneja clics en las sugerencias - Versión simplificada
  */
 function handleSuggestionClick(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const suggestionItem = e.target.closest('.material-suggestion-item');
-    if (!suggestionItem) return;
-
-    const materialCode = suggestionItem.dataset.materialCode;
-    const material = state.materials.find(m => m.codigo === materialCode);
-    
-    if (material) {
-        selectMaterial(material);
-        hideMaterialSuggestions();
-        // Pequeño delay para que el foco funcione correctamente
-        setTimeout(() => {
-            document.getElementById('item-width-input').focus();
-        }, 50);
-    }
+    // Esta función ya no se usa porque cada sugerencia tiene su propio event listener
+    // Mantenemos por compatibilidad
 }
 
 /**
  * Muestra las sugerencias de materiales
  */
 function showMaterialSuggestions(materials, query) {
+    console.log('📋 showMaterialSuggestions llamada con:', materials.length, 'materiales');
+    
+    if (!materialSuggestions) {
+        console.error('❌ Contenedor de sugerencias no encontrado');
+        return;
+    }
+    
     materialSuggestions.innerHTML = '';
     highlightedIndex = -1;
 
-    materials.slice(0, 8).forEach((material, index) => {
+    materials.slice(0, 6).forEach((material, index) => {
         const category = state.categories.find(c => c.id === material.categoria_id);
         const categoryName = category?.nombre || 'Sin categoría';
         
@@ -302,17 +355,16 @@ function showMaterialSuggestions(materials, query) {
         suggestionItem.dataset.materialCode = material.codigo;
         suggestionItem.setAttribute('role', 'option');
         suggestionItem.setAttribute('tabindex', '-1');
-        suggestionItem.setAttribute('aria-label', `${material.codigo} - ${material.nombre}, ${categoryName}`);
         
         // Resaltar texto coincidente
         const highlightText = (text, query) => {
             const regex = new RegExp(`(${query})`, 'gi');
-            return text.replace(regex, '<mark>$1</mark>');
+            return text.replace(regex, '<mark style="background: #F97316; color: white; padding: 1px 2px; border-radius: 2px;">$1</mark>');
         };
 
         suggestionItem.innerHTML = `
             <div class="suggestion-main">
-                <img src="${material.ruta_imagen}" alt="${material.nombre}" class="suggestion-image">
+                <img src="${material.ruta_imagen}" alt="${material.nombre}" class="suggestion-image" loading="lazy">
                 <div class="suggestion-details">
                     <div class="suggestion-title">${highlightText(material.codigo, query)} - ${highlightText(material.nombre, query)}</div>
                     <div class="suggestion-subtitle">${highlightText(categoryName, query)} • ${material.ancho_cm}×${material.alto_cm}cm</div>
@@ -321,12 +373,39 @@ function showMaterialSuggestions(materials, query) {
             </div>
         `;
         
+        // Event listener directo para mejor performance
+        suggestionItem.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            selectMaterial(material);
+            hideMaterialSuggestions();
+            // Mover foco al siguiente campo inmediatamente
+            setTimeout(() => {
+                document.getElementById('item-width-input')?.focus();
+            }, 10);
+        });
+        
+        // Soporte táctil mejorado
+        suggestionItem.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            selectMaterial(material);
+            hideMaterialSuggestions();
+            setTimeout(() => {
+                document.getElementById('item-width-input')?.focus();
+            }, 10);
+        });
+        
         materialSuggestions.appendChild(suggestionItem);
     });
 
+    console.log('📋 Sugerencias agregadas al DOM:', materialSuggestions.children.length);
+    
     materialSuggestions.classList.remove('hidden');
     materialSuggestions.setAttribute('role', 'listbox');
     materialSuggestions.setAttribute('aria-label', 'Sugerencias de materiales');
+    
+    console.log('📋 Contenedor de sugerencias mostrado');
 }
 
 /**
@@ -430,6 +509,8 @@ function selectMaterial(material) {
  * Limpia la selección de material
  */
 function clearSelectedMaterial() {
+    if (!selectedMaterialInfo) initializeDOMReferences();
+    
     selectedMaterial = null;
     selectedPriceType = null;
     selectedMaterialInfo.classList.add('hidden');
@@ -476,6 +557,8 @@ export function getEffectivePrice() {
  * Limpia y resetea el formulario de "Agregar Pieza".
  */
 export function resetAddItemForm() {
+    if (!materialSearchInput) initializeDOMReferences();
+    
     // Limpiar campos de medidas de forma más explícita
     const widthInput = document.getElementById('item-width-input');
     const heightInput = document.getElementById('item-height-input');

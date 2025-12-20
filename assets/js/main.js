@@ -134,21 +134,22 @@ async function initializeApp() {
             
         } catch (fallbackError) {
             console.error("❌ Error cargando datos de fallback:", fallbackError);
-        
-        // Mostrar error en la interfaz también
-        document.body.innerHTML = `
-            <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
-                <h2 style="color: #ef4444;">Error de Carga</h2>
-                <p style="color: #6b7280;">${errorMessage}</p>
-                <button onclick="location.reload()" style="background: #f97316; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                    Recargar Página
-                </button>
-                <details style="margin-top: 20px; text-align: left;">
-                    <summary style="cursor: pointer;">Detalles técnicos</summary>
-                    <pre style="background: #f3f4f6; padding: 10px; border-radius: 5px; overflow: auto;">${error.stack}</pre>
-                </details>
-            </div>
-        `;
+            
+            // Mostrar error en la interfaz también
+            document.body.innerHTML = `
+                <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
+                    <h2 style="color: #ef4444;">Error de Carga</h2>
+                    <p style="color: #6b7280;">${errorMessage}</p>
+                    <button onclick="location.reload()" style="background: #f97316; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                        Recargar Página
+                    </button>
+                    <details style="margin-top: 20px; text-align: left;">
+                        <summary style="cursor: pointer;">Detalles técnicos</summary>
+                        <pre style="background: #f3f4f6; padding: 10px; border-radius: 5px; overflow: auto;">${fallbackError.stack}</pre>
+                    </details>
+                </div>
+            `;
+        }
     }
 }
 
