@@ -25,14 +25,36 @@ async function initializeApp() {
     try {
         // Carga los datos desde los archivos JSON base
         console.log("📁 Cargando datos desde archivos JSON...");
+        
+        // Mejorar el fetch con headers para GitHub Pages
+        const fetchOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cache: 'no-cache'
+        };
+        
         const [materialsRes, categoriesRes, colorsRes] = await Promise.all([
-            fetch('data/materials.json'),
-            fetch('data/categories.json'),
-            fetch('data/colors.json')
+            fetch('./data/materials.json', fetchOptions),
+            fetch('./data/categories.json', fetchOptions),
+            fetch('./data/colors.json', fetchOptions)
         ]);
+        
+        // Verificar que las respuestas sean exitosas
+        if (!materialsRes.ok) throw new Error(`Error cargando materials.json: ${materialsRes.status}`);
+        if (!categoriesRes.ok) throw new Error(`Error cargando categories.json: ${categoriesRes.status}`);
+        if (!colorsRes.ok) throw new Error(`Error cargando colors.json: ${colorsRes.status}`);
+        
         const materials = await materialsRes.json();
         const categories = await categoriesRes.json();
         const colors = await colorsRes.json();
+
+        // Verificar que los datos no estén vacíos
+        if (!materials || materials.length === 0) throw new Error('El archivo materials.json está vacío');
+        if (!categories || categories.length === 0) throw new Error('El archivo categories.json está vacío');
+        
+        console.log(`✅ Cargados: ${materials.length} materiales, ${categories.length} categorías, ${colors.length} colores`);
 
         // Establece el estado, asegurando que la propiedad `isActive` exista.
         const allCategoriesWithStatus = categories.map(c => ({ ...c, isActive: c.isActive ?? true }));
@@ -54,9 +76,79 @@ async function initializeApp() {
         updateUI();
         initializeMaterialSearch();
         renderCatalog();
+        
+        console.log("✅ Aplicación inicializada correctamente");
     } catch (error) {
-        console.error('Error al inicializar la aplicación:', error);
-        alert('No se pudo cargar el catálogo de materiales. Por favor, recarga la página.');
+        console.error('❌ Error al inicializar la aplicación:', error);
+        
+        // Mensaje de error más específico
+        let errorMessage = 'No se pudo cargar el catálogo de materiales.';
+        if (error.message.includes('materials.json')) {
+            errorMessage += ' Error cargando la base de datos de materiales.';
+        } else if (error.message.includes('categories.json')) {
+            errorMessage += ' Error cargando las categorías.';
+        } else if (error.message.includes('fetch')) {
+            errorMessage += ' Problema de conexión. Verifica tu internet.';
+        }
+        
+        errorMessage += ' Por favor, recarga la página.';
+        
+        alert(errorMessage);
+        
+        // Intentar cargar datos de fallback
+        console.log("🔄 Intentando cargar datos de fallback...");
+        try {
+            const fallbackMaterials = [
+                {
+                    "codigo": "VINIL-001",
+                    "nombre": "Vinil Básico",
+                    "categoria_id": "CAT-01",
+                    "ancho_cm": 100,
+                    "alto_cm": 60,
+                    "costo_crudo": 5,
+                    "precio_venta": 8.5,
+                    "ruta_imagen": "https://via.placeholder.com/150/FFFFFF/000000?text=Vinil",
+                    "descripcion": "Material básico de emergencia",
+                    "isActive": true
+                }
+            ];
+            
+            const fallbackCategories = [
+                { "id": "CAT-01", "nombre": "Materiales", "isActive": true }
+            ];
+            
+            const fallbackColors = [
+                { "id": "COLOR-001", "nombre": "Blanco", "codigo_hex": "#FFFFFF", "isActive": true }
+            ];
+            
+            setCategories(fallbackCategories);
+            setMaterials(fallbackMaterials);
+            setColors(fallbackColors);
+            
+            setupEventListeners();
+            updateUI();
+            initializeMaterialSearch();
+            renderCatalog();
+            
+            console.log("✅ Datos de fallback cargados");
+            
+        } catch (fallbackError) {
+            console.error("❌ Error cargando datos de fallback:", fallbackError);
+        
+        // Mostrar error en la interfaz también
+        document.body.innerHTML = `
+            <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
+                <h2 style="color: #ef4444;">Error de Carga</h2>
+                <p style="color: #6b7280;">${errorMessage}</p>
+                <button onclick="location.reload()" style="background: #f97316; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                    Recargar Página
+                </button>
+                <details style="margin-top: 20px; text-align: left;">
+                    <summary style="cursor: pointer;">Detalles técnicos</summary>
+                    <pre style="background: #f3f4f6; padding: 10px; border-radius: 5px; overflow: auto;">${error.stack}</pre>
+                </details>
+            </div>
+        `;
     }
 }
 
