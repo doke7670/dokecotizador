@@ -1,0 +1,485 @@
+/* css/style.css */
+
+/* --- THEME VARIABLES --- */
+:root {
+    /* New Palette: Naranja, Plomo Oscuro, Negro, Blanco */
+    --primary-color: #FF6700; /* Naranja principal */
+    --primary-color-hover: #E65C00; /* Naranja más oscuro para hover */
+    --secondary-color: #5A6268; /* Plomo oscuro */
+    --secondary-color-hover: #4A4F54; /* Plomo más oscuro para hover */
+    --accent-color: #E53935; /* Rojo para acciones de eliminar */
+    --accent-color-hover: #C62828;
+
+    /* Dark Theme Palette con la nueva paleta */
+    --background-color: #212529; /* Negro de fondo */
+    --card-background: #343A40; /* Plomo oscuro para cards */
+    --text-color: #F8F9FA; /* Blanco para texto */
+    --text-color-light: #ADB5BD;
+    --border-color: #495057;
+    --table-header-background: #212529;
+    --table-row-even-background: #343A40;
+    --material-info-background: #422c1a;
+    --material-info-border: #5e3f24;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --input-background: #495057;
+    --placeholder-color: #ADB5BD;
+
+    /* Spacing & Layout */
+    --padding-small: 0.5rem;
+    --padding-medium: 1rem;
+    --padding-large: 1.5rem;
+    --border-radius: 8px;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+/* --- END OF THEME VARIABLES --- */
+
+
+/* Reset y estilos base */
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: var(--padding-medium);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--padding-medium);
+}
+
+h1, h2 {
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: var(--padding-medium);
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+    padding-bottom: var(--padding-medium);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--padding-large);
+}
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--padding-small);
+    margin-bottom: var(--padding-medium);
+}
+
+/* Cards (bloques) */
+.card {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--padding-large);
+    margin-bottom: var(--padding-medium);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transition: background-color 0.3s ease;
+}
+
+/* Inputs y Botones Grandes (mobile-first) */
+.large-input,
+.large-textarea,
+.small-input {
+    background-color: var(--input-background);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+/* Estilos para placeholders */
+.large-input::placeholder,
+.large-textarea::placeholder,
+.small-input::placeholder {
+    color: var(--placeholder-color);
+    opacity: 1; /* Firefox aplica una opacidad por defecto */
+}
+.large-input::-webkit-input-placeholder,
+.large-textarea::-webkit-input-placeholder,
+.small-input::-webkit-input-placeholder {
+    color: var(--placeholder-color);
+}
+.large-input:-ms-input-placeholder,
+.large-textarea:-ms-input-placeholder,
+.small-input:-ms-input-placeholder {
+    color: var(--placeholder-color);
+}
+
+
+.large-input,
+.large-textarea,
+.large-button {
+    width: 100%;
+    padding: var(--padding-large);
+    margin-bottom: var(--padding-medium);
+    font-size: 1.2em;
+    box-sizing: border-box;
+    text-align: center; /* Center the cursor */
+}
+
+.large-textarea {
+    resize: vertical;
+    min-height: 100px;
+    text-align: center; /* Center the cursor */
+}
+
+/* Overriding numeric input default right alignment to center */
+.numeric-input {
+    text-align: center;
+}
+
+.small-input {
+    padding: var(--padding-small);
+    font-size: 1em;
+    margin-left: var(--padding-small);
+    text-align: center; /* Center the cursor */
+}
+.small-input:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+
+
+/* Botones */
+.large-button {
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.2s ease;
+    border: none;
+}
+
+.primary-button {
+    background-color: var(--primary-color);
+}
+.primary-button:hover {
+    background-color: var(--primary-color-hover);
+}
+.secondary-button {
+    background-color: var(--secondary-color);
+}
+.secondary-button:hover {
+    background-color: var(--secondary-color-hover);
+}
+
+.edit-button,
+.delete-button {
+    padding: var(--padding-small) var(--padding-medium);
+    border: none;
+    border-radius: var(--border-radius);
+    color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+    margin: 2px;
+}
+
+.edit-button {
+    background-color: var(--secondary-color);
+}
+.edit-button:hover {
+    background-color: var(--secondary-color-hover);
+}
+
+.delete-button {
+    background-color: var(--accent-color);
+}
+.delete-button:hover {
+    background-color: var(--accent-color-hover);
+}
+
+
+/* Layout principal y header */
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-large);
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--padding-medium);
+    margin-bottom: var(--padding-large);
+}
+h1 {
+    font-size: 1.8em; /* Ajustado para mejor fit */
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border-bottom: none; /* Movido al header */
+}
+
+.logo {
+    background-color: white;
+    -webkit-mask-image: url(../assets/logo.svg);
+    mask-image: url(../assets/logo.svg);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    width: 100px;
+    height: 50px; /* Adjust height as needed */
+}
+
+
+
+/* Grupos de input y radios */
+.input-group {
+    display: flex;
+    gap: var(--padding-medium);
+    margin-bottom: var(--padding-medium);
+}
+.input-group input {
+    flex: 1;
+}
+.radio-group {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--padding-medium);
+    margin-bottom: var(--padding-medium);
+}
+.radio-group legend {
+    font-weight: bold;
+    padding: 0 var(--padding-small);
+    color: var(--text-color);
+}
+.radio-group label {
+    display: block;
+    margin-bottom: var(--padding-small);
+    cursor: pointer;
+}
+.radio-group input[type="radio"], .radio-group input[type="checkbox"] {
+    margin-right: var(--padding-small);
+}
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--padding-medium);
+}
+.setting-item label {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-small);
+}
+
+/* Info del material seleccionado */
+.material-info {
+    background-color: var(--material-info-background);
+    border: 1px solid var(--material-info-border);
+    padding: var(--padding-medium);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--padding-medium);
+    font-size: 1.1em;
+    word-wrap: break-word; /* Added for text wrapping */
+    overflow-wrap: break-word; /* Added for text wrapping */
+}
+
+.material-info div {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.material-info .label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+
+
+.area-display {
+    text-align: right;
+    font-size: 1.1em;
+    margin-bottom: var(--padding-medium);
+    font-weight: bold;
+}
+
+/* Tabla de trabajos */
+.table-container {
+    overflow-x: auto;
+}
+#jobs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--padding-medium);
+    font-size: 0.9em;
+}
+#jobs-table th,
+#jobs-table td {
+    border: 1px solid var(--border-color);
+    padding: var(--padding-small);
+    text-align: left;
+    vertical-align: middle;
+}
+#jobs-table th {
+    background-color: var(--table-header-background);
+    font-weight: bold;
+    color: var(--text-color);
+}
+#jobs-table tbody tr:nth-child(even) {
+    background-color: var(--table-row-even-background);
+}
+
+/* Resumen de totales */
+.total-final {
+    text-align: right;
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-top: var(--padding-medium);
+    padding-top: var(--padding-medium);
+    border-top: 2px solid var(--primary-color);
+}
+
+/* Resultados de búsqueda (dropdown) */
+.search-results-dropdown {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: -var(--padding-medium);
+    z-index: 100;
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+.search-results-dropdown div {
+    padding: var(--padding-small) var(--padding-medium);
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+}
+.search-results-dropdown div:last-child {
+    border-bottom: none;
+}
+.search-results-dropdown div:hover,
+.search-results-dropdown div.selected {
+    background-color: var(--background-color);
+}
+
+/* Mejora responsiva para el item de Ganancia */
+.profit-setting-item {
+    flex-wrap: wrap;
+    gap: var(--padding-small);
+    justify-content: flex-start;
+}
+.profit-setting-item label {
+    flex-basis: 100%;
+    margin-bottom: var(--padding-small);
+}
+.profit-setting-item .small-input {
+    flex-grow: 0;
+    width: 30%;
+}
+
+/* Estilos para los inputs en la tabla */
+.quantity-input,
+.ganancia-input {
+    width: 80px; /* Ancho un poco mayor para la ganancia */
+    text-align: center;
+    border: 1px solid transparent; /* Sin borde por defecto */
+    background-color: transparent;
+    transition: all 0.2s ease; /* Transición suave para el hover/focus */
+    padding: var(--padding-small) 0;
+}
+
+.quantity-input:hover,
+.quantity-input:focus,
+.ganancia-input:hover,
+.ganancia-input:focus {
+    border: 1px solid var(--border-color); /* Borde al interactuar */
+    background-color: var(--input-background);
+}
+
+
+/* MEDIA QUERIES para responsividad */
+
+/* Móviles (stack de elementos de configuración) */
+@media (max-width: 480px) {
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--padding-small);
+    }
+
+    .setting-item .small-input {
+        width: 100%;
+        margin-left: 0;
+        box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+    }
+}
+
+/* Tablet (2 columnas) */
+@media (min-width: 768px) {
+    h1 {
+        font-size: 2.5em;
+    }
+    .main-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Dos columnas */
+        gap: var(--padding-large);
+    }
+    #input-column {
+        grid-column: 1 / 2;
+    }
+    #summary-column {
+        grid-column: 2 / 3;
+    }
+
+    /* Restaurar el comportamiento de una línea para Ganancia en pantallas más grandes */
+    .profit-setting-item {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+    .profit-setting-item label {
+        flex-basis: auto;
+    }
+    .profit-setting-item .small-input {
+        flex-grow: 0;
+    }
+}
+
+/* Mejoras responsivas para la tabla */
+@media (max-width: 768px) {
+    #jobs-table {
+        font-size: 0.8em; /* Reducir fuente en pantallas pequeñas */
+    }
+
+    #jobs-table th,
+    #jobs-table td {
+        padding: 4px; /* Menos padding */
+    }
+
+    #jobs-table td:last-child {
+        min-width: 85px; /* Asegurar espacio mínimo para los botones */
+        text-align: center;
+    }
+
+    .edit-button,
+    .delete-button {
+        display: inline-block;
+        width: 80px; /* Ancho fijo */
+        padding: 6px 4px;
+        margin-bottom: 4px;
+        font-size: 0.85em;
+    }
+}
+
+/* Escritorio (layout más amplio, posible ajuste de columnas) */
+@media (min-width: 1200px) {
+    h1 {
+        font-size: 3em;
+    }
+    .main-layout {
+        grid-template-columns: 35% 65%; /* Columna de entrada más pequeña */
+    }
+}

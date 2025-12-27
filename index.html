@@ -1,865 +1,128 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herramienta de Cotización Profesional</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-    <style>
-        /* Estilos para una mejor apariencia de los inputs numéricos */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        /* Estilos para el dropdown de sugerencias de materiales */
-        #material-suggestions {
-            position: absolute;
-            z-index: 50;
-            background: #374151;
-            border: 1px solid #4B5563;
-            border-radius: 0.375rem;
-            margin-top: 0.25rem;
-            max-height: 16rem;
-            overflow-y: auto;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            width: 100%;
-            /* Mejoras móviles */
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
-        }
-
-        .material-suggestion-item {
-            padding: 16px 12px;
-            /* Aumentado para touch targets */
-            cursor: pointer;
-            border-bottom: 1px solid #4B5563;
-            transition: background-color 0.2s;
-            /* Touch target mínimo de 44px */
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            /* Mejoras táctiles */
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        /* Estados táctiles mejorados */
-        .material-suggestion-item:hover,
-        .material-suggestion-item:focus,
-        .material-suggestion-item:active,
-        .material-suggestion-item.highlighted {
-            background-color: #F97316;
-            outline: none;
-        }
-
-        /* Mejora para dispositivos táctiles */
-        @media (hover: none) and (pointer: coarse) {
-            .material-suggestion-item:hover {
-                background-color: transparent;
-            }
-
-            .material-suggestion-item:active {
-                background-color: #F97316;
-                transform: scale(0.98);
-            }
-        }
-
-        .material-suggestion-item:last-child {
-            border-bottom: none;
-        }
-
-        .suggestion-main {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .suggestion-image {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid #6B7280;
-            flex-shrink: 0;
-        }
-
-        .suggestion-details {
-            flex: 1;
-            min-width: 0;
-            /* Para truncar texto largo */
-        }
-
-        .suggestion-title {
-            font-weight: 600;
-            color: white;
-            font-size: 14px;
-            line-height: 1.2;
-            /* Truncar texto largo en móvil */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .suggestion-subtitle {
-            color: #9CA3AF;
-            font-size: 12px;
-            margin-top: 2px;
-            line-height: 1.2;
-            /* Truncar texto largo en móvil */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .suggestion-price {
-            color: #F97316;
-            font-weight: 600;
-            font-size: 13px;
-            flex-shrink: 0;
-        }
-
-        /* Mejoras para scroll en móvil */
-        #material-suggestions::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #material-suggestions::-webkit-scrollbar-track {
-            background: #4B5563;
-        }
-
-        #material-suggestions::-webkit-scrollbar-thumb {
-            background: #6B7280;
-            border-radius: 3px;
-        }
-
-        #material-suggestions::-webkit-scrollbar-thumb:hover {
-            background: #9CA3AF;
-        }
-
-        /* Ocultar scrollbar en móvil para mejor UX */
-        @media (max-width: 768px) {
-            #material-suggestions::-webkit-scrollbar {
-                display: none;
-            }
-
-            #material-suggestions {
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
-        }
-
-        mark {
-            background-color: #F97316;
-            color: white;
-            padding: 0 2px;
-            border-radius: 2px;
-        }
-
-        /* Estilos para las tarjetas de precio */
-        .price-card {
-            transition: all 0.3s ease;
-            /* Mejoras táctiles */
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
-            /* Touch target adecuado */
-            min-height: 80px;
-        }
-
-        .price-card.selected-provider {
-            border-color: #3B82F6 !important;
-            background-color: #1E3A8A !important;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-        }
-
-        .price-card.selected-client {
-            border-color: #10B981 !important;
-            background-color: #064E3B !important;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
-        }
-
-        /* Estados táctiles mejorados */
-        @media (hover: hover) and (pointer: fine) {
-            .price-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            }
-        }
-
-        @media (hover: none) and (pointer: coarse) {
-            .price-card:active {
-                transform: scale(0.98);
-                transition: transform 0.1s ease;
-            }
-        }
-
-        .price-card.selected {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .price-card[data-price-type="provider"].selected {
-            border-color: #3B82F6 !important;
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-
-        .price-card[data-price-type="client"].selected {
-            border-color: #10B981 !important;
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-
-        .price-card:not(.selected) {
-            opacity: 0.7;
-        }
-
-        .price-card.selected:not(:hover) {
-            opacity: 1;
-        }
-
-        /* Mejoras generales para móvil */
-        @media (max-width: 768px) {
-
-            /* Inputs más grandes en móvil */
-            input[type="text"],
-            input[type="number"],
-            select,
-            textarea {
-                min-height: 44px !important;
-                font-size: 16px !important;
-                /* Evita zoom en iOS */
-            }
-
-            /* Botones más grandes en móvil */
-            button {
-                min-height: 44px !important;
-                padding: 12px 16px !important;
-            }
-
-            /* Espaciado mejorado */
-            .grid.gap-4 {
-                gap: 1rem !important;
-            }
-
-            /* Texto más legible */
-            .text-xs {
-                font-size: 0.875rem !important;
-            }
-
-            .text-sm {
-                font-size: 1rem !important;
-            }
-        }
-
-        /* Mejoras para viewport y zoom */
-        @media (max-width: 480px) {
-
-            /* Contenedor principal más compacto */
-            .container {
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
-            }
-
-            /* Tarjetas de precio en columna única */
-            .grid.md\\:grid-cols-2 {
-                grid-template-columns: 1fr !important;
-            }
-
-            /* Formulario más compacto */
-            .grid.md\\:grid-cols-3 {
-                grid-template-columns: 1fr !important;
-                gap: 0.75rem !important;
-            }
-        }
-
-        .choices {
-            margin-bottom: 0;
-        }
-
-        .choices__inner {
-            background-color: #374151 !important;
-            border: 1px solid #4B5563 !important;
-            border-radius: 0.375rem !important;
-            color: white !important;
-            min-height: 42px !important;
-            padding: 7.5px 12px !important;
-        }
-
-        .choices__input {
-            background-color: transparent !important;
-            color: white !important;
-        }
-
-        .choices__input::placeholder {
-            color: #9CA3AF !important;
-        }
-
-        .choices__list--dropdown {
-            background-color: #374151 !important;
-            border: 1px solid #4B5563 !important;
-            border-radius: 0.375rem !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-        }
-
-        .choices__item--choice {
-            color: white !important;
-            padding: 8px 12px !important;
-        }
-
-        .choices__item--choice:hover,
-        .choices__item--choice.is-highlighted {
-            background-color: #F97316 !important;
-            color: white !important;
-        }
-
-        .choices__item--choice.is-selected {
-            background-color: #4B5563 !important;
-            color: #9CA3AF !important;
-        }
-
-        .choices[data-type*="select-one"] .choices__button {
-            background-color: #EF4444 !important;
-            border-left: 1px solid #DC2626 !important;
-            color: white !important;
-        }
-
-        .choices[data-type*="select-one"] .choices__button:hover {
-            background-color: #DC2626 !important;
-        }
-
-        .choices__placeholder {
-            color: #9CA3AF !important;
-        }
-
-        .choices.is-focused .choices__inner {
-            border-color: #F97316 !important;
-            box-shadow: 0 0 0 1px #F97316 !important;
-        }
-
-        .choices.is-disabled .choices__inner {
-            background-color: #4B5563 !important;
-            color: #6B7280 !important;
-            cursor: not-allowed !important;
-        }
-    </style>
+    <title>Calculadora de Cotizaciones - SISDOKE</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/print.css" media="print">
 </head>
-
-<body class="bg-black text-gray-200 font-sans">
-
-    <div class="container mx-auto p-4 md:p-8">
-        <header class="mb-8">
-
-            <svg class="h-12 text-white" version="1.0" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 2234.000000 700.000000" preserveAspectRatio="xMidYMid meet">
-                <g transform="translate(0.000000,640.000000) scale(0.100000,-0.100000)" fill="currentColor"
-                    stroke="none">
-                    <path d="M1111 5778 c-409 -4 -746 -10 -748 -12 -2 -2 191 -288 429 -635 l433
-                -632 1065 6 c1577 10 1686 2 1942 -151 95 -57 254 -208 315 -299 144 -215 213
-                -448 213 -718 0 -321 -81 -545 -284 -789 -108 -130 -246 -227 -400 -279 -145
-                -50 -261 -61 -711 -68 -503 -8 -449 9 -638 -199 -73 -81 -189 -205 -258 -277
-                -70 -71 -266 -278 -437 -460 -291 -308 -310 -330 -289 -340 35 -16 1885 -13
-                2067 3 426 38 660 108 969 291 390 231 689 553 897 967 280 558 345 1188 188
-                1824 -149 604 -504 1101 -1014 1420 -265 166 -624 291 -949 330 -237 28 -1311
-                35 -2790 18z" />
-                    <path d="M8535 5593 c-348 -29 -618 -99 -890 -232 -225 -110 -373 -217 -558
-                -399 -333 -329 -541 -745 -622 -1247 -26 -155 -31 -529 -11 -685 35 -267 102
-                -492 211 -715 223 -454 636 -871 1091 -1098 529 -264 1193 -309 1766 -120 736
-                243 1331 910 1482 1663 38 187 49 339 43 555 -11 363 -79 649 -227 950 -262
-                534 -758 987 -1304 1190 -294 109 -679 163 -981 138z m345 -1328 c206 -31 374
-                -114 530 -262 227 -214 330 -468 317 -780 -8 -196 -54 -340 -158 -495 -65 -98
-                -211 -235 -314 -296 -259 -153 -603 -173 -887 -52 -149 63 -320 202 -426 345
-                -204 275 -245 676 -102 991 64 141 216 317 353 407 199 132 435 181 687 142z" />
-                    <path d="M11642 5570 c-37 -9 -77 -42 -98 -81 -11 -22 -15 -400 -24 -2224 -10
-                -2123 -10 -2198 8 -2229 10 -17 33 -41 52 -53 l33 -23 556 0 c533 0 557 1 588
-                20 71 43 67 9 73 665 6 664 1 630 83 675 50 28 116 23 154 -11 14 -13 259
-                -317 544 -675 347 -436 528 -655 546 -663 21 -8 212 -11 708 -9 l680 3 32 23
-                c44 32 70 100 55 150 -8 25 -234 310 -713 897 -386 473 -758 929 -827 1014
-                -120 146 -126 156 -130 206 -2 29 0 61 6 71 5 10 386 475 846 1033 617 748
-                837 1023 842 1047 14 75 -30 143 -104 163 -29 8 -237 11 -701 9 -650 -3 -660
-                -3 -688 -24 -15 -11 -263 -313 -550 -670 -287 -357 -536 -659 -554 -671 -60
-                -43 -153 -22 -196 44 -17 26 -18 62 -15 618 3 569 3 591 -16 625 -11 19 -35
-                44 -53 55 -33 19 -54 20 -569 22 -294 1 -550 -2 -568 -7z" />
-                    <path d="M16247 5566 c-47 -17 -64 -31 -85 -70 -15 -28 -17 -217 -25 -2233 -9
-                -2141 -9 -2203 9 -2234 11 -17 35 -40 54 -50 33 -18 92 -19 1606 -19 l1571 0
-                34 23 c29 19 74 101 308 562 296 583 302 598 262 662 -11 18 -32 40 -48 50
-                -26 17 -92 18 -1214 23 l-1188 5 -31 30 c-75 72 -58 205 33 248 31 15 86 17
-                495 17 302 0 470 4 489 11 15 6 39 20 52 32 13 12 147 269 298 571 237 476
-                273 553 268 580 -11 50 -38 90 -75 108 -32 17 -90 18 -765 18 -688 0 -732 1
-                -764 18 -50 27 -71 73 -71 155 0 84 19 129 69 159 l36 23 920 5 c848 5 923 6
-                947 22 19 13 102 166 304 565 236 466 277 554 277 591 0 46 -20 81 -67 116
-                l-27 21 -1817 2 c-1503 2 -1823 0 -1855 -11z" />
-                    <path d="M20930 5035 l0 -535 130 -1090 c72 -599 130 -1091 130 -1094 0 -3
-                196 -6 435 -6 l434 0 5 33 c3 17 64 506 136 1085 l130 1053 0 545 0 544 -700
-                0 -700 0 0 -535z" />
-                    <!-- Triángulo naranja - SIEMPRE NARANJA -->
-                    <path d="M582 2221 l-103 -6 191 -277 190 -278 -384 -742 c-211 -409 -402
-                -781 -425 -827 l-42 -83 138 4 c103 3 146 8 169 21 18 9 81 72 142 140 60 68
-                507 546 992 1063 486 516 894 951 908 967 l26 27 -850 -2 c-467 -1 -895 -4
-                -952 -7z" fill="#FF6600" />
-                    <path d="M20970 1400 l0 -580 660 0 660 0 0 580 0 580 -660 0 -660 0 0 -580z" />
-                </g>
-            </svg>
-            <p class="text-gray-400 mt-2">Crea cotizaciones para vinil, stickers, wrapping y polarizados de forma rápida
-                y precisa.</p>
+<body class="dark-theme">
+    <div class="container">
+        <header>
+            <div class="logo"></div>
         </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            <!-- Columna Izquierda: Tabla de Materiales -->
-            <div class="lg:col-span-2 bg-gray-800 p-6 rounded-xl shadow-lg">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 id="form-title" class="text-2xl font-semibold">Agregar Pieza</h2>
+        <main class="main-layout">
+            <section id="input-column">
+                
+                <div class="card">
+                    <h2>1. Buscar Material</h2>
+                    <input type="text" id="search-input" placeholder="Buscar por código, marca..." class="large-input" autocomplete="off">
+                    <div id="search-results" class="search-results-dropdown"></div>
                 </div>
 
-                <!-- Formulario para agregar/editar piezas -->
-                <form id="add-item-form" class="relative p-4 border border-gray-700 rounded-lg mb-6 bg-gray-900">
-                    <!-- Campo de búsqueda de material -->
-                    <div class="mb-4">
-                        <div class="relative">
-                            <label for="material-search-input"
-                                class="block text-sm font-medium text-gray-300 mb-2">Buscar
-                                Material</label>
-                            <input type="text" id="material-search-input" required
-                                class="block w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
-                                placeholder="Escribe código o nombre del material..." autocomplete="off">
-                            <div id="material-suggestions" class="hidden"></div>
-                        </div>
+                <div class="card" id="item-form" style="display: none;">
+                    <h2>2. Definir Trabajo</h2>
+                    <p id="selected-material-info" class="material-info"></p>
+                    
+                    <fieldset class="radio-group">
+                        <legend>Base de Precio</legend>
+                        <label><input type="radio" name="price-base" value="proveedor" id="rb-proveedor" checked> Proveedor</label>
+                        <label><input type="checkbox" id="cb-adicional"> + Adicional</label>
+                        <label><input type="radio" name="price-base" value="cliente" id="rb-cliente"> Cliente (Venta por Metro)</label>
+                    </fieldset>
+
+                    <input type="text" id="description-input" placeholder="Descripción (ej. Puerta conductor)" class="large-input" autocomplete="off">
+                    <div class="input-group">
+                        <input type="number" id="height-input" placeholder="Alto (cm)" class="large-input numeric-input" autocomplete="off">
+                        <input type="number" id="width-input" placeholder="Ancho (cm)" class="large-input numeric-input" autocomplete="off">
                     </div>
-
-                    <!-- Tarjetas de selección de precio -->
-                    <div id="selected-material-info" class="mb-4 hidden">
-                        <div class="mb-3">
-                            <h4 class="text-sm font-medium text-gray-300 mb-2">Selecciona el tipo de precio para los
-                                cálculos:</h4>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Tarjeta Precio Proveedor -->
-                            <div id="price-card-provider"
-                                class="price-card p-4 bg-gray-800 border-2 border-gray-600 rounded-lg cursor-pointer hover:border-blue-400 transition-colors"
-                                data-price-type="provider">
-                                <div class="flex items-center gap-3">
-                                    <img id="selected-material-image-provider" src="" alt=""
-                                        class="w-12 h-12 object-cover rounded">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-blue-400 text-sm font-medium">💼 PRECIO PROVEEDOR</span>
-                                        </div>
-                                        <div id="selected-material-name-provider"
-                                            class="font-semibold text-white text-sm"></div>
-                                        <div id="selected-material-details-provider" class="text-xs text-gray-400">
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs text-gray-400">Costo por rollo</div>
-                                        <div id="selected-material-cost-provider" class="font-bold text-blue-400"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Tarjeta Precio Cliente -->
-                            <div id="price-card-client"
-                                class="price-card p-4 bg-gray-800 border-2 border-gray-600 rounded-lg cursor-pointer hover:border-green-400 transition-colors"
-                                data-price-type="client">
-                                <div class="flex items-center gap-3">
-                                    <img id="selected-material-image-client" src="" alt=""
-                                        class="w-12 h-12 object-cover rounded">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-green-400 text-sm font-medium">💰 PRECIO CLIENTE</span>
-                                        </div>
-                                        <div id="selected-material-name-client"
-                                            class="font-semibold text-white text-sm"></div>
-                                        <div id="selected-material-details-client" class="text-xs text-gray-400"></div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs text-gray-400">Precio de venta</div>
-                                        <div id="selected-material-cost-client" class="font-bold text-green-400"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Indicador de selección -->
-                        <div id="price-selection-indicator" class="mt-2 text-center text-sm text-gray-400">
-                            <span id="selected-price-text">💼 Calculando con precio de proveedor</span>
-                        </div>
-
-                        <!-- Los campos de medidas y botón están ahora debajo de las tarjetas -->
-                    </div>
-
-                    <!-- Campos de medidas y botón agregar (ahora debajo de las tarjetas) -->
-                    <div id="dimensions-and-submit" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end hidden">
-                        <div>
-                            <label for="item-width-input" class="block text-sm font-medium text-gray-300">Ancho
-                                (cm)</label>
-                            <input type="number" id="item-width-input" required autocomplete="off"
-                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"
-                                placeholder="0" min="0" step="0.1">
-                        </div>
-                        <div>
-                            <label for="item-height-input" class="block text-sm font-medium text-gray-300">Alto
-                                (cm)</label>
-                            <input type="number" id="item-height-input" required autocomplete="off"
-                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"
-                                placeholder="0" min="0" step="0.1">
-                        </div>
-                        <div>
-                            <button type="submit" id="add-item-submit-btn"
-                                class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">+
-                                Agregar</button>
-                        </div>
-                    </div>
-
-                    <div id="edit-mode-controls" class="mt-2 text-center hidden">
-                        <button type="button" id="cancel-edit-btn"
-                            class="text-sm text-gray-400 hover:text-white underline">Cancelar Edición</button>
-                    </div>
-                </form>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="border-b-2 border-gray-600">
-                                <th class="p-3">Material</th>
-                                <th class="p-3 w-24">Ancho (cm)</th>
-                                <th class="p-3 w-24">Alto (cm)</th>
-                                <th class="p-3 w-32 text-right">Costo Material</th>
-                                <th class="p-3 w-28 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="quote-table-body">
-                            <!-- Las filas se insertarán aquí dinámicamente -->
-                            <tr id="empty-row" class="text-center">
-                                <td colspan="5" class="p-8 text-gray-500">Aún no has agregado piezas. Utiliza el
-                                    formulario de arriba.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <p class="area-display">Área: <span id="area-display">0.00</span> m²</p>
                 </div>
-            </div>
 
-            <!-- Columna Derecha: Resumen y Costos Adicionales -->
-            <div class="lg:col-span-1">
-                <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-2">Resumen de Costos</h2>
-
-                    <!-- Costos Adicionales -->
-                    <div class="space-y-4 mb-6">
-                        <div>
-                            <label for="waste-input" class="block text-sm font-medium text-gray-300">Desperdicio
-                                (%)</label>
-                            <input type="number" id="waste-input" placeholder="10"
-                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
-                        </div>
-                        <div>
-                            <label for="labor-input" class="block text-sm font-medium text-gray-300">Mano de Obra
-                                (S/.)</label>
-                            <input type="number" id="labor-input" placeholder="50"
-                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
-                        </div>
-                        <div>
-                            <label for="margin-input" class="block text-sm font-medium text-gray-300">Margen de Ganancia
-                                (%)</label>
-                            <input type="number" id="margin-input" placeholder="20"
-                                class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
-                        </div>
+                <!-- Nuevo Card: Parámetros de Venta (Opcional) -->
+                <div class="card" id="venta-params-card" style="display: none;">
+                    <h2>3. Parámetros de Venta (Opcional)</h2>
+                    
+                    <div class="setting-item">
+                        <label><input type="checkbox" id="vp-waste-active"> Aplicar Desperdicio (%):</label>
+                        <input type="number" id="vp-waste-pct-input" placeholder="%" min="0" max="100" class="numeric-input small-input" autocomplete="off">
+                    </div>
+                    <div class="setting-item">
+                        <label><input type="checkbox" id="vp-labor-active"> Aplicar Mano de Obra:</label>
+                        <input type="number" id="vp-labor-cost-input" placeholder="Monto S/" min="0" class="numeric-input small-input" autocomplete="off">
+                    </div>
+                    <div class="setting-item profit-setting-item">
+                        <label><input type="checkbox" id="vp-profit-active"> Aplicar Ganancia:</label>
+                        <select id="vp-profit-type" class="small-input">
+                            <option value="percent">%</option>
+                            <option value="fixed">S/</option>
+                        </select>
+                        <input type="number" id="vp-profit-value-input" placeholder="Valor" min="0" class="numeric-input small-input" autocomplete="off">
                     </div>
 
-                    <!-- Totales -->
-                    <div id="summary-container" class="space-y-2 text-lg">
-                        <div class="flex justify-between">
-                            <span>Subtotal Materiales:</span>
-                            <span id="summary-subtotal" class="font-semibold">S/. 0.00</span>
-                        </div>
-                        <div class="flex justify-between text-sm text-gray-400">
-                            <span>(+) Desperdicio:</span>
-                            <span id="summary-waste">S/. 0.00</span>
-                        </div>
-                        <div class="flex justify-between text-sm text-gray-400">
-                            <span>(+) Mano de Obra:</span>
-                            <span id="summary-labor">S/. 0.00</span>
-                        </div>
-                        <div class="flex justify-between text-sm text-gray-400 border-t border-gray-600 pt-2 mt-2">
-                            <span>Subtotal Proyecto:</span>
-                            <span id="summary-project-subtotal">S/. 0.00</span>
-                        </div>
-                        <div class="flex justify-between text-sm text-gray-400">
-                            <span>(+) Margen Ganancia:</span>
-                            <span id="summary-margin">S/. 0.00</span>
-                        </div>
-                        <div
-                            class="flex justify-between text-2xl font-bold text-white border-t-2 border-orange-500 pt-2 mt-2">
-                            <span>TOTAL:</span>
-                            <span id="summary-total">S/. 0.00</span>
-                        </div>
+                    <p class="area-display total-final">Precio Venta Pieza: <span id="preview-precio-venta">S/ 0.00</span></p>
+
+                    <button id="add-item-btn" class="large-button primary-button">Agregar a la cotización</button>
+                    <button id="cancel-edit-btn" class="large-button secondary-button" style="display: none;">Cancelar Edición</button>
+                </div>
+
+
+            </section>
+
+            <section id="summary-column">
+
+                <div class="card">
+                    <h2>Trabajos Agregados</h2>
+                    <div class="table-container">
+                        <table id="jobs-table">
+                            <thead>
+                                <tr>
+                                    <th>Cód</th>
+                                    <th>Descripción</th>
+                                    <th>Área (m²)</th>
+                                    <th>Costo Interno (S/)</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unit. (S/)</th>
+                                    <th>Ganancia (S/)</th>
+                                    <th>Subtotal (S/)</th>
+                                    <th></th> <!-- Para el botón eliminar -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Las filas se insertarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
                     </div>
-
-                    <button id="generate-pdf-btn"
-                        class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-colors text-lg">
-                        📄 Generar Boleta (PDF)
-                    </button>
-
-                    <button id="simple-pdf-btn"
-                        class="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm">
-                        📄 PDF Simple (Alternativo)
-                    </button>
-
-                    <button id="export-data-btn"
-                        class="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                        📥 Exportar Datos (JSON)
-                    </button>
                 </div>
-                <div class="mt-4 text-center space-y-2">
-                    <button id="open-catalog-modal-btn" class="text-orange-400 hover:text-orange-300 font-semibold">
-                        Ver y Administrar Catálogo de Materiales
-                    </button>
-                    <button id="open-category-modal-btn"
-                        class="block mx-auto text-sm text-gray-400 hover:text-gray-200">
-                        Administrar Categorías
-                    </button>
+
+                <div class="card">
+                    <h2>3. Total Cotización</h2>
+                    <div class="total-final">
+                        TOTAL FINAL: <span id="summary-total">S/0.00</span>
+                    </div>
                 </div>
-            </div>
+
+                <div class="card">
+                    <h2>4. Generar Salida</h2>
+                    <textarea id="final-notes" placeholder="Notas opcionales (ej. No bajar vidrios en 48hs)" class="large-textarea" autocomplete="off"></textarea>
+                    <button id="generate-pdf-btn" class="large-button secondary-button">Generar PDF (WhatsApp)</button>
+                    <button id="print-thermal-btn" class="large-button secondary-button">Imprimir Ticket (80mm)</button>
+                    <button id="print-generic-btn" class="large-button secondary-button">Imprimir Genérico</button>
+                </div>
+
+            </section>
         </main>
     </div>
 
-    <!-- Modal: Catálogo de Materiales -->
-    <div id="catalog-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div
-            class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
-            <div class="p-6 border-b border-gray-700 flex justify-between items-center">
-                <h3 class="text-2xl font-semibold">Catálogo de Materiales</h3>
-                <div class="flex items-center gap-4">
-                    <input type="search" id="catalog-search-input" placeholder="Buscar por nombre..."
-                        class="w-72 p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-orange-500 focus:border-orange-500">
-                    <div id="catalog-filter-controls" class="flex gap-2">
-                        <button data-filter="active"
-                            class="px-3 py-1 rounded-md bg-orange-500 text-white">Activos</button>
-                        <button data-filter="deleted"
-                            class="px-3 py-1 rounded-md bg-gray-600 hover:bg-gray-500 text-white">Eliminados</button>
-                    </div>
-                </div>
-                <button id="close-catalog-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="p-6 overflow-y-auto">
-                <div id="catalog-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Cards de materiales se insertarán aquí -->
-                </div>
-            </div>
-            <div class="p-6 border-t border-gray-700 bg-gray-900 rounded-b-xl">
-                <button id="open-add-material-modal-btn"
-                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">
-                    + Agregar Nuevo Material al Catálogo
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Agregar/Editar Nuevo Material -->
-    <div id="add-material-modal"
-        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg">
-            <form id="add-material-form" class="p-8">
-                <h3 id="material-modal-title" class="text-2xl font-semibold mb-6">Agregar Nuevo Material</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="material-nombre" class="block text-sm font-medium text-gray-300">Nombre</label>
-                        <input type="text" id="material-nombre" required
-                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
-                    </div>
-                    <div>
-                        <label for="material-categoria-select"
-                            class="block text-sm font-medium text-gray-300">Categoría</label>
-                        <select id="material-categoria-select" required
-                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"></select>
-                    </div>
-                    <div>
-                        <label for="material-ancho" class="block text-sm font-medium text-gray-300">Ancho Rollo
-                            (cm)</label>
-                        <input type="number" id="material-ancho" required
-                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
-                    </div>
-                    <div>
-                        <label for="material-alto" class="block text-sm font-medium text-gray-300">Alto Rollo
-                            (cm)</label>
-                        <input type="number" id="material-alto" required
-                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="material-costo" class="block text-sm font-medium text-gray-300">Costo Rollo
-                            (S/.)</label>
-                        <input type="number" step="0.01" id="material-costo" required
-                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="material-descripcion"
-                            class="block text-sm font-medium text-gray-300">Descripción</label>
-                        <textarea id="material-descripcion" rows="2"
-                            class="mt-1 block w-full p-2 bg-gray-700 border border-gray-600 rounded-md"></textarea>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="material-imagen-input"
-                            class="block text-sm font-medium text-gray-300">Imagen</label>
-                        <input type="file" id="material-imagen-input" accept="image/*"
-                            class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600">
-                    </div>
-                </div>
-                <div class="mt-8 flex justify-end space-x-4">
-                    <button type="button" id="cancel-add-material-btn"
-                        class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
-                        Cancelar
-                    </button>
-                    <button type="submit" id="material-submit-btn"
-                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">
-                        Guardar Material
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal: Vista Previa de Boleta -->
-    <div id="pdf-preview-modal"
-        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div
-            class="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                <h3 class="text-xl font-semibold">Vista Previa de Boleta</h3>
-                <div>
-                    <button id="download-pdf-btn"
-                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mr-2">Descargar
-                        PDF</button>
-                    <button id="close-pdf-preview-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-                </div>
-            </div>
-            <div class="p-6 flex-grow overflow-y-auto">
-                <div id="pdf-content" class="w-full bg-white text-black p-8 font-mono text-sm">
-                    <!-- El contenido del PDF se generará aquí -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Ver Detalles de Pieza -->
-    <div id="view-item-modal"
-        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg">
-            <div class="p-6 border-b border-gray-700 flex justify-between items-center">
-                <h3 id="view-item-modal-title" class="text-2xl font-semibold">Detalles de la Pieza</h3>
-                <button id="close-view-item-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div id="view-item-modal-content" class="p-8">
-                <!-- Content will be injected here by ui.js -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Administrar Categorías -->
-    <div id="category-management-modal"
-        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div
-            class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-            <div class="p-6 border-b border-gray-700 flex justify-between items-center">
-                <h3 class="text-2xl font-semibold">Administrar Categorías</h3>
-                <button id="close-category-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="p-6 flex-grow overflow-y-auto">
-                <!-- Form to add/edit category -->
-                <form id="category-form" class="flex flex-wrap gap-4 mb-6 items-end">
-                    <div class="flex-grow">
-                        <label for="category-name-input" class="block text-sm font-medium text-gray-300">Nombre de
-                            Categoría</label>
-                        <input type="text" id="category-name-input" placeholder="Ej: Stickers" required
-                            class="mt-1 w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
-                    </div>
-                    <button type="submit" id="category-submit-btn"
-                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Agregar</button>
-                    <button type="button" id="cancel-category-edit-btn"
-                        class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hidden">Cancelar
-                        Edición</button>
-                </form>
-                <!-- List of categories -->
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-semibold mb-2 border-b border-gray-600 pb-1">Categorías Activas</h4>
-                        <ul id="active-categories-list" class="space-y-2 pt-2"></ul>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold mt-6 mb-2 border-b border-gray-600 pb-1">Categorías Eliminadas
-                        </h4>
-                        <ul id="deleted-categories-list" class="space-y-2 pt-2"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Ver Detalles de Pieza -->
-    <div id="view-item-modal"
-        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg">
-            <div class="p-6 border-b border-gray-700 flex justify-between items-center">
-                <h3 id="view-item-modal-title" class="text-2xl font-semibold">Detalles de la Pieza</h3>
-                <button id="close-view-item-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div id="view-item-modal-content" class="p-8">
-                <!-- Content will be injected here by ui.js -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Administrar Categorías -->
-    <div id="category-management-modal"
-        class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden">
-        <div
-            class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-            <div class="p-6 border-b border-gray-700 flex justify-between items-center">
-                <h3 class="text-2xl font-semibold">Administrar Categorías</h3>
-                <button id="close-category-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="p-6 flex-grow overflow-y-auto">
-                <!-- Form to add/edit category -->
-                <form id="category-form" class="flex flex-wrap gap-4 mb-6 items-end">
-                    <div class="flex-grow">
-                        <label for="category-name-input" class="block text-sm font-medium text-gray-300">Nombre de
-                            Categoría</label>
-                        <input type="text" id="category-name-input" placeholder="Ej: Stickers" required
-                            class="mt-1 w-full p-2 bg-gray-700 border border-gray-600 rounded-md">
-                    </div>
-                    <button type="submit" id="category-submit-btn"
-                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Agregar</button>
-                    <button type="button" id="cancel-category-edit-btn"
-                        class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hidden">Cancelar
-                        Edición</button>
-                </form>
-                <!-- List of categories -->
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-semibold mb-2 border-b border-gray-600 pb-1">Categorías Activas</h4>
-                        <ul id="active-categories-list" class="space-y-2 pt-2"></ul>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold mt-6 mb-2 border-b border-gray-600 pb-1">Categorías Eliminadas
-                        </h4>
-                        <ul id="deleted-categories-list" class="space-y-2 pt-2"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="assets/js/main.js"></script>
+    <!-- Scripts -->
+    <script src="libs/jspdf.umd.min.js"></script>
+    <script src="libs/jspdf.autotable.min.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/dataService.js"></script>
+    <script src="js/uiController.js"></script>
+    <script src="js/outputGenerator.js"></script>
+    <script src="js/app.js"></script>
 </body>
-
 </html>
