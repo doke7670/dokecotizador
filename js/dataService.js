@@ -5,7 +5,7 @@ const dataService = (() => {
 
     async function loadMaterials() {
         try {
-            const response = await fetch('data/materials.json');
+            const response = await fetch('./data/materials.json');
             materials = await response.json();
             console.log('Materiales cargados:', materials);
             return materials;
