@@ -1,0 +1,273 @@
+[
+  {
+    "codigo": "VINIL-001",
+    "tipo": "vinil",
+    "marca": "MGfilms",
+    "modelo": "Vinil Gloss",
+    "ancho_rollo": 0.6,
+    "costo_base_proveedor_m2": 8.3,
+    "ajuste_proveedor_pct": 0,
+    "costo_cliente_m2": 25
+  },
+  {
+    "codigo": "VINIL-002",
+    "tipo": "vinil",
+    "marca": "Generica",
+    "modelo": "Vinil Rainbow",
+    "ancho_rollo": 0.6,
+    "costo_base_proveedor_m2": 30,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 51
+  },
+  {
+    "codigo": "VINIL-003",
+    "tipo": "vinil",
+    "marca": "Generica",
+    "modelo": "Vinil Reflectivo",
+    "ancho_rollo": 0.6,
+    "costo_base_proveedor_m2": 20,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 34
+  },
+  {
+    "codigo": "VINIL-004",
+    "tipo": "vinil",
+    "marca": "Generica",
+    "modelo": "Vinil Cromados/tornasol",
+    "ancho_rollo": 0.6,
+    "costo_base_proveedor_m2": 13.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 33.3
+  },
+  {
+    "codigo": "WRAP-001",
+    "tipo": "wrap",
+    "marca": "Generico",
+    "modelo": "Fibra Tipo Lija",
+    "ancho_rollo": 1.52,
+    "costo_base_proveedor_m2": 25.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 43.06
+  },
+  {
+    "codigo": "WRAP-002",
+    "tipo": "wrap",
+    "marca": "Premium",
+    "modelo": "Fibra De Carbono 3D Premium",
+    "ancho_rollo": 1.52,
+    "costo_base_proveedor_m2": 20,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 33.3
+  },
+  {
+    "codigo": "WRAP-003",
+    "tipo": "wrap",
+    "marca": "Generico",
+    "modelo": "Fibra De Carbono 3D Signcal",
+    "ancho_rollo": 1.27,
+    "costo_base_proveedor_m2": 15.74,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 26.77
+  },
+  {
+    "codigo": "WRAP-004",
+    "tipo": "wrap",
+    "marca": "Premium",
+    "modelo": "Fibra De Carbono 4D Premium",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 26.6,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 45.33
+  },
+  {
+    "codigo": "WRAP-005",
+    "tipo": "wrap",
+    "marca": "Premium",
+    "modelo": "Fibra De Carbono 5D",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 56.6
+  },
+  {
+    "codigo": "WRAP-006",
+    "tipo": "wrap",
+    "marca": "Premium",
+    "modelo": "Fibra De Carbono 6D",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 60
+  },
+  {
+    "codigo": "WRAP-007",
+    "tipo": "wrap",
+    "marca": "Premium",
+    "modelo": "Fibra De Carbono 3D Camaleon",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 60
+  },
+  {
+    "codigo": "WRAP-008",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Fibra Tipo Letra China",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 30.0,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 53.33
+  },
+  {
+    "codigo": "WRAP-009",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Vinil Negro Piano",
+    "ancho_rollo": 1.35,
+    "costo_base_proveedor_m2": 23.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 33.3
+  },
+  {
+    "codigo": "WRAP-010",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Vinil Cromado",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 66.6
+  },
+  {
+    "codigo": "WRAP-011",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Vinil Camuflado",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 32.0,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 45.3
+  },
+  {
+    "codigo": "WRAP-012",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Vinil Tornasol Negro",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 46.6,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 66.6
+  },
+  {
+    "codigo": "WRAP-013",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Vinil Morado Satinado Mate",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 30.0,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 50
+  },
+  {
+    "codigo": "WRAP-014",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Vinil Tornasol verde/rojo",
+    "ancho_rollo": 1.37,
+    "costo_base_proveedor_m2": 58.39,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 98.54
+  },
+  {
+    "codigo": "WRAP-015",
+    "tipo": "wrap",
+    "marca": "Premium",
+    "modelo": "Fibra de Carbono Tornasol",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 30,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 50.6
+  },
+  {
+    "codigo": "WRAP-016",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Fibra Tipo Letra China tornasol",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 56.6
+  },
+  {
+    "codigo": "WRAP-017",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Fibra FORJADA",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 56.6
+  },
+  {
+    "codigo": "WRAP-018",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Fibra FORJADA TORNASOL",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 56.6
+  },
+  {
+    "codigo": "WRAP-019",
+    "tipo": "wrap",
+    "marca": "Premium",
+    "modelo": "Fibra 5D NEGRO TORNASOL",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 56.6
+  },
+
+  {
+    "codigo": "WRAP-021",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Fibra MORADO FORJADO",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 56.6
+  },
+  {
+    "codigo": "WRAP-022",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Fibra HEXAGONO",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 33.3,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 56.6
+  },
+  {
+    "codigo": "WRAP-023",
+    "tipo": "wrap",
+    "marca": "Oracal",
+    "modelo": "Fibra CAMALEON vinil chispeado",
+    "ancho_rollo": 1.5,
+    "costo_base_proveedor_m2": 40,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 68
+  },
+  {
+    "codigo": "POL-001",
+    "tipo": "polarizado",
+    "marca": "LLumar",
+    "modelo": "Polarizado Tono Medio",
+    "ancho_rollo": 1.0,
+    "costo_base_proveedor_m2": 60.0,
+    "ajuste_proveedor_pct": 5,
+    "costo_cliente_m2": 85
+  }
+]

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Cotizaciones - SISDOKE</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Calculadora de Cotizaciones</h1>
+            <button id="theme-toggle-btn">🌙</button>
+        </header>
+
+        <main class="main-layout">
+            <section id="input-column">
+                
+                <div class="card">
+                    <h2>1. Buscar Material</h2>
+                    <input type="text" id="search-input" placeholder="Buscar por código, marca..." class="large-input" autocomplete="off">
+                    <div id="search-results" class="search-results-dropdown"></div>
+                </div>
+
+                <div class="card" id="item-form" style="display: none;">
+                    <h2>2. Definir Trabajo</h2>
+                    <p id="selected-material-info" class="material-info"></p>
+                    
+                    <fieldset class="radio-group">
+                        <legend>Base de Precio</legend>
+                        <label><input type="radio" name="price-base" value="proveedor" id="rb-proveedor" checked> Proveedor + Adicional</label>
+                        <label><input type="radio" name="price-base" value="cliente" id="rb-cliente"> Cliente (Venta por Metro)</label>
+                    </fieldset>
+
+                    <input type="text" id="description-input" placeholder="Descripción (ej. Puerta conductor)" class="large-input" autocomplete="off">
+                    <div class="input-group">
+                        <input type="number" id="height-input" placeholder="Alto (cm)" class="large-input numeric-input" autocomplete="off">
+                        <input type="number" id="width-input" placeholder="Ancho (cm)" class="large-input numeric-input" autocomplete="off">
+                    </div>
+                    <p class="area-display">Área: <span id="area-display">0.00</span> m²</p>
+                </div>
+
+                <!-- Nuevo Card: Parámetros de Venta (Opcional) -->
+                <div class="card" id="venta-params-card" style="display: none;">
+                    <h2>3. Parámetros de Venta (Opcional)</h2>
+                    
+                    <div class="setting-item">
+                        <label><input type="checkbox" id="vp-waste-active"> Aplicar Desperdicio (%):</label>
+                        <input type="number" id="vp-waste-pct-input" placeholder="%" min="0" max="100" class="numeric-input small-input" autocomplete="off">
+                    </div>
+                    <div class="setting-item">
+                        <label><input type="checkbox" id="vp-labor-active"> Aplicar Mano de Obra:</label>
+                        <input type="number" id="vp-labor-cost-input" placeholder="Monto S/" min="0" class="numeric-input small-input" autocomplete="off">
+                    </div>
+                    <div class="setting-item profit-setting-item">
+                        <label><input type="checkbox" id="vp-profit-active"> Aplicar Ganancia:</label>
+                        <select id="vp-profit-type" class="small-input">
+                            <option value="percent">%</option>
+                            <option value="fixed">S/</option>
+                        </select>
+                        <input type="number" id="vp-profit-value-input" placeholder="Valor" min="0" class="numeric-input small-input" autocomplete="off">
+                    </div>
+
+                    <p class="area-display total-final">Precio Venta Pieza: <span id="preview-precio-venta">S/ 0.00</span></p>
+
+                    <button id="add-item-btn" class="large-button primary-button">Agregar a la cotización</button>
+                </div>
+
+
+            </section>
+
+            <section id="summary-column">
+
+                <div class="card">
+                    <h2>Trabajos Agregados</h2>
+                    <div class="table-container">
+                        <table id="jobs-table">
+                            <thead>
+                                <tr>
+                                    <th>Cód</th>
+                                    <th>Descripción</th>
+                                    <th>Área (m²)</th>
+                                    <th>Costo Interno (S/)</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unit. (S/)</th>
+                                    <th>Ganancia (S/)</th>
+                                    <th>Subtotal (S/)</th>
+                                    <th></th> <!-- Para el botón eliminar -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Las filas se insertarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>3. Total Cotización</h2>
+                    <div class="total-final">
+                        TOTAL FINAL: <span id="summary-total">S/0.00</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>4. Generar Salida</h2>
+                    <textarea id="final-notes" placeholder="Notas opcionales (ej. No bajar vidrios en 48hs)" class="large-textarea" autocomplete="off"></textarea>
+                    <button id="generate-pdf-btn" class="large-button secondary-button">Generar PDF (WhatsApp)</button>
+                    <button id="print-thermal-btn" class="large-button secondary-button">Imprimir Ticket (80mm)</button>
+                    <button id="print-generic-btn" class="large-button secondary-button">Imprimir Genérico</button>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="libs/jspdf.umd.min.js"></script>
+    <script src="libs/jspdf.autotable.min.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/dataService.js"></script>
+    <script src="js/uiController.js"></script>
+    <script src="js/outputGenerator.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
