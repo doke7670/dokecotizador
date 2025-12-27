@@ -78,13 +78,24 @@ const outputGenerator = (() => {
 
         printWindow.document.write(content);
         printWindow.document.close();
-        printWindow.focus();
+        
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const printDelay = isAndroid ? 1000 : 250;
 
-        // Usar un pequeño timeout para dar tiempo al navegador a renderizar el contenido
-        setTimeout(() => {
+        const printAndClose = () => {
+            printWindow.focus();
             printWindow.print();
+        };
+
+        const afterPrint = () => {
             printWindow.close();
-        }, 250);
+            window.removeEventListener('focus', afterPrint);
+        }
+
+        window.addEventListener('focus', afterPrint);
+        printWindow.onafterprint = afterPrint;
+        
+        setTimeout(printAndClose, printDelay);
     }
 
     function generatePdf(appState) {
