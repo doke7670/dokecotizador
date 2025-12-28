@@ -78,24 +78,13 @@ const outputGenerator = (() => {
 
         printWindow.document.write(content);
         printWindow.document.close();
-        
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        const printDelay = isAndroid ? 1000 : 250;
+        printWindow.focus();
 
-        const printAndClose = () => {
-            printWindow.focus();
+        // Usar un pequeño timeout para dar tiempo al navegador a renderizar el contenido
+        setTimeout(() => {
             printWindow.print();
-        };
-
-        const afterPrint = () => {
             printWindow.close();
-            window.removeEventListener('focus', afterPrint);
-        }
-
-        window.addEventListener('focus', afterPrint);
-        printWindow.onafterprint = afterPrint;
-        
-        setTimeout(printAndClose, printDelay);
+        }, 250);
     }
 
     function generatePdf(appState) {
@@ -174,23 +163,52 @@ const outputGenerator = (() => {
     }
 
     function printGeneric(appState) {
-        const printStyles = `
-            body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
-            .print-header { text-align: center; margin-bottom: 20px; }
-            h1 { font-size: 20px; margin: 0; }
-            p { margin: 3px 0; }
-            .print-jobs-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-            th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
-            th { background-color: #f2f2f2; font-weight: bold; }
-            td:nth-child(2), td:nth-child(4) { text-align: right; }
-            td:nth-child(3) { text-align: center; }
-            .print-summary { margin-top: 20px; padding-top: 10px; border-top: 2px solid #000; text-align: right; }
-            .total-final { font-size: 16px; font-weight: bold; }
-            .print-notes { margin-top: 20px; font-size: 11px; }
-            @page { size: A4; margin: 20mm; }
-        `;
-        const content = _getPrintContent(appState, 'Cotización de Servicios', printStyles);
-        _printWithNewWindow(content);
+        const isMobile = /Android|iPhone/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            // Mobile: Apply a print stylesheet and print directly
+            const style = document.createElement('style');
+            style.media = 'print';
+            style.textContent = `
+                body > *:not(#summary-column) {
+                    display: none;
+                }
+                #summary-column {
+                    display: block !important;
+                    width: 100% !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+                .card {
+                    box-shadow: none;
+                    border: 1px solid #ccc;
+                    margin-bottom: 20px;
+                }
+            `;
+            document.head.appendChild(style);
+            window.print();
+            document.head.removeChild(style);
+
+        } else {
+            // Desktop: Use the existing iframe method
+            const printStyles = `
+                body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
+                .print-header { text-align: center; margin-bottom: 20px; }
+                h1 { font-size: 20px; margin: 0; }
+                p { margin: 3px 0; }
+                .print-jobs-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+                th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
+                th { background-color: #f2f2f2; font-weight: bold; }
+                td:nth-child(2), td:nth-child(4) { text-align: right; }
+                td:nth-child(3) { text-align: center; }
+                .print-summary { margin-top: 20px; padding-top: 10px; border-top: 2px solid #000; text-align: right; }
+                .total-final { font-size: 16px; font-weight: bold; }
+                .print-notes { margin-top: 20px; font-size: 11px; }
+                @page { size: A4; margin: 20mm; }
+            `;
+            const content = _getPrintContent(appState, 'Cotización de Servicios', printStyles);
+            _printWithNewWindow(content);
+        }
     }
 
     return {
