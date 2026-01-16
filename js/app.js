@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         trabajos: [], // Array de objetos { ..., gananciaUnitaria, gananciaTotalItem, ... }
         editingJobIndex: null, // Índice del trabajo que se está editando
         selectedMaterial: null,
+        isAddingMore: false, // Nuevo: indica si estamos en modo "Agregar más"
         currentJobInputs: {
             height: 0,
             width: 0,
@@ -76,9 +77,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.displaySearchResults(results);
     });
     uiController.DOMElements.searchInput.addEventListener('blur', () => {
-        setTimeout(() => uiController.hideSearchResults(), 200);
+        // Solo cerrar el dropdown si no se está clickeando en él
+        if (!uiController.DOMElements.searchResults.contains(event.relatedTarget)) {
+            setTimeout(() => uiController.hideSearchResults(), 100);
+        }
     });
-    uiController.DOMElements.searchResults.addEventListener('click', (event) => {
+    uiController.DOMElements.searchResults.addEventListener('mousedown', (event) => {
+        // Usar mousedown en lugar de click para que se ejecute antes del blur
         const codigo = event.target.dataset.codigo;
         if (codigo) {
             appState.selectedMaterial = dataService.getMaterialByCode(codigo);
@@ -93,6 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             updateCalculations();
             uiController.hideSearchResults();
+            uiController.DOMElements.searchInput.blur();
         }
     });
 
@@ -179,10 +185,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.updateJobsTable(appState.trabajos);
         uiController.resetItemForm();
         uiController.DOMElements.ventaParamsCard.style.display = 'none';
+        document.getElementById('editing-indicator').style.display = 'none';
         appState.selectedMaterial = null;
+        appState.isAddingMore = false;
         appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: false };
         
         updateCalculations();
+        uiController.showToast('✓ Trabajo agregado correctamente', 'success');
     }
 
     function updateJob() {
@@ -218,6 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         cancelEditing();
         uiController.updateJobsTable(appState.trabajos);
         updateCalculations();
+        uiController.showToast('✓ Trabajo actualizado correctamente', 'success');
     }
 
     function startEditing(index) {
@@ -260,9 +270,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function cancelEditing() {
         appState.editingJobIndex = null;
+        appState.isAddingMore = false;
         uiController.setEditingMode(false);
         uiController.resetItemForm();
         uiController.DOMElements.ventaParamsCard.style.display = 'none';
+        document.getElementById('editing-indicator').style.display = 'none';
         appState.selectedMaterial = null;
         appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: false };
         updateCalculations();
@@ -280,7 +292,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     uiController.DOMElements.cancelEditBtn.addEventListener('click', cancelEditing);
     
 
-    // Delegación de eventos para la tabla (Eliminar, Cantidad, Ganancia)
+    // Delegación de eventos para tabla
+    // Delegación de eventos para tabla
     uiController.DOMElements.jobsTableBody.addEventListener('input', (event) => {
         const target = event.target;
         const index = parseInt(target.dataset.index);
@@ -313,13 +326,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateCalculations(); // Recalcular total final de la cotización
     });
 
-    uiController.DOMElements.jobsTableBody.addEventListener('click', (event) => {
+    // Delegación de eventos para tarjetas (móvil)
+    uiController.DOMElements.jobsCardsContainer.addEventListener('input', (event) => {
+        const target = event.target;
+        const index = parseInt(target.dataset.index);
+        const job = appState.trabajos[index];
+
+        if (target.classList.contains('quantity-input')) {
+            let newQuantity = parseInt(target.value) || 1;
+            if (newQuantity < 1) newQuantity = 1;
+            target.value = newQuantity;
+
+            job.cantidad = newQuantity;
+            job.costoMaterialTotal = job.costoMaterialUnitario * newQuantity;
+            job.gananciaTotalItem = job.gananciaUnitaria * newQuantity;
+            job.subtotal = job.precioVentaUnitario * newQuantity;
+
+        } else if (target.classList.contains('ganancia-input')) {
+            let newGananciaTotal = parseFloat(target.value) || 0;
+
+            job.gananciaTotalItem = newGananciaTotal;
+            job.gananciaUnitaria = newGananciaTotal / job.cantidad;
+            job.subtotal = job.costoMaterialTotal + newGananciaTotal;
+            job.precioVentaUnitario = job.subtotal / job.cantidad;
+        }
+        
+        updateCalculations();
+        uiController.updateJobsTable(appState.trabajos);
+    });
+
+    // Delegación de eventos para botones de tarjetas (móvil)
+    uiController.DOMElements.jobsCardsContainer.addEventListener('click', (event) => {
         if (event.target.classList.contains('delete-button')) {
             const index = parseInt(event.target.dataset.index);
             if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
                 appState.trabajos.splice(index, 1);
                 uiController.updateJobsTable(appState.trabajos); 
                 updateCalculations();
+                uiController.showToast('✓ Trabajo eliminado', 'success');
             }
         } else if (event.target.classList.contains('edit-button')) {
             const index = parseInt(event.target.dataset.index);
@@ -327,6 +371,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (event.target.classList.contains('add-more-button')) {
             const index = parseInt(event.target.dataset.index);
             const job = appState.trabajos[index];
+            
+            appState.isAddingMore = true;
+            document.getElementById('editing-indicator').style.display = 'block';
+            
+            // Cargar el material y los parámetros del trabajo existente
+            appState.selectedMaterial = job.material;
+            appState.currentJobInputs = {
+                height: job.medidas.alto,
+                width: job.medidas.ancho,
+                description: job.descripcion,
+                tipoPrecio: job.paramsUsados.tipoPrecio,
+                incluirAdicional: false,
+            };
+            appState.ventaParams = { ...job.paramsUsados };
+
+            // Actualizar UI con los datos del trabajo
+            uiController.displaySelectedMaterial(job.material);
+            uiController.DOMElements.descriptionInput.value = job.descripcion;
+            uiController.DOMElements.heightInput.value = job.medidas.alto;
+            uiController.DOMElements.widthInput.value = job.medidas.ancho;
+            uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
+            uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
+            uiController.DOMElements.cbAdicional.checked = false;
+            
+            uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
+            uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
+            uiController.DOMElements.vpLaborActive.checked = job.paramsUsados.manoDeObraActiva;
+            uiController.DOMElements.vpLaborCostInput.value = job.paramsUsados.manoDeObraMonto || '';
+            uiController.DOMElements.vpProfitActive.checked = job.paramsUsados.gananciaActiva;
+            uiController.DOMElements.vpProfitType.value = job.paramsUsados.gananciaTipo || 'percent';
+            uiController.DOMElements.vpProfitValueInput.value = job.paramsUsados.gananciaValor || '';
+            
+            uiController.toggleVentaParamsInputs(job.paramsUsados);
+            uiController.DOMElements.ventaParamsCard.style.display = 'block';
+            updateCalculations();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    uiController.DOMElements.jobsTableBody.addEventListener('click', (event) => {
+        if (event.target.classList.contains('delete-button')) {
+            const index = parseInt(event.target.dataset.index);
+            if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
+                appState.trabajos.splice(index, 1);
+                uiController.updateJobsTable(appState.trabajos); 
+                updateCalculations();
+                uiController.showToast('✓ Trabajo eliminado', 'success');
+            }
+        } else if (event.target.classList.contains('edit-button')) {
+            const index = parseInt(event.target.dataset.index);
+            startEditing(index);
+        } else if (event.target.classList.contains('add-more-button')) {
+            const index = parseInt(event.target.dataset.index);
+            const job = appState.trabajos[index];
+            
+            appState.isAddingMore = true;
+            document.getElementById('editing-indicator').style.display = 'block';
             
             // Cargar el material y los parámetros del trabajo existente
             appState.selectedMaterial = job.material;

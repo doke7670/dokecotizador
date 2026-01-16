@@ -24,6 +24,9 @@
 
                 <div class="card" id="item-form" style="display: none;">
                     <h2>2. Definir Trabajo</h2>
+                    <div id="editing-indicator" class="editing-indicator" style="display: none;">
+                        <span>📝 Modo: Agregar más del mismo producto</span>
+                    </div>
                     <p id="selected-material-info" class="material-info"></p>
                     
                     <fieldset class="radio-group">
@@ -90,13 +93,16 @@
                                     <th>Precio Unit. (S/)</th>
                                     <th>Ganancia (S/)</th>
                                     <th>Subtotal (S/)</th>
-                                    <th></th> <!-- Para el botón eliminar -->
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Las filas se insertarán aquí dinámicamente -->
                             </tbody>
                         </table>
+                    </div>
+                    <div id="jobs-cards-container" class="jobs-cards-container">
+                        <!-- Las tarjetas se insertarán aquí dinámicamente en móvil -->
                     </div>
                 </div>
 
@@ -119,9 +125,12 @@
         </main>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="toast-notification"></div>
+
     <!-- Scripts -->
-    <script src="libs/jspdf.umd.min.js"></script>
-    <script src="libs/jspdf.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="js/calculator.js"></script>
     <script src="js/dataService.js"></script>
     <script src="js/uiController.js"></script>

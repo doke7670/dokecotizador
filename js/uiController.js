@@ -27,6 +27,7 @@ const uiController = (() => {
         addItemBtn: document.getElementById('add-item-btn'),
         cancelEditBtn: document.getElementById('cancel-edit-btn'),
         jobsTableBody: document.querySelector('#jobs-table tbody'),
+        jobsCardsContainer: document.getElementById('jobs-cards-container'),
         
         summaryTotal: document.getElementById('summary-total'), 
         
@@ -128,9 +129,53 @@ const uiController = (() => {
         row.querySelector('.job-subtotal-cell').textContent = `S/ ${job.subtotal.toFixed(2)}`;
     }
 
+    function addJobCard(job, index) {
+        const card = document.createElement('div');
+        card.className = 'job-card';
+        card.dataset.index = index;
+        card.innerHTML = `
+            <div class="job-card-header">
+                <span class="job-card-codigo">${job.material.codigo}</span>
+                <span class="job-card-descripcion">${job.descripcion || 'Sin descripción'}</span>
+            </div>
+            <div class="job-card-body">
+                <div class="job-card-row">
+                    <span class="job-card-label">Área:</span>
+                    <span class="job-card-value">${job.medidas.area.toFixed(2)} m²</span>
+                </div>
+                <div class="job-card-row">
+                    <span class="job-card-label">Cantidad:</span>
+                    <input type="number" class="quantity-input small-input" value="${job.cantidad}" data-index="${index}" min="1">
+                </div>
+                <div class="job-card-row">
+                    <span class="job-card-label">Precio Unit.:</span>
+                    <span class="job-card-value">S/ ${job.precioVentaUnitario.toFixed(2)}</span>
+                </div>
+                <div class="job-card-row">
+                    <span class="job-card-label">Ganancia:</span>
+                    <input type="number" class="ganancia-input small-input" value="${job.gananciaTotalItem.toFixed(2)}" data-index="${index}" min="0">
+                </div>
+                <div class="job-card-row total">
+                    <span class="job-card-label">Subtotal:</span>
+                    <span class="job-card-value">S/ ${job.subtotal.toFixed(2)}</span>
+                </div>
+            </div>
+            <div class="job-card-footer">
+                <button class="add-more-button" data-index="${index}">+</button>
+                <button class="edit-button" data-index="${index}">Editar</button>
+                <button class="delete-button" data-index="${index}">Eliminar</button>
+            </div>
+        `;
+        DOMElements.jobsCardsContainer.appendChild(card);
+    }
+
     function updateJobsTable(jobs) {
         DOMElements.jobsTableBody.innerHTML = '';
-        jobs.forEach((job, index) => addJobToTable(job, index));
+        DOMElements.jobsCardsContainer.innerHTML = '';
+        jobs.forEach((job, index) => {
+            addJobToTable(job, index);
+            addJobCard(job, index);
+        });
     }
 
 
@@ -140,12 +185,11 @@ const uiController = (() => {
     }
     
     function toggleVentaParamsInputs(ventaParams) {
-        // Inputs are now always enabled as per user request.
-        // The commented out lines previously controlled their disabled state.
-        // DOMElements.vpWastePctInput.disabled = !ventaParams.desperdicioActivo;
-        // DOMElements.vpLaborCostInput.disabled = !ventaParams.manoDeObraActiva;
-        // DOMElements.vpProfitType.disabled = !ventaParams.gananciaActiva;
-        // DOMElements.vpProfitValueInput.disabled = !ventaParams.gananciaActiva;
+        // Deshabilitar inputs según el estado de los checkboxes
+        uiController.DOMElements.vpWastePctInput.disabled = !ventaParams.desperdicioActivo;
+        uiController.DOMElements.vpLaborCostInput.disabled = !ventaParams.manoDeObraActiva;
+        uiController.DOMElements.vpProfitType.disabled = !ventaParams.gananciaActiva;
+        uiController.DOMElements.vpProfitValueInput.disabled = !ventaParams.gananciaActiva;
     }
 
     function resetItemForm() {
@@ -172,6 +216,16 @@ const uiController = (() => {
         }
     }
 
+    function showToast(message, type = 'success') {
+        const toastElement = document.getElementById('toast-notification');
+        toastElement.textContent = message;
+        toastElement.className = `toast-notification toast-${type} show`;
+        
+        setTimeout(() => {
+            toastElement.classList.remove('show');
+        }, 3000);
+    }
+
 
     return {
         DOMElements,
@@ -186,6 +240,7 @@ const uiController = (() => {
         updateSummary,
         toggleVentaParamsInputs,
         resetItemForm,
-        setEditingMode
+        setEditingMode,
+        showToast
     };
 })();
