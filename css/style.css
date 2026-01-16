@@ -271,6 +271,23 @@ h1 {
 .radio-group input[type="radio"], .radio-group input[type="checkbox"] {
     margin-right: var(--padding-small);
 }
+
+.checkbox-group {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--padding-medium);
+    margin-bottom: var(--padding-medium);
+}
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-small);
+    cursor: pointer;
+    margin-bottom: 0;
+}
+.checkbox-group input[type="checkbox"] {
+    margin-right: 0;
+}
 .setting-item {
     display: flex;
     justify-content: space-between;

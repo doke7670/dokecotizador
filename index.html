@@ -29,9 +29,12 @@
                     <fieldset class="radio-group">
                         <legend>Base de Precio</legend>
                         <label><input type="radio" name="price-base" value="proveedor" id="rb-proveedor" checked> Proveedor</label>
-                        <label><input type="checkbox" id="cb-adicional"> + Adicional</label>
                         <label><input type="radio" name="price-base" value="cliente" id="rb-cliente"> Cliente (Venta por Metro)</label>
                     </fieldset>
+
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="cb-adicional"> + Adicional</label>
+                    </div>
 
                     <input type="text" id="description-input" placeholder="Descripción (ej. Puerta conductor)" class="large-input" autocomplete="off">
                     <div class="input-group">
@@ -43,7 +46,7 @@
 
                 <!-- Nuevo Card: Parámetros de Venta (Opcional) -->
                 <div class="card" id="venta-params-card" style="display: none;">
-                    <h2>3. Parámetros de Venta (Opcional)</h2>
+                    <h2>4. Parámetros de Venta (Opcional)</h2>
                     
                     <div class="setting-item">
                         <label><input type="checkbox" id="vp-waste-active"> Aplicar Desperdicio (%):</label>
@@ -98,14 +101,14 @@
                 </div>
 
                 <div class="card">
-                    <h2>3. Total Cotización</h2>
+                    <h2>5. Total Cotización</h2>
                     <div class="total-final">
                         TOTAL FINAL: <span id="summary-total">S/0.00</span>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h2>4. Generar Salida</h2>
+                    <h2>6. Generar Salida</h2>
                     <textarea id="final-notes" placeholder="Notas opcionales (ej. No bajar vidrios en 48hs)" class="large-textarea" autocomplete="off"></textarea>
                     <button id="generate-pdf-btn" class="large-button secondary-button">Generar PDF (WhatsApp)</button>
                     <button id="print-thermal-btn" class="large-button secondary-button">Imprimir Ticket (80mm)</button>
