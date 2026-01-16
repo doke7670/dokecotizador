@@ -2,27 +2,27 @@
 
 /* --- THEME VARIABLES --- */
 :root {
-    /* Colors */
-    --primary-color: #3498db;
-    --primary-color-hover: #2980b9;
-    --secondary-color: #2ecc71;
-    --secondary-color-hover: #27ae60;
-    --accent-color: #e74c3c;
-    --accent-color-hover: #c0392b;
+    /* New Palette: Naranja, Plomo Oscuro, Negro, Blanco */
+    --primary-color: #FF6700; /* Naranja principal */
+    --primary-color-hover: #E65C00; /* Naranja más oscuro para hover */
+    --secondary-color: #5A6268; /* Plomo oscuro */
+    --secondary-color-hover: #4A4F54; /* Plomo más oscuro para hover */
+    --accent-color: #E53935; /* Rojo para acciones de eliminar */
+    --accent-color-hover: #C62828;
 
-    /* Light Theme Palette */
-    --background-color: #ecf0f1;
-    --card-background: #ffffff;
-    --text-color: #2c3e50;
-    --text-color-light: #555;
-    --border-color: #bdc3c7;
-    --table-header-background: #e9ecef;
-    --table-row-even-background: #f8f9fa;
-    --material-info-background: #eaf5fc;
-    --material-info-border: #cceeff;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --input-background: #fff;
-    --placeholder-color: #6c757d; /* Color para placeholders en tema claro */
+    /* Dark Theme Palette con la nueva paleta */
+    --background-color: #212529; /* Negro de fondo */
+    --card-background: #343A40; /* Plomo oscuro para cards */
+    --text-color: #F8F9FA; /* Blanco para texto */
+    --text-color-light: #ADB5BD;
+    --border-color: #495057;
+    --table-header-background: #212529;
+    --table-row-even-background: #343A40;
+    --material-info-background: #422c1a;
+    --material-info-border: #5e3f24;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --input-background: #495057;
+    --placeholder-color: #ADB5BD;
 
     /* Spacing & Layout */
     --padding-small: 0.5rem;
@@ -30,22 +30,6 @@
     --padding-large: 1.5rem;
     --border-radius: 8px;
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body.dark-theme {
-    /* Dark Theme Palette */
-    --background-color: #2c3e50;
-    --card-background: #34495e;
-    --text-color: #ecf0f1;
-    --text-color-light: #bdc3c7;
-    --border-color: #566573;
-    --table-header-background: #2c3e50;
-    --table-row-even-background: #415a74;
-    --material-info-background: #283747;
-    --material-info-border: #1d4f71;
-    --shadow-color: rgba(0, 0, 0, 0.4);
-    --input-background: #566573;
-    --placeholder-color: #a0b3c6; /* Color para placeholders en tema oscuro */
 }
 /* --- END OF THEME VARIABLES --- */
 
@@ -185,8 +169,9 @@ h2 {
 .secondary-button:hover {
     background-color: var(--secondary-color-hover);
 }
+
+.edit-button,
 .delete-button {
-    background-color: var(--accent-color);
     padding: var(--padding-small) var(--padding-medium);
     border: none;
     border-radius: var(--border-radius);
@@ -194,10 +179,23 @@ h2 {
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.2s ease;
+    margin: 2px;
+}
+
+.edit-button {
+    background-color: var(--secondary-color);
+}
+.edit-button:hover {
+    background-color: var(--secondary-color-hover);
+}
+
+.delete-button {
+    background-color: var(--accent-color);
 }
 .delete-button:hover {
     background-color: var(--accent-color-hover);
 }
+
 
 /* Layout principal y header */
 .main-layout {
@@ -206,24 +204,34 @@ h2 {
     gap: var(--padding-large);
 }
 header {
-    position: relative;
-}
-#theme-toggle-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    font-size: 1.5rem;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    cursor: pointer;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--padding-medium);
+    margin-bottom: var(--padding-large);
 }
+h1 {
+    font-size: 1.8em; /* Ajustado para mejor fit */
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border-bottom: none; /* Movido al header */
+}
+
+.logo {
+    background-color: white;
+    -webkit-mask-image: url(../assets/logo.svg);
+    mask-image: url(../assets/logo.svg);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    width: 100px;
+    height: 50px; /* Adjust height as needed */
+}
+
+
 
 /* Grupos de input y radios */
 .input-group {
@@ -250,7 +258,7 @@ header {
     margin-bottom: var(--padding-small);
     cursor: pointer;
 }
-.radio-group input[type="radio"] {
+.radio-group input[type="radio"], .radio-group input[type="checkbox"] {
     margin-right: var(--padding-small);
 }
 .setting-item {
@@ -273,7 +281,22 @@ header {
     border-radius: var(--border-radius);
     margin-bottom: var(--padding-medium);
     font-size: 1.1em;
+    word-wrap: break-word; /* Added for text wrapping */
+    overflow-wrap: break-word; /* Added for text wrapping */
 }
+
+.material-info div {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.material-info .label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+
 
 .area-display {
     text-align: right;
@@ -297,6 +320,7 @@ header {
     border: 1px solid var(--border-color);
     padding: var(--padding-small);
     text-align: left;
+    vertical-align: middle;
 }
 #jobs-table th {
     background-color: var(--table-header-background);
@@ -353,7 +377,8 @@ header {
     margin-bottom: var(--padding-small);
 }
 .profit-setting-item .small-input {
-    flex-grow: 1;
+    flex-grow: 0;
+    width: 30%;
 }
 
 /* Estilos para los inputs en la tabla */
@@ -420,6 +445,32 @@ header {
     }
     .profit-setting-item .small-input {
         flex-grow: 0;
+    }
+}
+
+/* Mejoras responsivas para la tabla */
+@media (max-width: 768px) {
+    #jobs-table {
+        font-size: 0.8em; /* Reducir fuente en pantallas pequeñas */
+    }
+
+    #jobs-table th,
+    #jobs-table td {
+        padding: 4px; /* Menos padding */
+    }
+
+    #jobs-table td:last-child {
+        min-width: 85px; /* Asegurar espacio mínimo para los botones */
+        text-align: center;
+    }
+
+    .edit-button,
+    .delete-button {
+        display: inline-block;
+        width: 80px; /* Ancho fijo */
+        padding: 6px 4px;
+        margin-bottom: 4px;
+        font-size: 0.85em;
     }
 }
 

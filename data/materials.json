@@ -5,6 +5,7 @@
     "marca": "MGfilms",
     "modelo": "Vinil Gloss",
     "ancho_rollo": 0.6,
+    "colores": "Negro, Blanco, Rojo",
     "costo_base_proveedor_m2": 8.3,
     "ajuste_proveedor_pct": 0,
     "costo_cliente_m2": 25
@@ -15,6 +16,7 @@
     "marca": "Generica",
     "modelo": "Vinil Rainbow",
     "ancho_rollo": 0.6,
+    "colores": "Arcoiris",
     "costo_base_proveedor_m2": 30,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 51
@@ -25,6 +27,7 @@
     "marca": "Generica",
     "modelo": "Vinil Reflectivo",
     "ancho_rollo": 0.6,
+    "colores": "Plata, Rojo",
     "costo_base_proveedor_m2": 20,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 34
@@ -35,6 +38,7 @@
     "marca": "Generica",
     "modelo": "Vinil Cromados/tornasol",
     "ancho_rollo": 0.6,
+    "colores": "colores",
     "costo_base_proveedor_m2": 13.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 33.3
@@ -45,6 +49,7 @@
     "marca": "Generico",
     "modelo": "Fibra Tipo Lija",
     "ancho_rollo": 1.52,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 25.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 43.06
@@ -55,6 +60,7 @@
     "marca": "Premium",
     "modelo": "Fibra De Carbono 3D Premium",
     "ancho_rollo": 1.52,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 20,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 33.3
@@ -65,6 +71,7 @@
     "marca": "Generico",
     "modelo": "Fibra De Carbono 3D Signcal",
     "ancho_rollo": 1.27,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 15.74,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 26.77
@@ -75,6 +82,7 @@
     "marca": "Premium",
     "modelo": "Fibra De Carbono 4D Premium",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 26.6,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 45.33
@@ -85,6 +93,7 @@
     "marca": "Premium",
     "modelo": "Fibra De Carbono 5D",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 56.6
@@ -95,6 +104,7 @@
     "marca": "Premium",
     "modelo": "Fibra De Carbono 6D",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 60
@@ -105,6 +115,7 @@
     "marca": "Premium",
     "modelo": "Fibra De Carbono 3D Camaleon",
     "ancho_rollo": 1.5,
+    "colores": "Camaleon",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 60
@@ -115,6 +126,7 @@
     "marca": "Oracal",
     "modelo": "Fibra Tipo Letra China",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 30.0,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 53.33
@@ -125,6 +137,7 @@
     "marca": "Oracal",
     "modelo": "Vinil Negro Piano",
     "ancho_rollo": 1.35,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 23.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 33.3
@@ -135,6 +148,7 @@
     "marca": "Oracal",
     "modelo": "Vinil Cromado",
     "ancho_rollo": 1.5,
+    "colores": "Cromado",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 66.6
@@ -145,6 +159,7 @@
     "marca": "Oracal",
     "modelo": "Vinil Camuflado",
     "ancho_rollo": 1.5,
+    "colores": "Militar",
     "costo_base_proveedor_m2": 32.0,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 45.3
@@ -155,6 +170,7 @@
     "marca": "Oracal",
     "modelo": "Vinil Tornasol Negro",
     "ancho_rollo": 1.5,
+    "colores": "Negro tornasol",
     "costo_base_proveedor_m2": 46.6,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 66.6
@@ -165,6 +181,7 @@
     "marca": "Oracal",
     "modelo": "Vinil Morado Satinado Mate",
     "ancho_rollo": 1.5,
+    "colores": "Morado",
     "costo_base_proveedor_m2": 30.0,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 50
@@ -175,6 +192,7 @@
     "marca": "Oracal",
     "modelo": "Vinil Tornasol verde/rojo",
     "ancho_rollo": 1.37,
+    "colores": "tornasol verde/rojo",
     "costo_base_proveedor_m2": 58.39,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 98.54
@@ -185,6 +203,7 @@
     "marca": "Premium",
     "modelo": "Fibra de Carbono Tornasol",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 30,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 50.6
@@ -195,6 +214,7 @@
     "marca": "Oracal",
     "modelo": "Fibra Tipo Letra China tornasol",
     "ancho_rollo": 1.5,
+    "colores": "plata tornasol",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 56.6
@@ -205,6 +225,7 @@
     "marca": "Oracal",
     "modelo": "Fibra FORJADA",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 56.6
@@ -215,6 +236,7 @@
     "marca": "Oracal",
     "modelo": "Fibra FORJADA TORNASOL",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 56.6
@@ -225,6 +247,7 @@
     "marca": "Premium",
     "modelo": "Fibra 5D NEGRO TORNASOL",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 56.6
@@ -236,6 +259,7 @@
     "marca": "Oracal",
     "modelo": "Fibra MORADO FORJADO",
     "ancho_rollo": 1.5,
+    "colores": "Morado",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 56.6
@@ -246,6 +270,7 @@
     "marca": "Oracal",
     "modelo": "Fibra HEXAGONO",
     "ancho_rollo": 1.5,
+    "colores": "Negro",
     "costo_base_proveedor_m2": 33.3,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 56.6
@@ -256,6 +281,7 @@
     "marca": "Oracal",
     "modelo": "Fibra CAMALEON vinil chispeado",
     "ancho_rollo": 1.5,
+    "colores": "camaleon morado/azul",
     "costo_base_proveedor_m2": 40,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 68

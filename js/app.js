@@ -2,30 +2,7 @@
 // Orquestador principal: inicializa y conecta todo
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // --- LÓGICA DEL TEMA OSCURO ---
-    const themeToggleButton = uiController.DOMElements.themeToggleBtn;
 
-    const setCurrentTheme = (theme) => {
-        document.body.classList.toggle('dark-theme', theme === 'dark');
-        themeToggleButton.textContent = theme === 'dark' ? '☀️' : '🌙';
-        localStorage.setItem('theme', theme);
-    };
-
-    // CORRECCIÓN: Se arregló el error de sintaxis en esta función
-    const toggleTheme = () => {
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        setCurrentTheme(newTheme);
-    };
-
-    themeToggleButton.addEventListener('click', toggleTheme);
-
-    // Aplicar tema guardado al cargar la página
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        setCurrentTheme(savedTheme);
-    }
-    // --- FIN LÓGICA TEMA ---
 
 
     console.log('App inicializada.');
@@ -34,12 +11,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const appState = {
         materials: [],
         trabajos: [], // Array de objetos { ..., gananciaUnitaria, gananciaTotalItem, ... }
+        editingJobIndex: null, // Índice del trabajo que se está editando
         selectedMaterial: null,
         currentJobInputs: {
             height: 0,
             width: 0,
             description: '',
-            tipoPrecio: 'proveedor'
+            tipoPrecio: 'proveedor',
+            incluirAdicional: false
         },
         ventaParams: {
             desperdicioActivo: uiController.DOMElements.vpWasteActive.checked,
@@ -75,6 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 appState.selectedMaterial,
                 area,
                 appState.currentJobInputs.tipoPrecio,
+                appState.currentJobInputs.incluirAdicional,
                 appState.ventaParams
             );
             uiController.updatePreviewPrecioVenta(precioVentaUnitario);
@@ -136,6 +116,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    uiController.DOMElements.cbAdicional.addEventListener('change', () => {
+        appState.currentJobInputs.incluirAdicional = uiController.DOMElements.cbAdicional.checked;
+        updateCalculations();
+    });
+
     // 4. Manejo de Parámetros de Venta
     const ventaParamsChangeHandler = () => {
         appState.ventaParams.desperdicioActivo = uiController.DOMElements.vpWasteActive.checked;
@@ -157,8 +142,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         element.addEventListener(eventType, ventaParamsChangeHandler);
     });
 
-    // 5. Añadir ítem a la tabla
-    uiController.DOMElements.addItemBtn.addEventListener('click', () => {
+
+    function addJob() {
         if (!appState.selectedMaterial) {
             alert('Por favor, selecciona un material primero.');
             return;
@@ -170,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const area = calculator.calculateArea(appState.currentJobInputs.height, appState.currentJobInputs.width);
         const { costoMaterialUnitario, precioVentaUnitario } = calculator.calculateItemFullPrice(
-            appState.selectedMaterial, area, appState.currentJobInputs.tipoPrecio, appState.ventaParams
+            appState.selectedMaterial, area, appState.currentJobInputs.tipoPrecio, appState.currentJobInputs.incluirAdicional, appState.ventaParams
         );
 
         const cantidad = 1;
@@ -187,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             gananciaTotalItem: gananciaUnitaria * cantidad,
             precioVentaUnitario: precioVentaUnitario,
             subtotal: precioVentaUnitario * cantidad,
-            paramsUsados: { ...appState.ventaParams, tipoPrecio: appState.currentJobInputs.tipoPrecio }
+            paramsUsados: { ...appState.ventaParams, tipoPrecio: appState.currentJobInputs.tipoPrecio, incluirAdicional: appState.currentJobInputs.incluirAdicional }
         };
 
         appState.trabajos.push(newJob);
@@ -195,12 +180,107 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.resetItemForm();
         uiController.DOMElements.ventaParamsCard.style.display = 'none';
         appState.selectedMaterial = null;
-        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor' };
+        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: true };
         
         updateCalculations();
+    }
+
+    function updateJob() {
+        const jobIndex = appState.editingJobIndex;
+        if (jobIndex === null) return;
+
+        const originalJob = appState.trabajos[jobIndex];
+
+        const area = calculator.calculateArea(appState.currentJobInputs.height, appState.currentJobInputs.width);
+        const { costoMaterialUnitario, precioVentaUnitario } = calculator.calculateItemFullPrice(
+            appState.selectedMaterial, area, appState.currentJobInputs.tipoPrecio, appState.currentJobInputs.incluirAdicional, appState.ventaParams
+        );
+
+        const gananciaUnitaria = precioVentaUnitario - costoMaterialUnitario;
+
+        const updatedJob = {
+            ...originalJob,
+            descripcion: appState.currentJobInputs.description,
+            material: appState.selectedMaterial,
+            medidas: { alto: appState.currentJobInputs.height, ancho: appState.currentJobInputs.width, area: area },
+            costoMaterialUnitario: costoMaterialUnitario,
+            precioVentaUnitario: precioVentaUnitario,
+            gananciaUnitaria: gananciaUnitaria,
+            paramsUsados: { ...appState.ventaParams, tipoPrecio: appState.currentJobInputs.tipoPrecio, incluirAdicional: appState.currentJobInputs.incluirAdicional }
+        };
+
+        updatedJob.costoMaterialTotal = updatedJob.costoMaterialUnitario * updatedJob.cantidad;
+        updatedJob.gananciaTotalItem = updatedJob.gananciaUnitaria * updatedJob.cantidad;
+        updatedJob.subtotal = updatedJob.precioVentaUnitario * updatedJob.cantidad;
+
+        appState.trabajos[jobIndex] = updatedJob;
+        
+        cancelEditing();
+        uiController.updateJobsTable(appState.trabajos);
+        updateCalculations();
+    }
+
+    function startEditing(index) {
+        appState.editingJobIndex = index;
+        const job = appState.trabajos[index];
+
+        appState.selectedMaterial = job.material;
+        appState.currentJobInputs = {
+            height: job.medidas.alto,
+            width: job.medidas.ancho,
+            description: job.descripcion,
+            tipoPrecio: job.paramsUsados.tipoPrecio,
+            incluirAdicional: job.paramsUsados.incluirAdicional === undefined ? true : job.paramsUsados.incluirAdicional,
+        };
+        appState.ventaParams = { ...job.paramsUsados };
+
+        uiController.displaySelectedMaterial(job.material);
+        uiController.DOMElements.descriptionInput.value = job.descripcion;
+        uiController.DOMElements.heightInput.value = job.medidas.alto;
+        uiController.DOMElements.widthInput.value = job.medidas.ancho;
+        uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
+        uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
+        uiController.DOMElements.cbAdicional.checked = job.paramsUsados.incluirAdicional === undefined ? true : job.paramsUsados.incluirAdicional;
+        
+        uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
+        uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
+        uiController.DOMElements.vpLaborActive.checked = job.paramsUsados.manoDeObraActiva;
+        uiController.DOMElements.vpLaborCostInput.value = job.paramsUsados.manoDeObraMonto || '';
+        uiController.DOMElements.vpProfitActive.checked = job.paramsUsados.gananciaActiva;
+        uiController.DOMElements.vpProfitType.value = job.paramsUsados.gananciaTipo || 'percent';
+        uiController.DOMElements.vpProfitValueInput.value = job.paramsUsados.gananciaValor || '';
+        
+        uiController.toggleVentaParamsInputs(job.paramsUsados);
+        uiController.DOMElements.ventaParamsCard.style.display = 'block';
+        uiController.setEditingMode(true);
+        updateCalculations();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEditing() {
+        appState.editingJobIndex = null;
+        uiController.setEditingMode(false);
+        uiController.resetItemForm();
+        uiController.DOMElements.ventaParamsCard.style.display = 'none';
+        appState.selectedMaterial = null;
+        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: true };
+        updateCalculations();
+    }
+
+    // 5. Añadir o Actualizar ítem
+    uiController.DOMElements.addItemBtn.addEventListener('click', () => {
+        if (appState.editingJobIndex !== null) {
+            updateJob();
+        } else {
+            addJob();
+        }
     });
 
-    // 6. Delegación de eventos para la tabla (Eliminar, Cantidad, Ganancia)
+    uiController.DOMElements.cancelEditBtn.addEventListener('click', cancelEditing);
+    
+
+    // Delegación de eventos para la tabla (Eliminar, Cantidad, Ganancia)
     uiController.DOMElements.jobsTableBody.addEventListener('input', (event) => {
         const target = event.target;
         const index = parseInt(target.dataset.index);
@@ -241,6 +321,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 uiController.updateJobsTable(appState.trabajos); 
                 updateCalculations();
             }
+        } else if (event.target.classList.contains('edit-button')) {
+            const index = parseInt(event.target.dataset.index);
+            startEditing(index);
         }
     });
 

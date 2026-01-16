@@ -8,6 +8,7 @@ const uiController = (() => {
         selectedMaterialInfo: document.getElementById('selected-material-info'),
         rbProveedor: document.getElementById('rb-proveedor'),
         rbCliente: document.getElementById('rb-cliente'),
+        cbAdicional: document.getElementById('cb-adicional'),
         descriptionInput: document.getElementById('description-input'),
         heightInput: document.getElementById('height-input'),
         widthInput: document.getElementById('width-input'),
@@ -24,6 +25,7 @@ const uiController = (() => {
         previewPrecioVenta: document.getElementById('preview-precio-venta'),
 
         addItemBtn: document.getElementById('add-item-btn'),
+        cancelEditBtn: document.getElementById('cancel-edit-btn'),
         jobsTableBody: document.querySelector('#jobs-table tbody'),
         
         summaryTotal: document.getElementById('summary-total'), 
@@ -32,7 +34,7 @@ const uiController = (() => {
         generatePdfBtn: document.getElementById('generate-pdf-btn'),
         printThermalBtn: document.getElementById('print-thermal-btn'),
         printGenericBtn: document.getElementById('print-generic-btn'),
-        themeToggleBtn: document.getElementById('theme-toggle-btn')
+
     };
 
     function displaySearchResults(results) {
@@ -56,10 +58,16 @@ const uiController = (() => {
 
     function displaySelectedMaterial(material) {
         if (material) {
+            let colorsHTML = '';
+            if (material.colores) {
+                colorsHTML = `<strong>Colores:</strong> ${material.colores}<br>`;
+            }
+
             DOMElements.selectedMaterialInfo.innerHTML = `
-                <strong>Material:</strong> ${material.marca} ${material.modelo}<br>
-                <strong>Tipo:</strong> ${material.tipo}<br>
-                <strong>Ancho Rollo:</strong> ${material.ancho_rollo} m
+                <div><span class="label">Material:</span> ${material.marca} ${material.modelo}</div>
+                ${colorsHTML}
+                <div><span class="label">Tipo:</span> ${material.tipo}</div>
+                <div><span class="label">Ancho Rollo:</span> ${material.ancho_rollo} m</div>
             `;
             DOMElements.itemForm.style.display = 'block';
             DOMElements.searchInput.value = material.codigo;
@@ -104,7 +112,10 @@ const uiController = (() => {
                     min="0">
             </td>
             <td class="job-subtotal-cell">S/ ${job.subtotal.toFixed(2)}</td>
-            <td><button class="delete-button" data-index="${index}">Eliminar</button></td>
+            <td>
+                <button class="edit-button" data-index="${index}">Editar</button>
+                <button class="delete-button" data-index="${index}">Eliminar</button>
+            </td>
         `;
     }
 
@@ -141,12 +152,23 @@ const uiController = (() => {
         DOMElements.itemForm.style.display = 'none';
         DOMElements.ventaParamsCard.style.display = 'none';
         DOMElements.rbProveedor.checked = true;
+        DOMElements.cbAdicional.checked = false;
         DOMElements.descriptionInput.value = '';
         DOMElements.heightInput.value = '';
         DOMElements.widthInput.value = '';
         DOMElements.areaDisplay.textContent = '0.00';
         DOMElements.searchInput.value = '';
         DOMElements.previewPrecioVenta.textContent = 'S/ 0.00';
+    }
+
+    function setEditingMode(isEditing) {
+        if (isEditing) {
+            DOMElements.addItemBtn.textContent = 'Actualizar Trabajo';
+            DOMElements.cancelEditBtn.style.display = 'inline-block';
+        } else {
+            DOMElements.addItemBtn.textContent = 'Agregar a la cotización';
+            DOMElements.cancelEditBtn.style.display = 'none';
+        }
     }
 
 
@@ -162,6 +184,7 @@ const uiController = (() => {
         updateJobsTable, // Se usa al eliminar
         updateSummary,
         toggleVentaParamsInputs,
-        resetItemForm
+        resetItemForm,
+        setEditingMode
     };
 })();

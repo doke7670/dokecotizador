@@ -3,16 +3,19 @@
 const calculator = (() => {
 
     // Calcula el costo del proveedor final por m2 (ya incluye el ajuste del proveedor)
-    function calcularCostoProveedorFinal(material) {
+    function calcularCostoProveedorFinal(material, incluirAdicional) {
         const base = material.costo_base_proveedor_m2;
-        const ajuste = material.ajuste_proveedor_pct;
-        return base + (base * ajuste / 100);
+        if (incluirAdicional) {
+            const ajuste = material.ajuste_proveedor_pct;
+            return base + (base * ajuste / 100);
+        }
+        return base;
     }
 
     // Determina el costo base por m2 según el tipo de precio seleccionado
-    function getItemBasePricePerM2(material, tipoPrecio) {
+    function getItemBasePricePerM2(material, tipoPrecio, incluirAdicional) {
         if (tipoPrecio === 'proveedor') {
-            return calcularCostoProveedorFinal(material);
+            return calcularCostoProveedorFinal(material, incluirAdicional);
         } else { // 'cliente'
             return material.costo_cliente_m2;
         }
@@ -33,9 +36,9 @@ const calculator = (() => {
      * @param {object} ventaParams - Los parámetros de venta activos (desperdicio, mano de obra, ganancia).
      * @returns {object} { costoMaterial, precioVentaUnitario }
      */
-    function calculateItemFullPrice(material, area, tipoPrecio, ventaParams) {
+    function calculateItemFullPrice(material, area, tipoPrecio, incluirAdicional, ventaParams) {
         // 1. Costo Base del Material (por pieza)
-        const basePricePerM2 = getItemBasePricePerM2(material, tipoPrecio);
+        const basePricePerM2 = getItemBasePricePerM2(material, tipoPrecio, incluirAdicional);
         let costoMaterialBase = area * basePricePerM2; // Costo sin desperdicio
 
         // 2. Aplicar Desperdicio (opcional)
