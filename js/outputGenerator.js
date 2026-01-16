@@ -70,21 +70,37 @@ const outputGenerator = (() => {
      * @param {string} content - El contenido HTML a imprimir.
      */
     function _printWithNewWindow(content) {
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-            alert('No se pudo abrir la ventana de impresión. Por favor, deshabilita el bloqueador de ventanas emergentes.');
-            return;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // En móvil, usar un iframe temporal
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            iframe.contentDocument.write(content);
+            iframe.contentDocument.close();
+            
+            setTimeout(() => {
+                iframe.contentWindow.print();
+                document.body.removeChild(iframe);
+            }, 250);
+        } else {
+            // En desktop, usar ventana emergente
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert('No se pudo abrir la ventana de impresión. Por favor, deshabilita el bloqueador de ventanas emergentes.');
+                return;
+            }
+
+            printWindow.document.write(content);
+            printWindow.document.close();
+            printWindow.focus();
+
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
         }
-
-        printWindow.document.write(content);
-        printWindow.document.close();
-        printWindow.focus();
-
-        // Usar un pequeño timeout para dar tiempo al navegador a renderizar el contenido
-        setTimeout(() => {
-            printWindow.print();
-            printWindow.close();
-        }, 250);
     }
 
     function generatePdf(appState) {
