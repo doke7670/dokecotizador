@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.resetItemForm();
         uiController.DOMElements.ventaParamsCard.style.display = 'none';
         appState.selectedMaterial = null;
-        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: true };
+        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: false };
         
         updateCalculations();
     }
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.resetItemForm();
         uiController.DOMElements.ventaParamsCard.style.display = 'none';
         appState.selectedMaterial = null;
-        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: true };
+        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: false };
         updateCalculations();
     }
 
@@ -324,6 +324,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (event.target.classList.contains('edit-button')) {
             const index = parseInt(event.target.dataset.index);
             startEditing(index);
+        } else if (event.target.classList.contains('add-more-button')) {
+            const index = parseInt(event.target.dataset.index);
+            const job = appState.trabajos[index];
+            
+            // Cargar el material y los parámetros del trabajo existente
+            appState.selectedMaterial = job.material;
+            appState.currentJobInputs = {
+                height: job.medidas.alto,
+                width: job.medidas.ancho,
+                description: job.descripcion,
+                tipoPrecio: job.paramsUsados.tipoPrecio,
+                incluirAdicional: false,
+            };
+            appState.ventaParams = { ...job.paramsUsados };
+
+            // Actualizar UI con los datos del trabajo
+            uiController.displaySelectedMaterial(job.material);
+            uiController.DOMElements.descriptionInput.value = job.descripcion;
+            uiController.DOMElements.heightInput.value = job.medidas.alto;
+            uiController.DOMElements.widthInput.value = job.medidas.ancho;
+            uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
+            uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
+            uiController.DOMElements.cbAdicional.checked = false;
+            
+            uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
+            uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
+            uiController.DOMElements.vpLaborActive.checked = job.paramsUsados.manoDeObraActiva;
+            uiController.DOMElements.vpLaborCostInput.value = job.paramsUsados.manoDeObraMonto || '';
+            uiController.DOMElements.vpProfitActive.checked = job.paramsUsados.gananciaActiva;
+            uiController.DOMElements.vpProfitType.value = job.paramsUsados.gananciaTipo || 'percent';
+            uiController.DOMElements.vpProfitValueInput.value = job.paramsUsados.gananciaValor || '';
+            
+            uiController.toggleVentaParamsInputs(job.paramsUsados);
+            uiController.DOMElements.ventaParamsCard.style.display = 'block';
+            updateCalculations();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
 

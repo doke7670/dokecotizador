@@ -171,7 +171,8 @@ h2 {
 }
 
 .edit-button,
-.delete-button {
+.delete-button,
+.add-more-button {
     padding: var(--padding-small) var(--padding-medium);
     border: none;
     border-radius: var(--border-radius);
@@ -180,6 +181,15 @@ h2 {
     font-size: 0.9em;
     transition: background-color 0.2s ease;
     margin: 2px;
+}
+
+.add-more-button {
+    background-color: var(--primary-color);
+    font-weight: bold;
+    padding: var(--padding-small) 0.75rem;
+}
+.add-more-button:hover {
+    background-color: var(--primary-color-hover);
 }
 
 .edit-button {

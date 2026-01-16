@@ -113,6 +113,7 @@ const uiController = (() => {
             </td>
             <td class="job-subtotal-cell">S/ ${job.subtotal.toFixed(2)}</td>
             <td>
+                <button class="add-more-button" data-index="${index}">+</button>
                 <button class="edit-button" data-index="${index}">Editar</button>
                 <button class="delete-button" data-index="${index}">Eliminar</button>
             </td>
