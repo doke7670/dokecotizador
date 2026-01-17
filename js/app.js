@@ -32,6 +32,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         },
         summary: {
             totalFinal: 0
+        },
+        clientData: {
+            nombre: '',
+            telefono: '',
+            email: '',
+            direccion: '',
+            ruc: ''
         }
     };
 
@@ -308,6 +315,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Toggle collapse de Datos del Cliente
+    const collapseClientBtn = document.getElementById('collapse-client-data');
+    const clientDataContent = document.getElementById('client-data-content');
+    
+    if (collapseClientBtn && clientDataContent) {
+        // Cerrado por defecto
+        collapseClientBtn.classList.add('collapsed');
+        clientDataContent.classList.add('collapsed');
+        
+        collapseClientBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            collapseClientBtn.classList.toggle('collapsed');
+            clientDataContent.classList.toggle('collapsed');
+        });
+    }
+
     // Delegación de eventos para tabla
     // Delegación de eventos para tabla
     uiController.DOMElements.jobsTableBody.addEventListener('input', (event) => {
@@ -376,7 +399,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (event.target.classList.contains('qty-plus-btn')) {
             const index = parseInt(event.target.dataset.index);
             const job = appState.trabajos[index];
+            const areaPerUnit = job.medidas.area / job.cantidad;
             job.cantidad += 1;
+            job.medidas.area = areaPerUnit * job.cantidad;
             job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
             job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
             job.subtotal = job.precioVentaUnitario * job.cantidad;
@@ -386,7 +411,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const index = parseInt(event.target.dataset.index);
             const job = appState.trabajos[index];
             if (job.cantidad > 1) {
+                const areaPerUnit = job.medidas.area / job.cantidad;
                 job.cantidad -= 1;
+                job.medidas.area = areaPerUnit * job.cantidad;
                 job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
                 job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
                 job.subtotal = job.precioVentaUnitario * job.cantidad;
@@ -450,7 +477,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (event.target.classList.contains('qty-plus-btn')) {
             const index = parseInt(event.target.dataset.index);
             const job = appState.trabajos[index];
+            const areaPerUnit = job.medidas.area / job.cantidad;
             job.cantidad += 1;
+            job.medidas.area = areaPerUnit * job.cantidad;
             job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
             job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
             job.subtotal = job.precioVentaUnitario * job.cantidad;
@@ -460,7 +489,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const index = parseInt(event.target.dataset.index);
             const job = appState.trabajos[index];
             if (job.cantidad > 1) {
+                const areaPerUnit = job.medidas.area / job.cantidad;
                 job.cantidad -= 1;
+                job.medidas.area = areaPerUnit * job.cantidad;
                 job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
                 job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
                 job.subtotal = job.precioVentaUnitario * job.cantidad;
@@ -523,6 +554,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 7. Manejo de notas finales y generación de salidas
     uiController.DOMElements.finalNotes.addEventListener('input', (event) => {
         appState.notas = event.target.value;
+    });
+
+    // 8. Manejo de datos del cliente
+    uiController.DOMElements.clientNameInput.addEventListener('input', (event) => {
+        appState.clientData.nombre = event.target.value;
+    });
+    uiController.DOMElements.clientPhoneInput.addEventListener('input', (event) => {
+        appState.clientData.telefono = event.target.value;
+    });
+    uiController.DOMElements.clientEmailInput.addEventListener('input', (event) => {
+        appState.clientData.email = event.target.value;
+    });
+    uiController.DOMElements.clientAddressInput.addEventListener('input', (event) => {
+        appState.clientData.direccion = event.target.value;
+    });
+    uiController.DOMElements.clientRucInput.addEventListener('input', (event) => {
+        appState.clientData.ruc = event.target.value;
     });
     uiController.DOMElements.generatePdfBtn.addEventListener('click', () => {
         if (appState.trabajos.length === 0) {

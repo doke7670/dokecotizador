@@ -79,8 +79,22 @@
                     <button id="cancel-edit-btn" class="large-button secondary-button" style="display: none;">Cancelar Edición</button>
                 </div>
 
+                <!-- Nuevo Card: Datos del Cliente (Opcional) -->
+                <div class="card" id="client-data-card">
+                    <div class="client-data-header">
+                        <h2>4. Datos del Cliente (Opcional)</h2>
+                        <button class="collapse-toggle" id="collapse-client-data">▼</button>
+                    </div>
+                    <div class="client-data-content" id="client-data-content">
+                        <input type="text" id="client-name-input" placeholder="Nombre del cliente" class="large-input" autocomplete="off">
+                        <input type="tel" id="client-phone-input" placeholder="Teléfono" class="large-input" autocomplete="off">
+                        <input type="email" id="client-email-input" placeholder="Email" class="large-input" autocomplete="off">
+                        <input type="text" id="client-address-input" placeholder="Dirección" class="large-input" autocomplete="off">
+                        <input type="text" id="client-ruc-input" placeholder="RUC/DNI" class="large-input" autocomplete="off">
+                    </div>
+                </div>
 
-            </section>
+
 
             <section id="summary-column">
 
@@ -133,6 +147,7 @@
     <div id="toast-notification" class="toast-notification"></div>
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="js/calculator.js"></script>

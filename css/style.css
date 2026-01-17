@@ -739,8 +739,32 @@ h1 {
     opacity: 0;
 }
 
+/* Client Data Section */
+.client-data-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
 
-/* Area and Cost Display */
+.client-data-header h2 {
+    margin: 0;
+    flex: 1;
+}
+
+.client-data-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.client-data-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+
 .area-cost-display {
     display: flex;
     justify-content: space-between;

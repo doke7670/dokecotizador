@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROFORMA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #fff;
+        }
+        
+        .proforma-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .proforma-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #FF6600;
+            padding-bottom: 20px;
+        }
+        
+        .logo-section {
+            flex: 1;
+        }
+        
+        .logo-section img {
+            max-width: 120px;
+            height: auto;
+        }
+        
+        .title-section {
+            flex: 2;
+            text-align: center;
+        }
+        
+        .title-section h1 {
+            font-size: 32px;
+            color: #FF6600;
+            margin-bottom: 5px;
+        }
+        
+        .title-section p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .info-section {
+            flex: 1;
+            text-align: right;
+            font-size: 12px;
+        }
+        
+        .info-section p {
+            margin: 3px 0;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .proforma-content {
+            margin-bottom: 30px;
+        }
+        
+        .proforma-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .proforma-table thead {
+            background-color: #222;
+            color: #fff;
+        }
+        
+        .proforma-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+        
+        .proforma-table td {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+        }
+        
+        .proforma-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .proforma-table tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .proforma-summary {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 30px;
+        }
+        
+        .summary-box {
+            width: 300px;
+            border: 2px solid #FF6600;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .summary-row.total {
+            border-top: 2px solid #FF6600;
+            padding-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF6600;
+        }
+        
+        .proforma-notes {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-left: 4px solid #FF6600;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        
+        .proforma-notes-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .proforma-footer {
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .proforma-footer p {
+            margin: 3px 0;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .proforma-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="proforma-container">
+        <!-- HEADER -->
+        <div class="proforma-header">
+            <div class="logo-section">
+                <img src="./assets/logo.svg" alt="Logo Empresa">
+            </div>
+            <div class="title-section">
+                <h1>PROFORMA</h1>
+                <p>Cotización de Servicios</p>
+            </div>
+            <div class="info-section">
+                <p><span class="info-label">Fecha:</span> <span id="fecha-proforma"></span></p>
+                <p><span class="info-label">Hora:</span> <span id="hora-proforma"></span></p>
+            </div>
+        </div>
+        
+        <!-- CONTENT -->
+        <div class="proforma-content">
+            <table class="proforma-table">
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th class="text-center">Área (m²)</th>
+                        <th class="text-right">P. Unitario (S/)</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-right">Subtotal (S/)</th>
+                    </tr>
+                </thead>
+                <tbody id="proforma-items">
+                    <!-- Los items se inyectarán aquí -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- SUMMARY -->
+        <div class="proforma-summary">
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal-value">S/ 0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>TOTAL FINAL:</span>
+                    <span id="total-value">S/ 0.00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- NOTES -->
+        <div id="proforma-notes-container"></div>
+        
+        <!-- FOOTER -->
+        <div class="proforma-footer">
+            <p>________________________________</p>
+            <p>¡Gracias por tu preferencia!</p>
+            <p>________________________________</p>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</body>
+</html>

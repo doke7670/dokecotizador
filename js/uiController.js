@@ -35,6 +35,13 @@ const uiController = (() => {
         printThermalBtn: document.getElementById('print-thermal-btn'),
         printGenericBtn: document.getElementById('print-generic-btn'),
 
+        // Client Data
+        clientNameInput: document.getElementById('client-name-input'),
+        clientPhoneInput: document.getElementById('client-phone-input'),
+        clientEmailInput: document.getElementById('client-email-input'),
+        clientAddressInput: document.getElementById('client-address-input'),
+        clientRucInput: document.getElementById('client-ruc-input'),
+
     };
 
     function displaySearchResults(results) {
