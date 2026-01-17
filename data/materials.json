@@ -52,7 +52,7 @@
     "colores": "Negro",
     "costo_base_proveedor_m2": 25.3,
     "ajuste_proveedor_pct": 5,
-    "costo_cliente_m2": 43.06
+    "costo_cliente_m2": 47.0
   },
   {
     "codigo": "WRAP-002",
@@ -282,7 +282,7 @@
     "modelo": "Fibra CAMALEON vinil chispeado",
     "ancho_rollo": 1.5,
     "colores": "camaleon morado/azul",
-    "costo_base_proveedor_m2": 40,
+    "costo_base_proveedor_m2": 30,
     "ajuste_proveedor_pct": 5,
     "costo_cliente_m2": 68
   },

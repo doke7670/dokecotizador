@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             height: 0,
             width: 0,
             description: '',
-            tipoPrecio: 'proveedor',
+            tipoPrecio: 'cliente',
             incluirAdicional: false
         },
         ventaParams: {
@@ -59,8 +59,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 appState.ventaParams
             );
             uiController.updatePreviewPrecioVenta(precioVentaUnitario);
+            // Costo base sin parámetros de venta
+            const costoBase = appState.currentJobInputs.tipoPrecio === 'proveedor' 
+                ? appState.selectedMaterial.costo_base_proveedor_m2 * area
+                : appState.selectedMaterial.costo_cliente_m2 * area;
+            uiController.updateCostDisplay(costoBase);
         } else {
             uiController.updatePreviewPrecioVenta(0);
+            uiController.updateCostDisplay(0);
         }
 
         appState.summary = calculator.calculateSummaryTotal(appState.trabajos);
@@ -90,11 +96,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             uiController.displaySelectedMaterial(appState.selectedMaterial);
             uiController.DOMElements.ventaParamsCard.style.display = 'block';
             
-            appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor' };
+            appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'cliente' };
             uiController.DOMElements.descriptionInput.value = '';
             uiController.DOMElements.heightInput.value = '';
             uiController.DOMElements.widthInput.value = '';
-            uiController.DOMElements.rbProveedor.checked = true;
+            uiController.DOMElements.rbProveedor.checked = false;
+            uiController.DOMElements.rbCliente.checked = true;
             
             updateCalculations();
             uiController.hideSearchResults();
@@ -120,11 +127,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             appState.currentJobInputs.tipoPrecio = key.replace('rb', '').toLowerCase();
             updateCalculations();
         });
-    });
-
-    uiController.DOMElements.cbAdicional.addEventListener('change', () => {
-        appState.currentJobInputs.incluirAdicional = uiController.DOMElements.cbAdicional.checked;
-        updateCalculations();
     });
 
     // 4. Manejo de Parámetros de Venta
@@ -188,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('editing-indicator').style.display = 'none';
         appState.selectedMaterial = null;
         appState.isAddingMore = false;
-        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: false };
+        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'cliente', incluirAdicional: false };
         
         updateCalculations();
         uiController.showToast('✓ Trabajo agregado correctamente', 'success');
@@ -250,7 +252,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.DOMElements.widthInput.value = job.medidas.ancho;
         uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
         uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
-        uiController.DOMElements.cbAdicional.checked = job.paramsUsados.incluirAdicional === undefined ? true : job.paramsUsados.incluirAdicional;
         
         uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
         uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
@@ -276,7 +277,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.DOMElements.ventaParamsCard.style.display = 'none';
         document.getElementById('editing-indicator').style.display = 'none';
         appState.selectedMaterial = null;
-        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'proveedor', incluirAdicional: false };
+        appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'cliente', incluirAdicional: false };
         updateCalculations();
     }
 
@@ -291,6 +292,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     uiController.DOMElements.cancelEditBtn.addEventListener('click', cancelEditing);
     
+    // Toggle collapse de Parámetros de Venta
+    const collapseBtn = document.getElementById('collapse-venta-params');
+    const ventaParamsContent = document.getElementById('venta-params-content');
+    
+    if (collapseBtn && ventaParamsContent) {
+        // Cerrado por defecto
+        collapseBtn.classList.add('collapsed');
+        ventaParamsContent.classList.add('collapsed');
+        
+        collapseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            collapseBtn.classList.toggle('collapsed');
+            ventaParamsContent.classList.toggle('collapsed');
+        });
+    }
 
     // Delegación de eventos para tabla
     // Delegación de eventos para tabla
@@ -326,7 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateCalculations(); // Recalcular total final de la cotización
     });
 
-    // Delegación de eventos para tarjetas (móvil)
+    // Delegación de eventos para botones de tarjetas (móvil)
     uiController.DOMElements.jobsCardsContainer.addEventListener('input', (event) => {
         const target = event.target;
         const index = parseInt(target.dataset.index);
@@ -357,7 +373,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Delegación de eventos para botones de tarjetas (móvil)
     uiController.DOMElements.jobsCardsContainer.addEventListener('click', (event) => {
-        if (event.target.classList.contains('delete-button')) {
+        if (event.target.classList.contains('qty-plus-btn')) {
+            const index = parseInt(event.target.dataset.index);
+            const job = appState.trabajos[index];
+            job.cantidad += 1;
+            job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
+            job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
+            job.subtotal = job.precioVentaUnitario * job.cantidad;
+            uiController.updateJobsTable(appState.trabajos);
+            updateCalculations();
+        } else if (event.target.classList.contains('qty-minus-btn')) {
+            const index = parseInt(event.target.dataset.index);
+            const job = appState.trabajos[index];
+            if (job.cantidad > 1) {
+                job.cantidad -= 1;
+                job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
+                job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
+                job.subtotal = job.precioVentaUnitario * job.cantidad;
+                uiController.updateJobsTable(appState.trabajos);
+                updateCalculations();
+            }
+        } else if (event.target.classList.contains('delete-button')) {
             const index = parseInt(event.target.dataset.index);
             if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
                 appState.trabajos.splice(index, 1);
@@ -393,7 +429,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             uiController.DOMElements.widthInput.value = job.medidas.ancho;
             uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
             uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
-            uiController.DOMElements.cbAdicional.checked = false;
             
             uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
             uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
@@ -412,7 +447,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     uiController.DOMElements.jobsTableBody.addEventListener('click', (event) => {
-        if (event.target.classList.contains('delete-button')) {
+        if (event.target.classList.contains('qty-plus-btn')) {
+            const index = parseInt(event.target.dataset.index);
+            const job = appState.trabajos[index];
+            job.cantidad += 1;
+            job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
+            job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
+            job.subtotal = job.precioVentaUnitario * job.cantidad;
+            uiController.updateJobsTable(appState.trabajos);
+            updateCalculations();
+        } else if (event.target.classList.contains('qty-minus-btn')) {
+            const index = parseInt(event.target.dataset.index);
+            const job = appState.trabajos[index];
+            if (job.cantidad > 1) {
+                job.cantidad -= 1;
+                job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
+                job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
+                job.subtotal = job.precioVentaUnitario * job.cantidad;
+                uiController.updateJobsTable(appState.trabajos);
+                updateCalculations();
+            }
+        } else if (event.target.classList.contains('delete-button')) {
             const index = parseInt(event.target.dataset.index);
             if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
                 appState.trabajos.splice(index, 1);
@@ -448,7 +503,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             uiController.DOMElements.widthInput.value = job.medidas.ancho;
             uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
             uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
-            uiController.DOMElements.cbAdicional.checked = false;
             
             uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
             uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';

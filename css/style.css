@@ -334,8 +334,6 @@ h1 {
     font-weight: bold;
     text-align: center;
 }
-
-.area-display {
     text-align: right;
     font-size: 1.1em;
     margin-bottom: var(--padding-medium);
@@ -374,6 +372,12 @@ h1 {
     font-size: 1.8em;
     font-weight: bold;
     color: var(--primary-color);
+    margin-top: var(--padding-medium);
+    padding-top: var(--padding-medium);
+    border-top: 2px solid var(--primary-color);
+}
+
+.total-final-section {
     margin-top: var(--padding-medium);
     padding-top: var(--padding-medium);
     border-top: 2px solid var(--primary-color);
@@ -437,6 +441,37 @@ h1 {
     background-color: var(--input-background);
 }
 
+/* Controles de cantidad con botones +/- */
+.qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.qty-minus-btn,
+.qty-plus-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.qty-minus-btn:hover,
+.qty-plus-btn:hover {
+    background-color: var(--secondary-color-hover);
+}
+
+.qty-display {
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
 
 /* MEDIA QUERIES para responsividad */
 
@@ -487,29 +522,49 @@ h1 {
 
 /* Mejoras responsivas para la tabla */
 @media (max-width: 768px) {
+    body {
+        padding: 0.25rem;
+    }
+
+    .container {
+        padding: 0.25rem;
+    }
+
+    .card {
+        padding: 0.5rem;
+    }
+
     #jobs-table {
         display: none;
     }
 
     .jobs-cards-container {
-        display: flex;
-        flex-direction: column;
-        gap: var(--padding-medium);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.25rem;
     }
 
     .job-card {
         background-color: var(--card-background);
         border: 1px solid var(--border-color);
-        border-radius: var(--border-radius);
-        padding: var(--padding-medium);
+        border-radius: 4px;
+        padding: 0.3rem;
         box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .job-card:nth-child(odd) {
+        background-color: var(--card-background);
+    }
+
+    .job-card:nth-child(even) {
+        background-color: #3a3f47;
     }
 
     .job-card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: var(--padding-medium);
+        margin-bottom: var(--padding-small);
         padding-bottom: var(--padding-small);
         border-bottom: 1px solid var(--border-color);
     }
@@ -517,19 +572,19 @@ h1 {
     .job-card-codigo {
         font-weight: bold;
         color: var(--primary-color);
-        font-size: 0.9em;
+        font-size: 0.8em;
     }
 
     .job-card-descripcion {
-        font-size: 0.95em;
+        font-size: 0.8em;
         color: var(--text-color);
         flex: 1;
-        margin-left: var(--padding-medium);
+        margin-left: var(--padding-small);
         text-align: right;
     }
 
     .job-card-body {
-        margin-bottom: var(--padding-medium);
+        margin-bottom: var(--padding-small);
     }
 
     .job-card-row {
@@ -537,7 +592,7 @@ h1 {
         justify-content: space-between;
         align-items: center;
         margin-bottom: var(--padding-small);
-        font-size: 0.95em;
+        font-size: 0.85em;
     }
 
     .job-card-row.total {
@@ -549,12 +604,14 @@ h1 {
 
     .job-card-label {
         color: var(--text-color-light);
-        min-width: 80px;
+        min-width: 60px;
+        font-size: 0.8em;
     }
 
     .job-card-value {
         text-align: right;
         color: var(--text-color);
+        font-size: 0.8em;
     }
 
     .job-card-footer {
@@ -565,7 +622,9 @@ h1 {
 
     .job-card-footer button {
         flex: 1;
-        max-width: 80px;
+        max-width: 60px;
+        padding: 4px 2px;
+        font-size: 0.75em;
     }
 }
 
@@ -573,6 +632,31 @@ h1 {
     .jobs-cards-container {
         display: none;
     }
+}
+
+/* Output buttons group */
+.output-buttons-group {
+    display: flex;
+    gap: var(--padding-small);
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.output-button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.output-button:hover {
+    background-color: var(--secondary-color-hover);
 }
 
 /* Toast Notification */
@@ -613,4 +697,81 @@ h1 {
     .main-layout {
         grid-template-columns: 35% 65%; /* Columna de entrada más pequeña */
     }
+}
+
+
+/* Collapse/Accordion */
+.venta-params-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.venta-params-header h2 {
+    margin: 0;
+    flex: 1;
+}
+
+.collapse-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: transform 0.3s ease;
+    padding: 0;
+}
+
+.collapse-toggle.collapsed {
+    transform: rotate(-90deg);
+}
+
+.venta-params-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.venta-params-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+
+/* Area and Cost Display */
+.area-cost-display {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--padding-medium);
+    margin-bottom: var(--padding-medium);
+}
+
+.area-display {
+    flex: 1;
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.cost-display {
+    flex: 1;
+    text-align: right;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0;
+}
+
+
+/* Button Group */
+.button-group {
+    display: flex;
+    gap: var(--padding-small);
+}
+
+.button-group .large-button {
+    flex: 1;
 }

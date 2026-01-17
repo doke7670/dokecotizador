@@ -8,7 +8,6 @@ const uiController = (() => {
         selectedMaterialInfo: document.getElementById('selected-material-info'),
         rbProveedor: document.getElementById('rb-proveedor'),
         rbCliente: document.getElementById('rb-cliente'),
-        cbAdicional: document.getElementById('cb-adicional'),
         descriptionInput: document.getElementById('description-input'),
         heightInput: document.getElementById('height-input'),
         widthInput: document.getElementById('width-input'),
@@ -82,6 +81,13 @@ const uiController = (() => {
         DOMElements.areaDisplay.textContent = area.toFixed(2);
     }
 
+    function updateCostDisplay(cost) {
+        const costElement = document.getElementById('cost-display');
+        if (costElement) {
+            costElement.textContent = `S/ ${cost.toFixed(2)}`;
+        }
+    }
+
     function updatePreviewPrecioVenta(precio) {
         DOMElements.previewPrecioVenta.textContent = `S/ ${precio.toFixed(2)}`;
     }
@@ -96,22 +102,11 @@ const uiController = (() => {
             <td>${job.medidas.area.toFixed(2)}</td>
             <td class="job-costo-cell">S/ ${job.costoMaterialTotal.toFixed(2)}</td>
             <td>
-                <input 
-                    type="number" 
-                    class="quantity-input small-input" 
-                    value="${job.cantidad}" 
-                    data-index="${index}" 
-                    min="1">
+                <button class="qty-minus-btn" data-index="${index}">−</button>
+                <span class="qty-display">${job.cantidad}</span>
+                <button class="qty-plus-btn" data-index="${index}">+</button>
             </td>
             <td class="job-precio-unit-cell">S/ ${job.precioVentaUnitario.toFixed(2)}</td>
-            <td class="job-ganancia-cell">
-                <input
-                    type="number"
-                    class="ganancia-input small-input"
-                    value="${job.gananciaTotalItem.toFixed(2)}"
-                    data-index="${index}"
-                    min="0">
-            </td>
             <td class="job-subtotal-cell">S/ ${job.subtotal.toFixed(2)}</td>
             <td>
                 <button class="add-more-button" data-index="${index}">+</button>
@@ -145,15 +140,15 @@ const uiController = (() => {
                 </div>
                 <div class="job-card-row">
                     <span class="job-card-label">Cantidad:</span>
-                    <input type="number" class="quantity-input small-input" value="${job.cantidad}" data-index="${index}" min="1">
+                    <div class="qty-controls">
+                        <button class="qty-minus-btn" data-index="${index}">−</button>
+                        <span class="qty-display">${job.cantidad}</span>
+                        <button class="qty-plus-btn" data-index="${index}">+</button>
+                    </div>
                 </div>
                 <div class="job-card-row">
                     <span class="job-card-label">Precio Unit.:</span>
                     <span class="job-card-value">S/ ${job.precioVentaUnitario.toFixed(2)}</span>
-                </div>
-                <div class="job-card-row">
-                    <span class="job-card-label">Ganancia:</span>
-                    <input type="number" class="ganancia-input small-input" value="${job.gananciaTotalItem.toFixed(2)}" data-index="${index}" min="0">
                 </div>
                 <div class="job-card-row total">
                     <span class="job-card-label">Subtotal:</span>
@@ -196,8 +191,8 @@ const uiController = (() => {
         DOMElements.selectedMaterialInfo.innerHTML = '';
         DOMElements.itemForm.style.display = 'none';
         DOMElements.ventaParamsCard.style.display = 'none';
-        DOMElements.rbProveedor.checked = true;
-        DOMElements.cbAdicional.checked = false;
+        DOMElements.rbProveedor.checked = false;
+        DOMElements.rbCliente.checked = true;
         DOMElements.descriptionInput.value = '';
         DOMElements.heightInput.value = '';
         DOMElements.widthInput.value = '';
@@ -233,6 +228,7 @@ const uiController = (() => {
         hideSearchResults,
         displaySelectedMaterial,
         updateAreaDisplay,
+        updateCostDisplay,
         updatePreviewPrecioVenta,
         addJobToTable, // Aún se necesita para añadir nuevas filas
         updateRow, // Nueva función para actualizaciones eficientes

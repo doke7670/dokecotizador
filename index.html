@@ -31,45 +31,50 @@
                     
                     <fieldset class="radio-group">
                         <legend>Base de Precio</legend>
-                        <label><input type="radio" name="price-base" value="proveedor" id="rb-proveedor" checked> Proveedor</label>
-                        <label><input type="radio" name="price-base" value="cliente" id="rb-cliente"> Cliente (Venta por Metro)</label>
+                        <label><input type="radio" name="price-base" value="proveedor" id="rb-proveedor"> Proveedor</label>
+                        <label><input type="radio" name="price-base" value="cliente" id="rb-cliente" checked> Cliente (Venta por Metro)</label>
                     </fieldset>
-
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" id="cb-adicional"> + Adicional</label>
-                    </div>
 
                     <input type="text" id="description-input" placeholder="Descripción (ej. Puerta conductor)" class="large-input" autocomplete="off">
                     <div class="input-group">
                         <input type="number" id="height-input" placeholder="Alto (cm)" class="large-input numeric-input" autocomplete="off">
                         <input type="number" id="width-input" placeholder="Ancho (cm)" class="large-input numeric-input" autocomplete="off">
                     </div>
-                    <p class="area-display">Área: <span id="area-display">0.00</span> m²</p>
+                    <div class="area-cost-display">
+                        <p class="area-display">Área: <span id="area-display">0.00</span> m²</p>
+                        <p class="cost-display">Costo: <span id="cost-display">S/ 0.00</span></p>
+                    </div>
                 </div>
 
                 <!-- Nuevo Card: Parámetros de Venta (Opcional) -->
                 <div class="card" id="venta-params-card" style="display: none;">
-                    <h2>4. Parámetros de Venta (Opcional)</h2>
-                    
-                    <div class="setting-item">
-                        <label><input type="checkbox" id="vp-waste-active"> Aplicar Desperdicio (%):</label>
-                        <input type="number" id="vp-waste-pct-input" placeholder="%" min="0" max="100" class="numeric-input small-input" autocomplete="off">
+                    <div class="venta-params-header">
+                        <h2>4. Parámetros de Venta (Opcional)</h2>
+                        <button class="collapse-toggle" id="collapse-venta-params">▼</button>
                     </div>
-                    <div class="setting-item">
-                        <label><input type="checkbox" id="vp-labor-active"> Aplicar Mano de Obra:</label>
-                        <input type="number" id="vp-labor-cost-input" placeholder="Monto S/" min="0" class="numeric-input small-input" autocomplete="off">
-                    </div>
-                    <div class="setting-item profit-setting-item">
-                        <label><input type="checkbox" id="vp-profit-active"> Aplicar Ganancia:</label>
-                        <select id="vp-profit-type" class="small-input">
-                            <option value="percent">%</option>
-                            <option value="fixed">S/</option>
-                        </select>
-                        <input type="number" id="vp-profit-value-input" placeholder="Valor" min="0" class="numeric-input small-input" autocomplete="off">
-                    </div>
+                    <div class="venta-params-content" id="venta-params-content">
+                        <div class="setting-item">
+                            <label><input type="checkbox" id="vp-waste-active"> Aplicar Desperdicio (%):</label>
+                            <input type="number" id="vp-waste-pct-input" placeholder="%" min="0" max="100" class="numeric-input small-input" autocomplete="off">
+                        </div>
+                        <div class="setting-item">
+                            <label><input type="checkbox" id="vp-labor-active"> Aplicar Mano de Obra:</label>
+                            <input type="number" id="vp-labor-cost-input" placeholder="Monto S/" min="0" class="numeric-input small-input" autocomplete="off">
+                        </div>
+                        <div class="setting-item profit-setting-item">
+                            <label><input type="checkbox" id="vp-profit-active"> Aplicar Ganancia:</label>
+                            <select id="vp-profit-type" class="small-input">
+                                <option value="percent">%</option>
+                                <option value="fixed">S/</option>
+                            </select>
+                            <input type="number" id="vp-profit-value-input" placeholder="Valor" min="0" class="numeric-input small-input" autocomplete="off">
+                        </div>
 
-                    <p class="area-display total-final">Precio Venta Pieza: <span id="preview-precio-venta">S/ 0.00</span></p>
+                        <p class="area-display total-final">Precio Venta Pieza: <span id="preview-precio-venta">S/ 0.00</span></p>
+                    </div>
+                </div>
 
+                <div class="button-group">
                     <button id="add-item-btn" class="large-button primary-button">Agregar a la cotización</button>
                     <button id="cancel-edit-btn" class="large-button secondary-button" style="display: none;">Cancelar Edición</button>
                 </div>
@@ -91,7 +96,6 @@
                                     <th>Costo Interno (S/)</th>
                                     <th>Cantidad</th>
                                     <th>Precio Unit. (S/)</th>
-                                    <th>Ganancia (S/)</th>
                                     <th>Subtotal (S/)</th>
                                     <th></th>
                                 </tr>
@@ -104,21 +108,21 @@
                     <div id="jobs-cards-container" class="jobs-cards-container">
                         <!-- Las tarjetas se insertarán aquí dinámicamente en móvil -->
                     </div>
-                </div>
-
-                <div class="card">
-                    <h2>5. Total Cotización</h2>
-                    <div class="total-final">
-                        TOTAL FINAL: <span id="summary-total">S/0.00</span>
+                    <div class="total-final-section">
+                        <div class="total-final">
+                            TOTAL FINAL: <span id="summary-total">S/0.00</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h2>6. Generar Salida</h2>
                     <textarea id="final-notes" placeholder="Notas opcionales (ej. No bajar vidrios en 48hs)" class="large-textarea" autocomplete="off"></textarea>
-                    <button id="generate-pdf-btn" class="large-button secondary-button">Generar PDF (WhatsApp)</button>
-                    <button id="print-thermal-btn" class="large-button secondary-button">Imprimir Ticket (80mm)</button>
-                    <button id="print-generic-btn" class="large-button secondary-button">Imprimir Genérico</button>
+                    <div class="output-buttons-group">
+                        <button id="generate-pdf-btn" class="output-button" title="Generar PDF (WhatsApp)">📄 PDF</button>
+                        <button id="print-thermal-btn" class="output-button" title="Imprimir Ticket (80mm)">🖨️ Ticket</button>
+                        <button id="print-generic-btn" class="output-button" title="Imprimir Genérico">🖨️ Genérico</button>
+                    </div>
                 </div>
 
             </section>
