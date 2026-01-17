@@ -10,6 +10,7 @@ const outputGenerator = (() => {
     function _createTemplateHTML(appState) {
         const jobsHtml = appState.trabajos.map(job => `
             <tr>
+                <td>${job.material.codigo}</td>
                 <td>${job.descripcion || '-'}</td>
                 <td class="text-center">${job.medidas.area.toFixed(2)}</td>
                 <td class="text-right">S/ ${job.precioVentaUnitario.toFixed(2)}</td>
@@ -61,6 +62,7 @@ const outputGenerator = (() => {
                     <table class="proforma-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                         <thead style="background-color: #222; color: #fff;">
                             <tr>
+                                <th style="padding: 12px; text-align: left; font-weight: bold; border: 1px solid #ddd;">Código</th>
                                 <th style="padding: 12px; text-align: left; font-weight: bold; border: 1px solid #ddd;">Descripción</th>
                                 <th style="padding: 12px; text-align: center; font-weight: bold; border: 1px solid #ddd;">Área (m²)</th>
                                 <th style="padding: 12px; text-align: right; font-weight: bold; border: 1px solid #ddd;">P. Unitario (S/)</th>
@@ -161,8 +163,9 @@ const outputGenerator = (() => {
         }
 
         // Tabla de items
-        const head = [['Descripción', 'Área (m²)', 'P. Unit. (S/)', 'Cant.', 'Subtotal (S/)']];
+        const head = [['Código', 'Descripción', 'Área (m²)', 'P. Unit. (S/)', 'Cant.', 'Subtotal (S/)']];
         const body = appState.trabajos.map(job => [
+            job.material.codigo,
             job.descripcion || '-',
             job.medidas.area.toFixed(2),
             job.precioVentaUnitario.toFixed(2),
@@ -184,10 +187,11 @@ const outputGenerator = (() => {
             styles: { halign: 'center', fontSize: 10 },
             columnStyles: {
                 0: { halign: 'left' },
-                1: { halign: 'center' },
-                2: { halign: 'right' },
-                3: { halign: 'center' },
-                4: { halign: 'right' }
+                1: { halign: 'left' },
+                2: { halign: 'center' },
+                3: { halign: 'right' },
+                4: { halign: 'center' },
+                5: { halign: 'right' }
             },
             margin: { top: currentY, right: 15, bottom: 60, left: 15 },
             didDrawPage: function(data) {

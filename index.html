@@ -11,6 +11,7 @@
     <div class="container">
         <header>
             <div class="logo"></div>
+            <button id="new-sale-btn" class="new-sale-button" title="Iniciar nueva venta">🔄 Nueva Venta</button>
         </header>
 
         <main class="main-layout">
@@ -22,33 +23,54 @@
                     <div id="search-results" class="search-results-dropdown"></div>
                 </div>
 
-                <div class="card" id="item-form" style="display: none;">
-                    <h2>2. Definir Trabajo</h2>
-                    <div id="editing-indicator" class="editing-indicator" style="display: none;">
-                        <span>📝 Modo: Agregar más del mismo producto</span>
+                <!-- Nuevo Card: Datos del Cliente (Opcional) -->
+                <div class="card" id="client-data-card">
+                    <div class="client-data-header" id="client-data-header-clickable">
+                        <h2>2. Datos del Cliente (Opcional)</h2>
+                        <button class="collapse-toggle" id="collapse-client-data">▼</button>
                     </div>
-                    <p id="selected-material-info" class="material-info"></p>
-                    
-                    <fieldset class="radio-group">
-                        <legend>Base de Precio</legend>
-                        <label><input type="radio" name="price-base" value="proveedor" id="rb-proveedor"> Proveedor</label>
-                        <label><input type="radio" name="price-base" value="cliente" id="rb-cliente" checked> Cliente (Venta por Metro)</label>
-                    </fieldset>
+                    <div class="client-data-content" id="client-data-content">
+                        <input type="text" id="client-name-input" placeholder="Nombre del cliente" class="large-input" autocomplete="off">
+                        <input type="tel" id="client-phone-input" placeholder="Teléfono" class="large-input" autocomplete="off">
+                        <input type="email" id="client-email-input" placeholder="Email" class="large-input" autocomplete="off">
+                        <input type="text" id="client-address-input" placeholder="Dirección" class="large-input" autocomplete="off">
+                        <input type="text" id="client-ruc-input" placeholder="RUC/DNI" class="large-input" autocomplete="off">
+                        <button id="clear-client-btn" class="clear-button" style="width: 100%; margin-top: 10px;">🗑️ Limpiar Datos</button>
+                    </div>
+                </div>
 
-                    <input type="text" id="description-input" placeholder="Descripción (ej. Puerta conductor)" class="large-input" autocomplete="off">
-                    <div class="input-group">
-                        <input type="number" id="height-input" placeholder="Alto (cm)" class="large-input numeric-input" autocomplete="off">
-                        <input type="number" id="width-input" placeholder="Ancho (cm)" class="large-input numeric-input" autocomplete="off">
+                <div class="card" id="item-form">
+                    <div class="item-form-header" id="item-form-header-clickable">
+                        <h2>3. Definir Trabajo</h2>
+                        <button class="collapse-toggle" id="collapse-item-form">▼</button>
                     </div>
-                    <div class="area-cost-display">
-                        <p class="area-display">Área: <span id="area-display">0.00</span> m²</p>
-                        <p class="cost-display">Costo: <span id="cost-display">S/ 0.00</span></p>
+                    <div class="item-form-content" id="item-form-content">
+                        <div id="editing-indicator" class="editing-indicator" style="display: none;">
+                            <span>📝 Modo: Agregar más del mismo producto</span>
+                        </div>
+                        <p id="selected-material-info" class="material-info"></p>
+                        
+                        <fieldset class="radio-group">
+                            <legend>Base de Precio</legend>
+                            <label><input type="radio" name="price-base" value="proveedor" id="rb-proveedor"> Proveedor</label>
+                            <label><input type="radio" name="price-base" value="cliente" id="rb-cliente" checked> Cliente (Venta por Metro)</label>
+                        </fieldset>
+
+                        <input type="text" id="description-input" placeholder="Descripción (ej. Puerta conductor)" class="large-input" autocomplete="off">
+                        <div class="input-group">
+                            <input type="number" id="height-input" placeholder="Alto (cm)" class="large-input numeric-input" autocomplete="off">
+                            <input type="number" id="width-input" placeholder="Ancho (cm)" class="large-input numeric-input" autocomplete="off">
+                        </div>
+                        <div class="area-cost-display">
+                            <p class="area-display">Área: <span id="area-display">0.00</span> m²</p>
+                            <p class="cost-display">Costo: <span id="cost-display">S/ 0.00</span></p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Nuevo Card: Parámetros de Venta (Opcional) -->
                 <div class="card" id="venta-params-card" style="display: none;">
-                    <div class="venta-params-header">
+                    <div class="venta-params-header" id="venta-params-header-clickable">
                         <h2>4. Parámetros de Venta (Opcional)</h2>
                         <button class="collapse-toggle" id="collapse-venta-params">▼</button>
                     </div>
@@ -71,6 +93,8 @@
                         </div>
 
                         <p class="area-display total-final">Precio Venta Pieza: <span id="preview-precio-venta">S/ 0.00</span></p>
+                        
+                        <button id="clear-venta-params-btn" class="clear-button" style="margin-top: 10px; width: 100%;">🗑️ Limpiar Parámetros</button>
                     </div>
                 </div>
 
@@ -79,28 +103,11 @@
                     <button id="cancel-edit-btn" class="large-button secondary-button" style="display: none;">Cancelar Edición</button>
                 </div>
 
-                <!-- Nuevo Card: Datos del Cliente (Opcional) -->
-                <div class="card" id="client-data-card">
-                    <div class="client-data-header">
-                        <h2>4. Datos del Cliente (Opcional)</h2>
-                        <button class="collapse-toggle" id="collapse-client-data">▼</button>
-                    </div>
-                    <div class="client-data-content" id="client-data-content">
-                        <input type="text" id="client-name-input" placeholder="Nombre del cliente" class="large-input" autocomplete="off">
-                        <input type="tel" id="client-phone-input" placeholder="Teléfono" class="large-input" autocomplete="off">
-                        <input type="email" id="client-email-input" placeholder="Email" class="large-input" autocomplete="off">
-                        <input type="text" id="client-address-input" placeholder="Dirección" class="large-input" autocomplete="off">
-                        <input type="text" id="client-ruc-input" placeholder="RUC/DNI" class="large-input" autocomplete="off">
-                    </div>
-                </div>
-
-
-
             <section id="summary-column">
 
                 <div class="card">
                     <h2>Trabajos Agregados</h2>
-                    <div class="table-container">
+                    <div class="table-container"></div>
                         <table id="jobs-table">
                             <thead>
                                 <tr>
@@ -127,6 +134,7 @@
                             TOTAL FINAL: <span id="summary-total">S/0.00</span>
                         </div>
                     </div>
+                    <button id="clear-jobs-btn" class="clear-button" style="width: 100%; margin-top: 10px;">🗑️ Limpiar Trabajos</button>
                 </div>
 
                 <div class="card">

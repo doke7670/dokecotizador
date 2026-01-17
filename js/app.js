@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Estado central de la aplicación
     const appState = {
         materials: [],
-        trabajos: [], // Array de objetos { ..., gananciaUnitaria, gananciaTotalItem, ... }
-        editingJobIndex: null, // Índice del trabajo que se está editando
+        trabajos: [],
+        editingJobIndex: null,
         selectedMaterial: null,
-        isAddingMore: false, // Nuevo: indica si estamos en modo "Agregar más"
+        isAddingMore: false,
         currentJobInputs: {
             height: 0,
             width: 0,
@@ -39,14 +39,134 @@ document.addEventListener('DOMContentLoaded', async () => {
             email: '',
             direccion: '',
             ruc: ''
-        }
+        },
+        notas: ''
     };
+
+    // Función para guardar estado en localStorage
+    function saveToLocalStorage() {
+        try {
+            localStorage.setItem('dokecotizador_state', JSON.stringify(appState));
+        } catch (e) {
+            console.error('Error guardando en localStorage:', e);
+        }
+    }
+
+    // Función para cargar estado de localStorage
+    function loadFromLocalStorage() {
+        try {
+            const saved = localStorage.getItem('dokecotizador_state');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                // Restaurar datos
+                appState.trabajos = loaded.trabajos || [];
+                appState.clientData = loaded.clientData || { nombre: '', telefono: '', email: '', direccion: '', ruc: '' };
+                appState.notas = loaded.notas || '';
+                return true;
+            }
+        } catch (e) {
+            console.error('Error cargando de localStorage:', e);
+        }
+        return false;
+    }
+
+    // Función para limpiar todo
+    function clearAllData() {
+        if (confirm('¿Estás seguro de que deseas iniciar una nueva venta? Se borrarán todos los datos.')) {
+            appState.trabajos = [];
+            appState.clientData = { nombre: '', telefono: '', email: '', direccion: '', ruc: '' };
+            appState.notas = '';
+            appState.selectedMaterial = null;
+            appState.editingJobIndex = null;
+            appState.isAddingMore = false;
+            appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'cliente', incluirAdicional: false };
+            
+            // Limpiar UI
+            uiController.DOMElements.searchInput.value = '';
+            uiController.DOMElements.descriptionInput.value = '';
+            uiController.DOMElements.heightInput.value = '';
+            uiController.DOMElements.widthInput.value = '';
+            uiController.DOMElements.clientNameInput.value = '';
+            uiController.DOMElements.clientPhoneInput.value = '';
+            uiController.DOMElements.clientEmailInput.value = '';
+            uiController.DOMElements.clientAddressInput.value = '';
+            uiController.DOMElements.clientRucInput.value = '';
+            uiController.DOMElements.finalNotes.value = '';
+            
+            uiController.updateJobsTable(appState.trabajos);
+            updateCalculations();
+            saveToLocalStorage();
+            uiController.showToast('✓ Nueva venta iniciada', 'success');
+        }
+    }
+
+    // Función para limpiar solo trabajos
+    function clearJobs() {
+        if (confirm('¿Deseas limpiar todos los trabajos agregados?')) {
+            appState.trabajos = [];
+            uiController.updateJobsTable(appState.trabajos);
+            updateCalculations();
+            saveToLocalStorage();
+            uiController.showToast('✓ Trabajos eliminados', 'success');
+        }
+    }
+
+    // Función para limpiar solo datos del cliente
+    function clearClientData() {
+        if (confirm('¿Deseas limpiar los datos del cliente?')) {
+            appState.clientData = { nombre: '', telefono: '', email: '', direccion: '', ruc: '' };
+            uiController.DOMElements.clientNameInput.value = '';
+            uiController.DOMElements.clientPhoneInput.value = '';
+            uiController.DOMElements.clientEmailInput.value = '';
+            uiController.DOMElements.clientAddressInput.value = '';
+            uiController.DOMElements.clientRucInput.value = '';
+            saveToLocalStorage();
+            uiController.showToast('✓ Datos del cliente eliminados', 'success');
+        }
+    }
+
+    // Función para limpiar solo parámetros de venta
+    function clearVentaParams() {
+        if (confirm('¿Deseas limpiar los parámetros de venta?')) {
+            appState.ventaParams = {
+                desperdicioActivo: false,
+                desperdicioPct: 0,
+                manoDeObraActiva: false,
+                manoDeObraMonto: 0,
+                gananciaActiva: false,
+                gananciaTipo: 'percent',
+                gananciaValor: 0
+            };
+            uiController.DOMElements.vpWasteActive.checked = false;
+            uiController.DOMElements.vpWastePctInput.value = '';
+            uiController.DOMElements.vpLaborActive.checked = false;
+            uiController.DOMElements.vpLaborCostInput.value = '';
+            uiController.DOMElements.vpProfitActive.checked = false;
+            uiController.DOMElements.vpProfitType.value = 'percent';
+            uiController.DOMElements.vpProfitValueInput.value = '';
+            uiController.toggleVentaParamsInputs(appState.ventaParams);
+            updateCalculations();
+            saveToLocalStorage();
+            uiController.showToast('✓ Parámetros de venta eliminados', 'success');
+        }
+    }
 
     // 1. Cargar materiales
     appState.materials = await dataService.loadMaterials();
     if (appState.materials.length === 0) {
         alert('Error: No se pudieron cargar los materiales. Por favor, revisa data/materials.json y asegúrate de usar un servidor local.');
         return;
+    }
+
+    // 2. Cargar datos guardados de localStorage
+    if (loadFromLocalStorage()) {
+        uiController.updateJobsTable(appState.trabajos);
+        uiController.DOMElements.clientNameInput.value = appState.clientData.nombre;
+        uiController.DOMElements.clientPhoneInput.value = appState.clientData.telefono;
+        uiController.DOMElements.clientEmailInput.value = appState.clientData.email;
+        uiController.DOMElements.clientAddressInput.value = appState.clientData.direccion;
+        uiController.DOMElements.clientRucInput.value = appState.clientData.ruc;
+        uiController.DOMElements.finalNotes.value = appState.notas;
     }
 
     // Funciones de actualización
@@ -78,6 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         appState.summary = calculator.calculateSummaryTotal(appState.trabajos);
         uiController.updateSummary(appState.summary);
+        saveToLocalStorage();
     };
 
     // Inicializar el estado de los checkboxes de ventaParams
@@ -200,6 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'cliente', incluirAdicional: false };
         
         updateCalculations();
+        saveToLocalStorage();
         uiController.showToast('✓ Trabajo agregado correctamente', 'success');
     }
 
@@ -236,6 +358,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         cancelEditing();
         uiController.updateJobsTable(appState.trabajos);
         updateCalculations();
+        saveToLocalStorage();
         uiController.showToast('✓ Trabajo actualizado correctamente', 'success');
     }
 
@@ -302,33 +425,67 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Toggle collapse de Parámetros de Venta
     const collapseBtn = document.getElementById('collapse-venta-params');
     const ventaParamsContent = document.getElementById('venta-params-content');
+    const ventaParamsHeader = document.getElementById('venta-params-header-clickable');
     
     if (collapseBtn && ventaParamsContent) {
         // Cerrado por defecto
         collapseBtn.classList.add('collapsed');
         ventaParamsContent.classList.add('collapsed');
         
-        collapseBtn.addEventListener('click', (e) => {
+        const toggleVentaParams = (e) => {
             e.stopPropagation();
             collapseBtn.classList.toggle('collapsed');
             ventaParamsContent.classList.toggle('collapsed');
-        });
+        };
+        
+        collapseBtn.addEventListener('click', toggleVentaParams);
+        if (ventaParamsHeader) {
+            ventaParamsHeader.addEventListener('click', toggleVentaParams);
+        }
     }
 
     // Toggle collapse de Datos del Cliente
     const collapseClientBtn = document.getElementById('collapse-client-data');
     const clientDataContent = document.getElementById('client-data-content');
+    const clientDataHeader = document.getElementById('client-data-header-clickable');
     
     if (collapseClientBtn && clientDataContent) {
         // Cerrado por defecto
         collapseClientBtn.classList.add('collapsed');
         clientDataContent.classList.add('collapsed');
         
-        collapseClientBtn.addEventListener('click', (e) => {
+        const toggleClientData = (e) => {
             e.stopPropagation();
             collapseClientBtn.classList.toggle('collapsed');
             clientDataContent.classList.toggle('collapsed');
-        });
+        };
+        
+        collapseClientBtn.addEventListener('click', toggleClientData);
+        if (clientDataHeader) {
+            clientDataHeader.addEventListener('click', toggleClientData);
+        }
+    }
+
+    // Toggle collapse de Definir Trabajo
+    const collapseItemFormBtn = document.getElementById('collapse-item-form');
+    const itemFormContent = document.getElementById('item-form-content');
+    const itemFormHeader = document.getElementById('item-form-header-clickable');
+    
+    if (collapseItemFormBtn && itemFormContent) {
+        // Cerrado por defecto (cambié de abierto a cerrado)
+        collapseItemFormBtn.classList.add('collapsed');
+        itemFormContent.classList.add('collapsed');
+        
+        const toggleItemForm = (e) => {
+            e.stopPropagation();
+            collapseItemFormBtn.classList.toggle('collapsed');
+            itemFormContent.classList.toggle('collapsed');
+        };
+        
+        collapseItemFormBtn.addEventListener('click', toggleItemForm);
+        if (itemFormHeader) {
+            itemFormHeader.addEventListener('click', toggleItemForm);
+        }
     }
 
     // Delegación de eventos para tabla
@@ -554,23 +711,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 7. Manejo de notas finales y generación de salidas
     uiController.DOMElements.finalNotes.addEventListener('input', (event) => {
         appState.notas = event.target.value;
+        saveToLocalStorage();
     });
 
     // 8. Manejo de datos del cliente
     uiController.DOMElements.clientNameInput.addEventListener('input', (event) => {
         appState.clientData.nombre = event.target.value;
+        saveToLocalStorage();
     });
     uiController.DOMElements.clientPhoneInput.addEventListener('input', (event) => {
         appState.clientData.telefono = event.target.value;
+        saveToLocalStorage();
     });
     uiController.DOMElements.clientEmailInput.addEventListener('input', (event) => {
         appState.clientData.email = event.target.value;
+        saveToLocalStorage();
     });
     uiController.DOMElements.clientAddressInput.addEventListener('input', (event) => {
         appState.clientData.direccion = event.target.value;
+        saveToLocalStorage();
     });
     uiController.DOMElements.clientRucInput.addEventListener('input', (event) => {
         appState.clientData.ruc = event.target.value;
+        saveToLocalStorage();
     });
     uiController.DOMElements.generatePdfBtn.addEventListener('click', () => {
         if (appState.trabajos.length === 0) {
@@ -593,6 +756,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         outputGenerator.printGeneric(appState);
     });
+
+    // Event listeners para botones de limpiar
+    const newSaleBtn = document.getElementById('new-sale-btn');
+    if (newSaleBtn) {
+        newSaleBtn.addEventListener('click', clearAllData);
+    }
+
+    const clearJobsBtn = document.getElementById('clear-jobs-btn');
+    if (clearJobsBtn) {
+        clearJobsBtn.addEventListener('click', clearJobs);
+    }
+
+    const clearClientBtn = document.getElementById('clear-client-btn');
+    if (clearClientBtn) {
+        clearClientBtn.addEventListener('click', clearClientData);
+    }
+
+    const clearVentaParamsBtn = document.getElementById('clear-venta-params-btn');
+    if (clearVentaParamsBtn) {
+        clearVentaParamsBtn.addEventListener('click', clearVentaParams);
+    }
 
     // Inicializar cálculos y UI al cargar la app
     updateCalculations();

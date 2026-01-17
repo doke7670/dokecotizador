@@ -659,6 +659,42 @@ h1 {
     background-color: var(--secondary-color-hover);
 }
 
+/* New Sale Button */
+.new-sale-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.new-sale-button:hover {
+    background-color: var(--primary-color-hover);
+}
+
+/* Clear Button */
+.clear-button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.clear-button:hover {
+    background-color: var(--accent-color-hover);
+}
+
 /* Toast Notification */
 .toast-notification {
     position: fixed;
@@ -706,11 +742,15 @@ h1 {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    width: 100%;
+    user-select: none;
 }
 
 .venta-params-header h2 {
     margin: 0;
     flex: 1;
+    cursor: pointer;
+    user-select: none;
 }
 
 .collapse-toggle {
@@ -721,6 +761,7 @@ h1 {
     color: var(--text-color);
     transition: transform 0.3s ease;
     padding: 0;
+    flex-shrink: 0;
 }
 
 .collapse-toggle.collapsed {
@@ -745,11 +786,15 @@ h1 {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    width: 100%;
+    user-select: none;
 }
 
 .client-data-header h2 {
     margin: 0;
     flex: 1;
+    cursor: pointer;
+    user-select: none;
 }
 
 .client-data-content {
@@ -760,6 +805,35 @@ h1 {
 }
 
 .client-data-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+/* Item Form Section */
+.item-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+    user-select: none;
+}
+
+.item-form-header h2 {
+    margin: 0;
+    flex: 1;
+    cursor: pointer;
+    user-select: none;
+}
+
+.item-form-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.item-form-content.collapsed {
     max-height: 0;
     opacity: 0;
 }

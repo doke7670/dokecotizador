@@ -76,11 +76,9 @@ const uiController = (() => {
                 <div><span class="label">Tipo:</span> ${material.tipo}</div>
                 <div><span class="label">Ancho Rollo:</span> ${material.ancho_rollo} m</div>
             `;
-            DOMElements.itemForm.style.display = 'block';
             DOMElements.searchInput.value = material.codigo;
         } else {
             DOMElements.selectedMaterialInfo.innerHTML = '';
-            DOMElements.itemForm.style.display = 'none';
         }
     }
 
@@ -196,7 +194,7 @@ const uiController = (() => {
 
     function resetItemForm() {
         DOMElements.selectedMaterialInfo.innerHTML = '';
-        DOMElements.itemForm.style.display = 'none';
+        // Don't hide itemForm - it should always be visible and collapsible
         DOMElements.ventaParamsCard.style.display = 'none';
         DOMElements.rbProveedor.checked = false;
         DOMElements.rbCliente.checked = true;
