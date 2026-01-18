@@ -1,0 +1,592 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary-color: #FF6700;
+    --primary-color-hover: #E65C00;
+    --secondary-color: #5A6268;
+    --secondary-color-hover: #4A4F54;
+    --accent-color: #E53935;
+    --accent-color-hover: #C62828;
+    --background-color: #212529;
+    --card-background: #343A40;
+    --text-color: #F8F9FA;
+    --text-color-light: #ADB5BD;
+    --border-color: #495057;
+    --table-header-background: #212529;
+    --table-row-even-background: #343A40;
+    --material-info-background: #422c1a;
+    --material-info-border: #5e3f24;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --input-background: #495057;
+    --placeholder-color: #ADB5BD;
+  }
+
+  body {
+    @apply bg-gray-900 text-gray-100 font-sans antialiased leading-relaxed transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-gray-800 border border-gray-600 rounded-lg p-6 mb-4 shadow-lg transition-colors duration-300;
+  }
+
+  .large-input,
+  .large-textarea,
+  .small-input {
+    @apply bg-gray-700 text-white border border-gray-600 rounded-lg;
+  }
+
+  .large-input::placeholder,
+  .large-textarea::placeholder,
+  .small-input::placeholder {
+    @apply text-gray-400;
+  }
+
+  .large-input,
+  .large-textarea,
+  .large-button {
+    @apply w-full p-4 mb-4 text-xl text-center box-border;
+  }
+
+  .large-textarea {
+    @apply resize-y min-h-[100px];
+  }
+
+  .numeric-input {
+    @apply text-center;
+  }
+
+  .small-input {
+    @apply p-2 text-sm ml-2 text-center;
+  }
+
+  .small-input:disabled {
+    @apply bg-gray-600 cursor-not-allowed;
+  }
+
+  .large-button {
+    @apply cursor-pointer font-bold text-white transition-colors duration-200 border-none;
+  }
+
+  .primary-button {
+    @apply bg-orange-600 hover:bg-orange-700;
+  }
+
+  .secondary-button {
+    @apply bg-gray-600 hover:bg-gray-700;
+  }
+
+  .edit-button,
+  .delete-button,
+  .add-more-button {
+    @apply px-3 py-2 border-none rounded text-white cursor-pointer text-sm transition-colors duration-200 mx-1;
+  }
+
+  .add-more-button {
+    @apply bg-orange-600 font-bold px-3;
+    &:hover {
+      @apply bg-orange-700;
+    }
+  }
+
+  .edit-button {
+    @apply bg-gray-600 hover:bg-gray-700;
+  }
+
+  .delete-button {
+    @apply bg-red-600 hover:bg-red-700;
+  }
+
+  .main-layout {
+    @apply flex flex-col gap-6;
+  }
+
+  header {
+    @apply flex justify-between items-center border-b border-gray-600 pb-4 mb-6;
+  }
+
+  .logo {
+    @apply bg-white w-[100px] h-[50px];
+    -webkit-mask-image: url(../assets/logo.svg);
+    mask-image: url(../assets/logo.svg);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  .input-group {
+    @apply flex gap-4 mb-4;
+  }
+
+  .input-group input {
+    @apply flex-1;
+  }
+
+  .radio-group {
+    @apply border border-gray-600 rounded-lg p-4 mb-4;
+  }
+
+  .radio-group legend {
+    @apply font-bold px-2 text-white;
+  }
+
+  .radio-group label {
+    @apply block mb-2 cursor-pointer;
+  }
+
+  .radio-group input[type="radio"],
+  .radio-group input[type="checkbox"] {
+    @apply mr-2;
+  }
+
+  .checkbox-group {
+    @apply border border-gray-600 rounded-lg p-4 mb-4;
+  }
+
+  .checkbox-group label {
+    @apply flex items-center gap-2 cursor-pointer mb-0;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    @apply mr-0;
+  }
+
+  .setting-item {
+    @apply flex justify-between items-center mb-4;
+  }
+
+  .setting-item label {
+    @apply flex items-center gap-2;
+  }
+
+  .material-info {
+    @apply bg-[#422c1a] border border-[#5e3f24] p-4 rounded-lg mb-4 text-lg break-words;
+  }
+
+  .material-info div {
+    @apply flex flex-wrap mb-2;
+  }
+
+  .material-info .label {
+    @apply font-bold mr-2;
+  }
+
+  .editing-indicator {
+    @apply bg-orange-600/10 border-2 border-orange-600 rounded-lg p-4 mb-4 text-orange-600 font-bold text-center;
+  }
+
+  .table-container {
+    @apply overflow-x-auto;
+  }
+
+  #jobs-table {
+    @apply w-full border-collapse mt-4 text-sm;
+  }
+
+  #jobs-table th,
+  #jobs-table td {
+    @apply border border-gray-600 p-2 text-left align-middle;
+  }
+
+  #jobs-table th {
+    @apply bg-gray-900 font-bold text-white;
+  }
+
+  #jobs-table tbody tr:nth-child(even) {
+    @apply bg-gray-800;
+  }
+
+  .total-final {
+    @apply text-right text-2xl font-bold text-orange-600 mt-4 pt-4 border-t-2 border-orange-600;
+  }
+
+  .total-final-section {
+    @apply mt-4 pt-4 border-t-2 border-orange-600;
+  }
+
+  .search-results-dropdown {
+    @apply bg-gray-800 border border-gray-600 rounded-lg max-h-[200px] overflow-y-auto -mt-4 z-[100] shadow-lg;
+  }
+
+  .search-results-dropdown div {
+    @apply p-2 pl-4 cursor-pointer border-b border-gray-600;
+  }
+
+  .search-results-dropdown div:last-child {
+    @apply border-b-0;
+  }
+
+  .search-results-dropdown div:hover,
+  .search-results-dropdown div.selected {
+    @apply bg-gray-900;
+  }
+
+  .profit-setting-item {
+    @apply flex-wrap gap-2 justify-start;
+  }
+
+  .profit-setting-item label {
+    flex-basis: 100%;
+    @apply mb-2;
+  }
+
+  .profit-setting-item .small-input {
+    flex-grow: 0;
+    @apply w-[30%];
+  }
+
+  .quantity-input,
+  .ganancia-input {
+    @apply w-[80px] text-center border border-transparent bg-transparent transition-all duration-200 p-2 py-0;
+  }
+
+  .quantity-input:hover,
+  .quantity-input:focus,
+  .ganancia-input:hover,
+  .ganancia-input:focus {
+    @apply border border-gray-600 bg-gray-700;
+  }
+
+  .qty-controls {
+    @apply flex items-center gap-1;
+  }
+
+  .qty-minus-btn,
+  .qty-plus-btn {
+    @apply bg-gray-600 text-white border-none rounded px-2 py-1 cursor-pointer text-sm font-bold transition-colors duration-200;
+  }
+
+  .qty-minus-btn:hover,
+  .qty-plus-btn:hover {
+    @apply bg-gray-700;
+  }
+
+  .qty-display {
+    @apply min-w-[30px] text-center font-bold;
+  }
+
+  @media (max-width: 480px) {
+    .setting-item {
+      @apply flex-col items-start gap-2;
+    }
+
+    .setting-item .small-input {
+      @apply w-full ml-0 box-border;
+    }
+  }
+
+  @media (min-width: 768px) {
+    h1 {
+      @apply text-[2.5rem];
+    }
+    .main-layout {
+      @apply grid grid-cols-2 gap-6;
+    }
+    #input-column {
+      @apply col-span-1;
+    }
+    #summary-column {
+      @apply col-start-2 col-end-3;
+    }
+    .profit-setting-item {
+      @apply flex-nowrap justify-between;
+    }
+    .profit-setting-item label {
+      flex-basis: auto;
+    }
+    .profit-setting-item .small-input {
+      flex-grow: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    body {
+      @apply p-1;
+    }
+    .container {
+      @apply p-1;
+    }
+    .card {
+      @apply p-2;
+    }
+    h2 {
+      @apply text-base;
+    }
+    .large-input,
+    .large-textarea,
+    .large-button {
+      @apply p-3 text-base mb-2;
+    }
+    .small-input {
+      @apply p-[0.4rem] text-sm;
+    }
+    #jobs-table {
+      @apply hidden;
+    }
+    .jobs-cards-container {
+      @apply grid grid-cols-2 gap-1;
+    }
+    .job-card {
+      @apply bg-gray-800 border border-gray-600 rounded p-1 shadow-md;
+    }
+    .job-card:nth-child(odd) {
+      @apply bg-gray-800;
+    }
+    .job-card:nth-child(even) {
+      @apply bg-[#3a3f47];
+    }
+    .job-card-header {
+      @apply flex justify-between items-center mb-2 pb-2 border-b border-gray-600;
+    }
+    .job-card-codigo {
+      @apply font-bold text-orange-600 text-xs;
+    }
+    .job-card-descripcion {
+      @apply text-xs text-white flex-1 ml-2 text-right;
+    }
+    .job-card-body {
+      @apply mb-2;
+    }
+    .job-card-row {
+      @apply flex justify-between items-center mb-2 text-xs;
+    }
+    .job-card-row.total {
+      @apply font-bold pt-2 border-t border-gray-600 text-orange-600;
+    }
+    .job-card-label {
+      @apply text-gray-400 min-w-[60px] text-xs;
+    }
+    .job-card-value {
+      @apply text-right text-white text-xs;
+    }
+    .job-card-footer {
+      @apply flex gap-2 justify-end;
+    }
+    .job-card-footer button {
+      @apply flex-1 max-w-[60px] px-1 py-1 text-[0.75rem];
+    }
+  }
+
+  @media (min-width: 769px) {
+    .jobs-cards-container {
+      @apply hidden;
+    }
+  }
+
+  .output-buttons-group {
+    @apply flex gap-2 justify-start flex-wrap;
+  }
+
+  .output-button {
+    @apply bg-gray-600 text-white border-none rounded-lg px-4 py-2 cursor-pointer text-sm font-medium transition-colors duration-200 whitespace-nowrap;
+  }
+
+  .output-button:hover {
+    @apply bg-gray-700;
+  }
+
+  .new-sale-button {
+    @apply bg-orange-600 text-white border-none rounded-lg px-4 py-2 cursor-pointer text-sm font-medium transition-colors duration-200 whitespace-nowrap;
+  }
+
+  .new-sale-button:hover {
+    @apply bg-orange-700;
+  }
+
+  .clear-button {
+    @apply bg-red-600 text-white border-none rounded-lg px-3 py-[0.4rem] cursor-pointer text-xs font-medium transition-colors duration-200 whitespace-nowrap;
+  }
+
+  .clear-button:hover {
+    @apply bg-red-700;
+  }
+
+  .toast-notification {
+    @apply fixed bottom-[-100px] left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-4 rounded-lg border-l-4 border-orange-600 shadow-xl z-[1000] duration-300 font-medium max-w-[90%];
+    transition-property: bottom;
+  }
+
+  .toast-notification.show {
+    @apply bottom-5;
+  }
+
+  .toast-notification.toast-success {
+    @apply border-l-orange-600;
+  }
+
+  .toast-notification.toast-error {
+    @apply border-l-red-600;
+  }
+
+  @media (min-width: 1200px) {
+    h1 {
+      @apply text-[3rem];
+    }
+    .main-layout {
+      @apply grid-cols-[35%_65%];
+    }
+  }
+
+  .venta-params-header {
+    @apply flex justify-between items-center cursor-pointer w-full select-none;
+  }
+
+  .venta-params-header h2 {
+    @apply m-0 flex-1 cursor-pointer select-none;
+  }
+
+  .collapse-toggle {
+    @apply bg-none border-none text-xl cursor-pointer text-white transition-transform duration-300 p-0 flex-shrink-0;
+  }
+
+  .collapse-toggle.collapsed {
+    @apply -rotate-90;
+  }
+
+  .venta-params-content {
+    @apply max-h-[1000px] overflow-hidden transition-[max-height,opacity] duration-300 opacity-100;
+  }
+
+  .venta-params-content.collapsed {
+    @apply max-h-0 opacity-0;
+  }
+
+  .client-data-header {
+    @apply flex justify-between items-center cursor-pointer w-full select-none;
+  }
+
+  .client-data-header h2 {
+    @apply m-0 flex-1 cursor-pointer select-none;
+  }
+
+  .client-data-content {
+    @apply max-h-[1000px] overflow-hidden transition-[max-height,opacity] duration-300 opacity-100;
+  }
+
+  .client-data-content.collapsed {
+    @apply max-h-0 opacity-0;
+  }
+
+  .item-form-header {
+    @apply flex justify-between items-center cursor-pointer w-full select-none;
+  }
+
+  .item-form-header h2 {
+    @apply m-0 flex-1 cursor-pointer select-none;
+  }
+
+  .item-form-content {
+    @apply max-h-[1000px] overflow-hidden transition-[max-height,opacity] duration-300 opacity-100;
+  }
+
+  .item-form-content.collapsed {
+    @apply max-h-0 opacity-0;
+  }
+
+  .area-cost-display {
+    @apply flex justify-between gap-4 mb-4;
+  }
+
+  .area-display {
+    @apply flex-1 text-left text-lg font-bold mb-0;
+  }
+
+  .cost-display {
+    @apply flex-1 text-right text-lg font-bold text-orange-600 mb-0;
+  }
+
+  .button-group {
+    @apply flex gap-2;
+  }
+
+  .button-group .large-button {
+    @apply flex-1;
+  }
+}
+
+@layer utilities {
+  .area-display {
+    @apply flex-1 text-left text-lg font-bold mb-0;
+  }
+
+  .cost-display {
+    @apply flex-1 text-right text-lg font-bold text-orange-600 mb-0;
+  }
+}
+
+@media print {
+  body > *:not(.print-container) {
+    display: none !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #000;
+    background-color: #fff;
+  }
+
+  .print-header {
+    @apply text-center mb-2.5;
+  }
+
+  .print-header h1 {
+    @apply text-[14px] m-0 p-0;
+  }
+
+  .print-header p {
+    @apply text-[9px] my-[2px] mx-0;
+  }
+
+  .print-jobs-table {
+    @apply w-full border-collapse mb-2.5;
+  }
+
+  .print-jobs-table th,
+  .print-jobs-table td {
+    @apply py-[2px] px-0 text-left border-b border-dashed border-black;
+  }
+
+  .print-jobs-table th {
+    @apply font-bold uppercase;
+  }
+
+  .print-jobs-table td:nth-child(1) {
+    @apply w-[70%];
+  }
+
+  .print-jobs-table td:nth-child(2) {
+    @apply w-[30%] text-right;
+  }
+
+  .print-summary {
+    @apply mt-2.5 border-t border-dashed border-black;
+    padding-top: 5px;
+  }
+
+  .print-summary .total-final {
+    @apply text-[12px] font-bold border-t border-dashed border-black;
+    padding-top: 5px;
+    margin-top: 5px;
+  }
+
+  .print-summary .total-final span {
+    @apply text-[14px];
+  }
+
+  .print-notes {
+    @apply mt-2.5 text-[9px] text-center;
+  }
+
+  @page {
+    size: 80mm auto;
+    margin: 5mm;
+  }
+}

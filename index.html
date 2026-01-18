@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Cotizaciones - SISDOKE</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/print.css" media="print">
+    <link rel="stylesheet" href="css/output.css">
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css">
 </head>
 <body class="dark-theme">
     <div class="container">
         <header>
             <div class="logo"></div>
-            <button id="new-sale-btn" class="new-sale-button" title="Iniciar nueva venta">🔄 Nueva Venta</button>
+            <button id="new-sale-btn" class="new-sale-button" title="Iniciar nueva venta"><i class="fas fa-rotate-right"></i> Nueva Venta</button>
         </header>
 
         <main class="main-layout">
@@ -35,7 +35,7 @@
                         <input type="email" id="client-email-input" placeholder="Email" class="large-input" autocomplete="off">
                         <input type="text" id="client-address-input" placeholder="Dirección" class="large-input" autocomplete="off">
                         <input type="text" id="client-ruc-input" placeholder="RUC/DNI" class="large-input" autocomplete="off">
-                        <button id="clear-client-btn" class="clear-button" style="width: 100%; margin-top: 10px;">🗑️ Limpiar Datos</button>
+                        <button id="clear-client-btn" class="clear-button" style="width: 100%; margin-top: 10px;"><i class="fas fa-trash"></i> Limpiar Datos</button>
                     </div>
                 </div>
 
@@ -46,7 +46,7 @@
                     </div>
                     <div class="item-form-content" id="item-form-content">
                         <div id="editing-indicator" class="editing-indicator" style="display: none;">
-                            <span>📝 Modo: Agregar más del mismo producto</span>
+                            <span><i class="fas fa-pen-to-square"></i> Modo: Agregar más del mismo producto</span>
                         </div>
                         <p id="selected-material-info" class="material-info"></p>
                         
@@ -94,7 +94,7 @@
 
                         <p class="area-display total-final">Precio Venta Pieza: <span id="preview-precio-venta">S/ 0.00</span></p>
                         
-                        <button id="clear-venta-params-btn" class="clear-button" style="margin-top: 10px; width: 100%;">🗑️ Limpiar Parámetros</button>
+                        <button id="clear-venta-params-btn" class="clear-button" style="margin-top: 10px; width: 100%;"><i class="fas fa-trash"></i> Limpiar Parámetros</button>
                     </div>
                 </div>
 
@@ -134,16 +134,16 @@
                             TOTAL FINAL: <span id="summary-total">S/0.00</span>
                         </div>
                     </div>
-                    <button id="clear-jobs-btn" class="clear-button" style="width: 100%; margin-top: 10px;">🗑️ Limpiar Trabajos</button>
+                    <button id="clear-jobs-btn" class="clear-button" style="width: 100%; margin-top: 10px;"><i class="fas fa-trash"></i> Limpiar Trabajos</button>
                 </div>
 
                 <div class="card">
                     <h2>6. Generar Salida</h2>
                     <textarea id="final-notes" placeholder="Notas opcionales (ej. No bajar vidrios en 48hs)" class="large-textarea" autocomplete="off"></textarea>
                     <div class="output-buttons-group">
-                        <button id="generate-pdf-btn" class="output-button" title="Generar PDF (WhatsApp)">📄 PDF</button>
-                        <button id="print-thermal-btn" class="output-button" title="Imprimir Ticket (80mm)">🖨️ Ticket</button>
-                        <button id="print-generic-btn" class="output-button" title="Imprimir Genérico">🖨️ Genérico</button>
+                        <button id="generate-pdf-btn" class="output-button" title="Generar PDF (WhatsApp)"><i class="fas fa-file-pdf"></i> PDF</button>
+                        <button id="print-thermal-btn" class="output-button" title="Imprimir Ticket (80mm)"><i class="fas fa-print"></i> Ticket</button>
+                        <button id="print-generic-btn" class="output-button" title="Imprimir Genérico"><i class="fas fa-print"></i> Genérico</button>
                     </div>
                 </div>
 

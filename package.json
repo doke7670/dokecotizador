@@ -1,0 +1,28 @@
+{
+  "name": "sisdoke---copia",
+  "version": "1.0.0",
+  "description": "**¡Atención! Último paso para la configuración inicial:**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tailwindcss -i ./css/input.css -o ./css/output.css --minify",
+    "watch": "tailwindcss -i ./css/input.css -o ./css/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doke7670/dokecotizador.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/doke7670/dokecotizador/issues"
+  },
+  "homepage": "https://github.com/doke7670/dokecotizador#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19"
+  }
+}
