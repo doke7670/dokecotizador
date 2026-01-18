@@ -158,15 +158,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 2. Cargar datos guardados de localStorage
+    // 2. Verificar si hay trabajos guardados
+    const savedState = localStorage.getItem('dokecotizador_state');
+    let hasJobs = false;
+    if (savedState) {
+        try {
+            const parsed = JSON.parse(savedState);
+            if (parsed.trabajos && parsed.trabajos.length > 0) {
+                hasJobs = true;
+                uiController.showSkeletons();
+            }
+        } catch (e) {
+            console.error('Error al verificar localStorage:', e);
+        }
+    }
+
+    // 3. Cargar datos guardados de localStorage
     if (loadFromLocalStorage()) {
-        uiController.updateJobsTable(appState.trabajos);
+        // Si hay trabajos, esperar un poco para mostrar skeletons antes de cargar datos
+        if (hasJobs) {
+            setTimeout(() => {
+                uiController.updateJobsTable(appState.trabajos);
+                uiController.hideSkeletons();
+            }, 300);
+        } else {
+            uiController.updateJobsTable(appState.trabajos);
+            uiController.hideSkeletons();
+        }
         uiController.DOMElements.clientNameInput.value = appState.clientData.nombre;
         uiController.DOMElements.clientPhoneInput.value = appState.clientData.telefono;
         uiController.DOMElements.clientEmailInput.value = appState.clientData.email;
         uiController.DOMElements.clientAddressInput.value = appState.clientData.direccion;
         uiController.DOMElements.clientRucInput.value = appState.clientData.ruc;
         uiController.DOMElements.finalNotes.value = appState.notas;
+    } else {
+        uiController.hideSkeletons();
     }
 
     // Funciones de actualización
@@ -509,6 +535,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             originalDisplaySelectedMaterial.call(this, material);
             updateItemFormState();
         };
+    }
+
+    // Toggle collapse de Notas
+    const collapseNotesBtn = document.getElementById('collapse-notes');
+    const notesContent = document.getElementById('notes-content');
+    const notesHeader = document.getElementById('notes-header-clickable');
+
+    if (collapseNotesBtn && notesContent) {
+        const toggleNotes = (e) => {
+            e.stopPropagation();
+            collapseNotesBtn.classList.toggle('collapsed');
+            notesContent.classList.toggle('collapsed');
+        };
+
+        collapseNotesBtn.addEventListener('click', toggleNotes);
+        if (notesHeader) {
+            notesHeader.addEventListener('click', toggleNotes);
+        }
     }
 
     // Delegación de eventos para tabla

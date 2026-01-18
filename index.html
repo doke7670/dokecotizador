@@ -40,9 +40,9 @@
                 </div>
 
                 <div class="card" id="item-form">
-                    <div class="item-form-header" id="item-form-header-clickable">
+                    <div class="item-form-header" id="item-form-header-clickable" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">
                         <h2>3. Definir Trabajo</h2>
-                        <button class="collapse-toggle" id="collapse-item-form">▼</button>
+                        <button class="collapse-toggle" id="collapse-item-form" disabled style="cursor: not-allowed;">▼</button>
                     </div>
                     <div class="item-form-content collapsed" id="item-form-content">
                         <div id="editing-indicator" class="editing-indicator" style="display: none;">
@@ -121,12 +121,96 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="jobs-table-skeleton">
+                                <!-- Skeleton rows -->
+                                <tr class="skeleton-row">
+                                    <td><div class="skeleton skeleton-text"></div></td>
+                                    <td><div class="skeleton skeleton-text"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-center"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-right"></div></td>
+                                    <td><div class="skeleton skeleton-center"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-right"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-right"></div></td>
+                                    <td><div class="skeleton skeleton-buttons"></div></td>
+                                </tr>
+                                <tr class="skeleton-row">
+                                    <td><div class="skeleton skeleton-text"></div></td>
+                                    <td><div class="skeleton skeleton-text"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-center"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-right"></div></td>
+                                    <td><div class="skeleton skeleton-center"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-right"></div></td>
+                                    <td><div class="skeleton skeleton-text skeleton-right"></div></td>
+                                    <td><div class="skeleton skeleton-buttons"></div></td>
+                                </tr>
+                            </tbody>
+                            <tbody id="jobs-table-body">
                                 <!-- Las filas se insertarán aquí dinámicamente -->
                             </tbody>
                         </table>
                     </div>
-                    <div id="jobs-cards-container" class="jobs-cards-container">
+                    <div id="jobs-cards-skeleton" class="jobs-cards-container">
+                        <!-- Skeleton cards -->
+                        <div class="job-card skeleton-card">
+                            <div class="job-card-header">
+                                <span class="skeleton skeleton-code"></span>
+                                <span class="skeleton skeleton-desc"></span>
+                            </div>
+                            <div class="job-card-body">
+                                <div class="job-card-row">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <span class="skeleton skeleton-value"></span>
+                                </div>
+                                <div class="job-card-row">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <div class="skeleton skeleton-qty"></div>
+                                </div>
+                                <div class="job-card-row">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <span class="skeleton skeleton-value"></span>
+                                </div>
+                                <div class="job-card-row total">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <span class="skeleton skeleton-value"></span>
+                                </div>
+                            </div>
+                            <div class="job-card-footer">
+                                <div class="skeleton skeleton-btn"></div>
+                                <div class="skeleton skeleton-btn"></div>
+                                <div class="skeleton skeleton-btn"></div>
+                            </div>
+                        </div>
+                        <div class="job-card skeleton-card">
+                            <div class="job-card-header">
+                                <span class="skeleton skeleton-code"></span>
+                                <span class="skeleton skeleton-desc"></span>
+                            </div>
+                            <div class="job-card-body">
+                                <div class="job-card-row">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <span class="skeleton skeleton-value"></span>
+                                </div>
+                                <div class="job-card-row">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <div class="skeleton skeleton-qty"></div>
+                                </div>
+                                <div class="job-card-row">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <span class="skeleton skeleton-value"></span>
+                                </div>
+                                <div class="job-card-row total">
+                                    <span class="skeleton skeleton-label"></span>
+                                    <span class="skeleton skeleton-value"></span>
+                                </div>
+                            </div>
+                            <div class="job-card-footer">
+                                <div class="skeleton skeleton-btn"></div>
+                                <div class="skeleton skeleton-btn"></div>
+                                <div class="skeleton skeleton-btn"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="jobs-cards-body" class="jobs-cards-container jobs-cards-body">
                         <!-- Las tarjetas se insertarán aquí dinámicamente en móvil -->
                     </div>
                     <div class="total-final-section">
@@ -138,8 +222,17 @@
                 </div>
 
                 <div class="card">
-                    <h2>6. Generar Salida</h2>
-                    <textarea id="final-notes" placeholder="Notas opcionales (ej. No bajar vidrios en 48hs)" class="large-textarea" autocomplete="off"></textarea>
+                    <div class="notes-header" id="notes-header-clickable">
+                        <h2>6. Notas (Opcionales)</h2>
+                        <button class="collapse-toggle" id="collapse-notes">▼</button>
+                    </div>
+                    <div class="notes-content collapsed" id="notes-content">
+                        <textarea id="final-notes" placeholder="Notas opcionales (ej. No bajar vidrios en 48hs)" class="large-textarea" autocomplete="off"></textarea>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>7. Generar Salida</h2>
                     <div class="output-buttons-group">
                         <button id="generate-pdf-btn" class="output-button" title="Generar PDF (WhatsApp)"><i class="fas fa-file-pdf"></i> PDF</button>
                         <button id="print-thermal-btn" class="output-button" title="Imprimir Ticket (80mm)"><i class="fas fa-print"></i> Ticket</button>

@@ -509,6 +509,22 @@
   .button-group .large-button {
     @apply flex-1;
   }
+
+  .notes-header {
+    @apply flex justify-between items-center cursor-pointer w-full select-none;
+  }
+
+  .notes-header h2 {
+    @apply m-0 flex-1 cursor-pointer select-none;
+  }
+
+  .notes-content {
+    @apply max-h-[1000px] overflow-hidden transition-[max-height,opacity] duration-300 opacity-100;
+  }
+
+  .notes-content.collapsed {
+    @apply max-h-0 opacity-0;
+  }
 }
 
 @layer utilities {
@@ -592,3 +608,121 @@
     margin: 5mm;
   }
 }
+
+/* Skeleton Loading Styles */
+.skeleton {
+  background: linear-gradient(90deg, #4a5568 25%, #2d3748 50%, #4a5568 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-shimmer {
+   0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Table skeleton */
+.skeleton-row td {
+  padding: 8px;
+}
+
+.skeleton-text {
+  height: 16px;
+  width: 80%;
+}
+
+.skeleton-text.skeleton-center {
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skeleton-text.skeleton-right {
+  width: 70%;
+  margin-left: auto;
+}
+
+.skeleton-center {
+  width: 40px;
+  height: 32px;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.skeleton-buttons {
+  width: 100px;
+  height: 32px;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+/* Card skeleton */
+.skeleton-card {
+  opacity: 0.7;
+}
+
+.skeleton-code {
+  display: inline-block;
+  width: 50px;
+  height: 14px;
+}
+
+.skeleton-desc {
+  display: inline-block;
+  flex: 1;
+  margin-left: 8px;
+  height: 14px;
+}
+
+.skeleton-label {
+  width: 60px;
+  height: 12px;
+}
+
+.skeleton-value {
+  width: 80px;
+  height: 12px;
+}
+
+.skeleton-qty {
+  display: flex;
+  gap: 4px;
+}
+
+.skeleton-qty > div {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.skeleton-btn {
+  flex: 1;
+  max-width: 60px;
+  height: 28px;
+  border-radius: 4px;
+}
+
+#jobs-table-skeleton,
+#jobs-cards-skeleton {
+  display: none;
+}
+
+#jobs-table-skeleton.loading,
+#jobs-cards-skeleton.loading {
+  display: table-row-group;
+}
+
+#jobs-cards-skeleton.loading {
+  display: grid;
+}
+
+#jobs-table-body,
+.jobs-cards-body {
+  display: none;
+}
+

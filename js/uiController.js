@@ -12,7 +12,7 @@ const uiController = (() => {
         heightInput: document.getElementById('height-input'),
         widthInput: document.getElementById('width-input'),
         areaDisplay: document.getElementById('area-display'),
-        
+
         ventaParamsCard: document.getElementById('venta-params-card'),
         vpWasteActive: document.getElementById('vp-waste-active'),
         vpWastePctInput: document.getElementById('vp-waste-pct-input'),
@@ -25,10 +25,12 @@ const uiController = (() => {
 
         addItemBtn: document.getElementById('add-item-btn'),
         cancelEditBtn: document.getElementById('cancel-edit-btn'),
-        jobsTableBody: document.querySelector('#jobs-table tbody'),
-        jobsCardsContainer: document.getElementById('jobs-cards-container'),
-        
-        summaryTotal: document.getElementById('summary-total'), 
+        jobsTableBody: document.getElementById('jobs-table-body'),
+        jobsCardsContainer: document.getElementById('jobs-cards-body'),
+        jobsTableSkeleton: document.getElementById('jobs-table-skeleton'),
+        jobsCardsSkeleton: document.getElementById('jobs-cards-skeleton'),
+
+        summaryTotal: document.getElementById('summary-total'),
         
         finalNotes: document.getElementById('final-notes'),
         generatePdfBtn: document.getElementById('generate-pdf-btn'),
@@ -170,6 +172,7 @@ const uiController = (() => {
     }
 
     function updateJobsTable(jobs) {
+        hideSkeletons();
         DOMElements.jobsTableBody.innerHTML = '';
         DOMElements.jobsCardsContainer.innerHTML = '';
         jobs.forEach((job, index) => {
@@ -183,7 +186,19 @@ const uiController = (() => {
     function updateSummary(summary) {
         DOMElements.summaryTotal.textContent = `S/ ${summary.totalFinal.toFixed(2)}`;
     }
-    
+
+    function hideSkeletons() {
+        DOMElements.jobsTableSkeleton.classList.remove('loading');
+        DOMElements.jobsCardsSkeleton.classList.remove('loading');
+        DOMElements.jobsTableBody.style.display = 'table-row-group';
+        DOMElements.jobsCardsContainer.style.display = 'grid';
+    }
+
+    function showSkeletons() {
+        DOMElements.jobsTableSkeleton.classList.add('loading');
+        DOMElements.jobsCardsSkeleton.classList.add('loading');
+    }
+
     function toggleVentaParamsInputs(ventaParams) {
         // Deshabilitar inputs según el estado de los checkboxes
         uiController.DOMElements.vpWastePctInput.disabled = !ventaParams.desperdicioActivo;
@@ -239,6 +254,8 @@ const uiController = (() => {
         updateRow, // Nueva función para actualizaciones eficientes
         updateJobsTable, // Se usa al eliminar
         updateSummary,
+        showSkeletons,
+        hideSkeletons,
         toggleVentaParamsInputs,
         resetItemForm,
         setEditingMode,
