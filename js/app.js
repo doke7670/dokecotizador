@@ -438,10 +438,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ventaParamsHeader = document.getElementById('venta-params-header-clickable');
     
     if (collapseBtn && ventaParamsContent) {
-        // Cerrado por defecto
-        collapseBtn.classList.add('collapsed');
-        ventaParamsContent.classList.add('collapsed');
-        
         const toggleVentaParams = (e) => {
             e.stopPropagation();
             collapseBtn.classList.toggle('collapsed');
@@ -460,10 +456,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const clientDataHeader = document.getElementById('client-data-header-clickable');
     
     if (collapseClientBtn && clientDataContent) {
-        // Cerrado por defecto
-        collapseClientBtn.classList.add('collapsed');
-        clientDataContent.classList.add('collapsed');
-        
         const toggleClientData = (e) => {
             e.stopPropagation();
             collapseClientBtn.classList.toggle('collapsed');
@@ -482,10 +474,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const itemFormHeader = document.getElementById('item-form-header-clickable');
     
     if (collapseItemFormBtn && itemFormContent) {
-        // Cerrado por defecto (cambié de abierto a cerrado)
-        collapseItemFormBtn.classList.add('collapsed');
-        itemFormContent.classList.add('collapsed');
-        
         const toggleItemForm = (e) => {
             e.stopPropagation();
             collapseItemFormBtn.classList.toggle('collapsed');
