@@ -15,14 +15,23 @@ const dataService = (() => {
         }
     }
 
-    function searchMaterials(query) {
-        if (!query) return [];
-        const lowerCaseQuery = query.toLowerCase();
-        return materials.filter(material => 
-            material.codigo.toLowerCase().includes(lowerCaseQuery) ||
-            material.marca.toLowerCase().includes(lowerCaseQuery) ||
-            material.modelo.toLowerCase().includes(lowerCaseQuery)
-        );
+    function searchMaterials(query, tipoFilter = 'all') {
+        let results = materials;
+
+        if (query) {
+            const lowerCaseQuery = query.toLowerCase();
+            results = results.filter(material =>
+                material.codigo.toLowerCase().includes(lowerCaseQuery) ||
+                material.marca.toLowerCase().includes(lowerCaseQuery) ||
+                material.modelo.toLowerCase().includes(lowerCaseQuery)
+            );
+        }
+
+        if (tipoFilter !== 'all') {
+            results = results.filter(material => material.tipo === tipoFilter);
+        }
+
+        return results;
     }
 
     function getMaterialByCode(code) {

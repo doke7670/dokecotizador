@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             direccion: '',
             ruc: ''
         },
-        notas: ''
+        notas: '',
+        materialFilter: 'all'
     };
 
     // Función para guardar estado en localStorage
@@ -235,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Manejo del input de búsqueda y selección
     uiController.DOMElements.searchInput.addEventListener('input', (event) => {
         const query = event.target.value;
-        const results = dataService.searchMaterials(query);
+        const results = dataService.searchMaterials(query, appState.materialFilter);
         uiController.displaySearchResults(results);
     });
     uiController.DOMElements.searchInput.addEventListener('blur', () => {
@@ -243,6 +244,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!uiController.DOMElements.searchResults.contains(event.relatedTarget)) {
             setTimeout(() => uiController.hideSearchResults(), 100);
         }
+    });
+
+    // Manejo de los botones de filtro por tipo
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            const filter = event.target.dataset.filter;
+            appState.materialFilter = filter;
+
+            // Actualizar UI de los botones
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Ejecutar búsqueda con el nuevo filtro
+            const query = uiController.DOMElements.searchInput.value;
+            const results = dataService.searchMaterials(query, filter);
+            uiController.displaySearchResults(results);
+        });
     });
     uiController.DOMElements.searchResults.addEventListener('mousedown', (event) => {
         // Usar mousedown en lugar de click para que se ejecute antes del blur
