@@ -44,13 +44,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         materialFilter: 'all'
     };
 
-    // Función para guardar estado en localStorage
+    // Debounce para localStorage (evitar escrituras excesivas)
+    let saveToLocalStorageTimeout;
     function saveToLocalStorage() {
-        try {
-            localStorage.setItem('dokecotizador_state', JSON.stringify(appState));
-        } catch (e) {
-            console.error('Error guardando en localStorage:', e);
-        }
+        clearTimeout(saveToLocalStorageTimeout);
+        saveToLocalStorageTimeout = setTimeout(() => {
+            try {
+                localStorage.setItem('dokecotizador_state', JSON.stringify(appState));
+            } catch (e) {
+                console.error('Error guardando en localStorage:', e);
+            }
+        }, 300);
     }
 
     // Función para cargar estado de localStorage
@@ -413,7 +417,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function startEditing(index) {
         appState.editingJobIndex = index;
         const job = appState.trabajos[index];
-
+        
         appState.selectedMaterial = job.material;
         appState.currentJobInputs = {
             height: job.medidas.alto,
@@ -423,7 +427,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             incluirAdicional: job.paramsUsados.incluirAdicional === undefined ? true : job.paramsUsados.incluirAdicional,
         };
         appState.ventaParams = { ...job.paramsUsados };
-
+        
         uiController.displaySelectedMaterial(job.material);
         uiController.DOMElements.descriptionInput.value = job.descripcion;
         uiController.DOMElements.heightInput.value = job.medidas.alto;
@@ -431,20 +435,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
         uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
         
-        uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
-        uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
-        uiController.DOMElements.vpLaborActive.checked = job.paramsUsados.manoDeObraActiva;
-        uiController.DOMElements.vpLaborCostInput.value = job.paramsUsados.manoDeObraMonto || '';
-        uiController.DOMElements.vpProfitActive.checked = job.paramsUsados.gananciaActiva;
-        uiController.DOMElements.vpProfitType.value = job.paramsUsados.gananciaTipo || 'percent';
-        uiController.DOMElements.vpProfitValueInput.value = job.paramsUsados.gananciaValor || '';
-        
-        uiController.toggleVentaParamsInputs(job.paramsUsados);
+        setVentaParamsFormValues(job.paramsUsados);
         uiController.DOMElements.ventaParamsCard.style.display = 'block';
         uiController.setEditingMode(true);
         updateCalculations();
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function startAddingMore(index) {
+        const job = appState.trabajos[index];
+        appState.isAddingMore = true;
+        document.getElementById('editing-indicator').style.display = 'block';
+        
+        appState.selectedMaterial = job.material;
+        appState.currentJobInputs = {
+            height: job.medidas.alto,
+            width: job.medidas.ancho,
+            description: job.descripcion,
+            tipoPrecio: job.paramsUsados.tipoPrecio,
+            incluirAdicional: false,
+        };
+        appState.ventaParams = { ...job.paramsUsados };
+        
+        uiController.displaySelectedMaterial(job.material);
+        uiController.DOMElements.descriptionInput.value = job.descripcion;
+        uiController.DOMElements.heightInput.value = job.medidas.alto;
+        uiController.DOMElements.widthInput.value = job.medidas.ancho;
+        uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
+        uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
+        
+        setVentaParamsFormValues(job.paramsUsados);
+        uiController.DOMElements.ventaParamsCard.style.display = 'block';
+        updateCalculations();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setVentaParamsFormValues(params) {
+        uiController.DOMElements.vpWasteActive.checked = params.desperdicioActivo;
+        uiController.DOMElements.vpWastePctInput.value = params.desperdicioPct || '';
+        uiController.DOMElements.vpLaborActive.checked = params.manoDeObraActiva;
+        uiController.DOMElements.vpLaborCostInput.value = params.manoDeObraMonto || '';
+        uiController.DOMElements.vpProfitActive.checked = params.gananciaActiva;
+        uiController.DOMElements.vpProfitType.value = params.gananciaTipo || 'percent';
+        uiController.DOMElements.vpProfitValueInput.value = params.gananciaValor || '';
+        uiController.toggleVentaParamsInputs(params);
     }
 
     function cancelEditing() {
@@ -458,15 +494,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'cliente', incluirAdicional: false };
         updateCalculations();
         
-        // Deshabilitar "Definir Trabajo" cuando se cancela
-        const itemFormHeader = document.getElementById('item-form-header-clickable');
-        const collapseItemFormBtn = document.getElementById('collapse-item-form');
-        if (itemFormHeader && collapseItemFormBtn) {
-            collapseItemFormBtn.disabled = true;
-            itemFormHeader.style.pointerEvents = 'none';
-            itemFormHeader.style.opacity = '0.5';
-            itemFormHeader.style.cursor = 'not-allowed';
-        }
+        updateItemFormState();
     }
 
     // 5. Añadir o Actualizar ítem
@@ -480,61 +508,67 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     uiController.DOMElements.cancelEditBtn.addEventListener('click', cancelEditing);
     
-    // Toggle collapse de Parámetros de Venta
-    const collapseBtn = document.getElementById('collapse-venta-params');
-    const ventaParamsContent = document.getElementById('venta-params-content');
-    const ventaParamsHeader = document.getElementById('venta-params-header-clickable');
-    
-    if (collapseBtn && ventaParamsContent) {
-        const toggleVentaParams = (e) => {
-            e.stopPropagation();
-            collapseBtn.classList.toggle('collapsed');
-            ventaParamsContent.classList.toggle('collapsed');
-        };
+    // Función reutilizable para manejar collapse de secciones
+    function setupCollapseSection(buttonId, contentId, headerId, onToggleCallback) {
+        const collapseBtn = document.getElementById(buttonId);
+        const content = document.getElementById(contentId);
+        const header = headerId ? document.getElementById(headerId) : null;
         
-        collapseBtn.addEventListener('click', toggleVentaParams);
-        if (ventaParamsHeader) {
-            ventaParamsHeader.addEventListener('click', toggleVentaParams);
+        if (collapseBtn && content) {
+            const toggle = (e) => {
+                e.stopPropagation();
+                collapseBtn.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+                if (onToggleCallback) onToggleCallback();
+            };
+            
+            collapseBtn.addEventListener('click', toggle);
+            if (header) {
+                header.addEventListener('click', toggle);
+            }
         }
     }
 
-    // Toggle collapse de Datos del Cliente
-    const collapseClientBtn = document.getElementById('collapse-client-data');
-    const clientDataContent = document.getElementById('client-data-content');
-    const clientDataHeader = document.getElementById('client-data-header-clickable');
-    
-    if (collapseClientBtn && clientDataContent) {
-        const toggleClientData = (e) => {
-            e.stopPropagation();
-            collapseClientBtn.classList.toggle('collapsed');
-            clientDataContent.classList.toggle('collapsed');
-        };
-        
-        collapseClientBtn.addEventListener('click', toggleClientData);
-        if (clientDataHeader) {
-            clientDataHeader.addEventListener('click', toggleClientData);
+    // Setup de todas las secciones collapsibles
+    setupCollapseSection('collapse-venta-params', 'venta-params-content', 'venta-params-header-clickable');
+    setupCollapseSection('collapse-client-data', 'client-data-content', 'client-data-header-clickable');
+    setupCollapseSection('collapse-notes', 'notes-content', 'notes-header-clickable');
+
+    // Funciones auxiliares para acciones en trabajos
+    function updateJobQuantity(index, newQuantity) {
+        const job = appState.trabajos[index];
+        if (newQuantity < 1) newQuantity = 1;
+        job.cantidad = newQuantity;
+        job.costoMaterialTotal = job.costoMaterialUnitario * newQuantity;
+        job.gananciaTotalItem = job.gananciaUnitaria * newQuantity;
+        job.subtotal = job.precioVentaUnitario * newQuantity;
+    }
+
+    function updateJobGain(index, newGainTotal) {
+        const job = appState.trabajos[index];
+        job.gananciaTotalItem = newGainTotal;
+        job.gananciaUnitaria = newGainTotal / job.cantidad;
+        job.subtotal = job.costoMaterialTotal + newGainTotal;
+        job.precioVentaUnitario = job.subtotal / job.cantidad;
+    }
+
+    function deleteJob(index) {
+        if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
+            appState.trabajos.splice(index, 1);
+            uiController.updateJobsTable(appState.trabajos);
+            updateCalculations();
+            uiController.showToast('✓ Trabajo eliminado', 'success');
         }
     }
 
-    // Toggle collapse de Definir Trabajo
+    // Toggle collapse de Definir Trabajo (con lógica especial para deshabilitar)
+    setupCollapseSection('collapse-item-form', 'item-form-content', 'item-form-header-clickable');
+    
     const collapseItemFormBtn = document.getElementById('collapse-item-form');
-    const itemFormContent = document.getElementById('item-form-content');
     const itemFormHeader = document.getElementById('item-form-header-clickable');
     
-    if (collapseItemFormBtn && itemFormContent) {
-        const toggleItemForm = (e) => {
-            e.stopPropagation();
-            collapseItemFormBtn.classList.toggle('collapsed');
-            itemFormContent.classList.toggle('collapsed');
-        };
-        
-        collapseItemFormBtn.addEventListener('click', toggleItemForm);
-        if (itemFormHeader) {
-            itemFormHeader.addEventListener('click', toggleItemForm);
-        }
-        
-        // Deshabilitar si no hay material seleccionado
-        const updateItemFormState = () => {
+    const updateItemFormState = () => {
+        if (collapseItemFormBtn && itemFormHeader) {
             if (!appState.selectedMaterial) {
                 collapseItemFormBtn.disabled = true;
                 itemFormHeader.style.pointerEvents = 'none';
@@ -546,38 +580,44 @@ document.addEventListener('DOMContentLoaded', async () => {
                 itemFormHeader.style.opacity = '1';
                 itemFormHeader.style.cursor = 'pointer';
             }
-        };
-        
-        // Llamar al inicio
+        }
+    };
+    
+    updateItemFormState();
+    
+    const originalDisplaySelectedMaterial = uiController.displaySelectedMaterial;
+    uiController.displaySelectedMaterial = function(material) {
+        originalDisplaySelectedMaterial.call(this, material);
         updateItemFormState();
-        
-        // Actualizar cuando se selecciona un material
-        const originalDisplaySelectedMaterial = uiController.displaySelectedMaterial;
-        uiController.displaySelectedMaterial = function(material) {
-            originalDisplaySelectedMaterial.call(this, material);
-            updateItemFormState();
-        };
+    };
+
+    // Funciones auxiliares para acciones en trabajos
+    function updateJobQuantity(index, newQuantity) {
+        const job = appState.trabajos[index];
+        if (newQuantity < 1) newQuantity = 1;
+        job.cantidad = newQuantity;
+        job.costoMaterialTotal = job.costoMaterialUnitario * newQuantity;
+        job.gananciaTotalItem = job.gananciaUnitaria * newQuantity;
+        job.subtotal = job.precioVentaUnitario * newQuantity;
     }
 
-    // Toggle collapse de Notas
-    const collapseNotesBtn = document.getElementById('collapse-notes');
-    const notesContent = document.getElementById('notes-content');
-    const notesHeader = document.getElementById('notes-header-clickable');
+    function updateJobGain(index, newGainTotal) {
+        const job = appState.trabajos[index];
+        job.gananciaTotalItem = newGainTotal;
+        job.gananciaUnitaria = newGainTotal / job.cantidad;
+        job.subtotal = job.costoMaterialTotal + newGainTotal;
+        job.precioVentaUnitario = job.subtotal / job.cantidad;
+    }
 
-    if (collapseNotesBtn && notesContent) {
-        const toggleNotes = (e) => {
-            e.stopPropagation();
-            collapseNotesBtn.classList.toggle('collapsed');
-            notesContent.classList.toggle('collapsed');
-        };
-
-        collapseNotesBtn.addEventListener('click', toggleNotes);
-        if (notesHeader) {
-            notesHeader.addEventListener('click', toggleNotes);
+    function deleteJob(index) {
+        if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
+            appState.trabajos.splice(index, 1);
+            uiController.updateJobsTable(appState.trabajos);
+            updateCalculations();
+            uiController.showToast('✓ Trabajo eliminado', 'success');
         }
     }
 
-    // Delegación de eventos para tabla
     // Delegación de eventos para tabla
     uiController.DOMElements.jobsTableBody.addEventListener('input', (event) => {
         const target = event.target;
@@ -589,26 +629,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             let newQuantity = parseInt(target.value) || 1;
             if (newQuantity < 1) newQuantity = 1;
             target.value = newQuantity;
-
-            job.cantidad = newQuantity;
-            job.costoMaterialTotal = job.costoMaterialUnitario * newQuantity;
-            job.gananciaTotalItem = job.gananciaUnitaria * newQuantity;
-            job.subtotal = job.precioVentaUnitario * newQuantity;
-
+            
+            updateJobQuantity(index, newQuantity);
             uiController.updateRow(row, job);
+            updateCalculations();
 
         } else if (target.classList.contains('ganancia-input')) {
             let newGananciaTotal = parseFloat(target.value) || 0;
-
-            job.gananciaTotalItem = newGananciaTotal;
-            job.gananciaUnitaria = newGananciaTotal / job.cantidad;
-            job.subtotal = job.costoMaterialTotal + newGananciaTotal;
-            job.precioVentaUnitario = job.subtotal / job.cantidad;
             
+            updateJobGain(index, newGananciaTotal);
             uiController.updateRow(row, job);
+            updateCalculations();
         }
-        
-        updateCalculations(); // Recalcular total final de la cotización
     });
 
     // Delegación de eventos para botones de tarjetas (móvil)
@@ -642,158 +674,52 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Delegación de eventos para botones de tarjetas (móvil)
     uiController.DOMElements.jobsCardsContainer.addEventListener('click', (event) => {
+        const index = parseInt(event.target.dataset.index);
+        if (isNaN(index)) return;
+        const job = appState.trabajos[index];
+        
         if (event.target.classList.contains('qty-plus-btn')) {
-            const index = parseInt(event.target.dataset.index);
-            const job = appState.trabajos[index];
-            const areaPerUnit = job.medidas.area / job.cantidad;
-            job.cantidad += 1;
-            job.medidas.area = areaPerUnit * job.cantidad;
-            job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
-            job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
-            job.subtotal = job.precioVentaUnitario * job.cantidad;
+            updateJobQuantity(index, job.cantidad + 1);
             uiController.updateJobsTable(appState.trabajos);
             updateCalculations();
         } else if (event.target.classList.contains('qty-minus-btn')) {
-            const index = parseInt(event.target.dataset.index);
-            const job = appState.trabajos[index];
             if (job.cantidad > 1) {
-                const areaPerUnit = job.medidas.area / job.cantidad;
-                job.cantidad -= 1;
-                job.medidas.area = areaPerUnit * job.cantidad;
-                job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
-                job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
-                job.subtotal = job.precioVentaUnitario * job.cantidad;
+                updateJobQuantity(index, job.cantidad - 1);
                 uiController.updateJobsTable(appState.trabajos);
                 updateCalculations();
             }
         } else if (event.target.classList.contains('delete-button')) {
-            const index = parseInt(event.target.dataset.index);
-            if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
-                appState.trabajos.splice(index, 1);
-                uiController.updateJobsTable(appState.trabajos); 
-                updateCalculations();
-                uiController.showToast('✓ Trabajo eliminado', 'success');
-            }
+            deleteJob(index);
         } else if (event.target.classList.contains('edit-button')) {
-            const index = parseInt(event.target.dataset.index);
             startEditing(index);
         } else if (event.target.classList.contains('add-more-button')) {
-            const index = parseInt(event.target.dataset.index);
-            const job = appState.trabajos[index];
-            
-            appState.isAddingMore = true;
-            document.getElementById('editing-indicator').style.display = 'block';
-            
-            // Cargar el material y los parámetros del trabajo existente
-            appState.selectedMaterial = job.material;
-            appState.currentJobInputs = {
-                height: job.medidas.alto,
-                width: job.medidas.ancho,
-                description: job.descripcion,
-                tipoPrecio: job.paramsUsados.tipoPrecio,
-                incluirAdicional: false,
-            };
-            appState.ventaParams = { ...job.paramsUsados };
-
-            // Actualizar UI con los datos del trabajo
-            uiController.displaySelectedMaterial(job.material);
-            uiController.DOMElements.descriptionInput.value = job.descripcion;
-            uiController.DOMElements.heightInput.value = job.medidas.alto;
-            uiController.DOMElements.widthInput.value = job.medidas.ancho;
-            uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
-            uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
-            
-            uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
-            uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
-            uiController.DOMElements.vpLaborActive.checked = job.paramsUsados.manoDeObraActiva;
-            uiController.DOMElements.vpLaborCostInput.value = job.paramsUsados.manoDeObraMonto || '';
-            uiController.DOMElements.vpProfitActive.checked = job.paramsUsados.gananciaActiva;
-            uiController.DOMElements.vpProfitType.value = job.paramsUsados.gananciaTipo || 'percent';
-            uiController.DOMElements.vpProfitValueInput.value = job.paramsUsados.gananciaValor || '';
-            
-            uiController.toggleVentaParamsInputs(job.paramsUsados);
-            uiController.DOMElements.ventaParamsCard.style.display = 'block';
-            updateCalculations();
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            startAddingMore(index);
         }
     });
 
+
     uiController.DOMElements.jobsTableBody.addEventListener('click', (event) => {
+        const index = parseInt(event.target.dataset.index);
+        if (isNaN(index)) return;
+        const job = appState.trabajos[index];
+        const row = event.target.closest('tr');
+        
         if (event.target.classList.contains('qty-plus-btn')) {
-            const index = parseInt(event.target.dataset.index);
-            const job = appState.trabajos[index];
-            const areaPerUnit = job.medidas.area / job.cantidad;
-            job.cantidad += 1;
-            job.medidas.area = areaPerUnit * job.cantidad;
-            job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
-            job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
-            job.subtotal = job.precioVentaUnitario * job.cantidad;
-            uiController.updateJobsTable(appState.trabajos);
+            updateJobQuantity(index, job.cantidad + 1);
+            uiController.updateRow(row, job);
             updateCalculations();
         } else if (event.target.classList.contains('qty-minus-btn')) {
-            const index = parseInt(event.target.dataset.index);
-            const job = appState.trabajos[index];
             if (job.cantidad > 1) {
-                const areaPerUnit = job.medidas.area / job.cantidad;
-                job.cantidad -= 1;
-                job.medidas.area = areaPerUnit * job.cantidad;
-                job.costoMaterialTotal = job.costoMaterialUnitario * job.cantidad;
-                job.gananciaTotalItem = job.gananciaUnitaria * job.cantidad;
-                job.subtotal = job.precioVentaUnitario * job.cantidad;
-                uiController.updateJobsTable(appState.trabajos);
+                updateJobQuantity(index, job.cantidad - 1);
+                uiController.updateRow(row, job);
                 updateCalculations();
             }
         } else if (event.target.classList.contains('delete-button')) {
-            const index = parseInt(event.target.dataset.index);
-            if (confirm('¿Estás seguro de que quieres eliminar este trabajo?')) {
-                appState.trabajos.splice(index, 1);
-                uiController.updateJobsTable(appState.trabajos); 
-                updateCalculations();
-                uiController.showToast('✓ Trabajo eliminado', 'success');
-            }
+            deleteJob(index);
         } else if (event.target.classList.contains('edit-button')) {
-            const index = parseInt(event.target.dataset.index);
             startEditing(index);
         } else if (event.target.classList.contains('add-more-button')) {
-            const index = parseInt(event.target.dataset.index);
-            const job = appState.trabajos[index];
-            
-            appState.isAddingMore = true;
-            document.getElementById('editing-indicator').style.display = 'block';
-            
-            // Cargar el material y los parámetros del trabajo existente
-            appState.selectedMaterial = job.material;
-            appState.currentJobInputs = {
-                height: job.medidas.alto,
-                width: job.medidas.ancho,
-                description: job.descripcion,
-                tipoPrecio: job.paramsUsados.tipoPrecio,
-                incluirAdicional: false,
-            };
-            appState.ventaParams = { ...job.paramsUsados };
-
-            // Actualizar UI con los datos del trabajo
-            uiController.displaySelectedMaterial(job.material);
-            uiController.DOMElements.descriptionInput.value = job.descripcion;
-            uiController.DOMElements.heightInput.value = job.medidas.alto;
-            uiController.DOMElements.widthInput.value = job.medidas.ancho;
-            uiController.DOMElements.rbProveedor.checked = job.paramsUsados.tipoPrecio === 'proveedor';
-            uiController.DOMElements.rbCliente.checked = job.paramsUsados.tipoPrecio === 'cliente';
-            
-            uiController.DOMElements.vpWasteActive.checked = job.paramsUsados.desperdicioActivo;
-            uiController.DOMElements.vpWastePctInput.value = job.paramsUsados.desperdicioPct || '';
-            uiController.DOMElements.vpLaborActive.checked = job.paramsUsados.manoDeObraActiva;
-            uiController.DOMElements.vpLaborCostInput.value = job.paramsUsados.manoDeObraMonto || '';
-            uiController.DOMElements.vpProfitActive.checked = job.paramsUsados.gananciaActiva;
-            uiController.DOMElements.vpProfitType.value = job.paramsUsados.gananciaTipo || 'percent';
-            uiController.DOMElements.vpProfitValueInput.value = job.paramsUsados.gananciaValor || '';
-            
-            uiController.toggleVentaParamsInputs(job.paramsUsados);
-            uiController.DOMElements.ventaParamsCard.style.display = 'block';
-            updateCalculations();
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            startAddingMore(index);
         }
     });
 
