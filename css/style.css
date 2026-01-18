@@ -534,6 +534,23 @@ h1 {
         padding: 0.5rem;
     }
 
+    h2 {
+        font-size: 1.1em;
+    }
+
+    .large-input,
+    .large-textarea,
+    .large-button {
+        padding: 0.75rem;
+        font-size: 1em;
+        margin-bottom: 0.5rem;
+    }
+
+    .small-input {
+        padding: 0.4rem;
+        font-size: 0.9em;
+    }
+
     #jobs-table {
         display: none;
     }

@@ -409,6 +409,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         appState.selectedMaterial = null;
         appState.currentJobInputs = { height: 0, width: 0, description: '', tipoPrecio: 'cliente', incluirAdicional: false };
         updateCalculations();
+        
+        // Deshabilitar "Definir Trabajo" cuando se cancela
+        const itemFormHeader = document.getElementById('item-form-header-clickable');
+        const collapseItemFormBtn = document.getElementById('collapse-item-form');
+        if (itemFormHeader && collapseItemFormBtn) {
+            collapseItemFormBtn.disabled = true;
+            itemFormHeader.style.pointerEvents = 'none';
+            itemFormHeader.style.opacity = '0.5';
+            itemFormHeader.style.cursor = 'not-allowed';
+        }
     }
 
     // 5. Añadir o Actualizar ítem
@@ -486,6 +496,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (itemFormHeader) {
             itemFormHeader.addEventListener('click', toggleItemForm);
         }
+        
+        // Deshabilitar si no hay material seleccionado
+        const updateItemFormState = () => {
+            if (!appState.selectedMaterial) {
+                collapseItemFormBtn.disabled = true;
+                itemFormHeader.style.pointerEvents = 'none';
+                itemFormHeader.style.opacity = '0.5';
+                itemFormHeader.style.cursor = 'not-allowed';
+            } else {
+                collapseItemFormBtn.disabled = false;
+                itemFormHeader.style.pointerEvents = 'auto';
+                itemFormHeader.style.opacity = '1';
+                itemFormHeader.style.cursor = 'pointer';
+            }
+        };
+        
+        // Llamar al inicio
+        updateItemFormState();
+        
+        // Actualizar cuando se selecciona un material
+        const originalDisplaySelectedMaterial = uiController.displaySelectedMaterial;
+        uiController.displaySelectedMaterial = function(material) {
+            originalDisplaySelectedMaterial.call(this, material);
+            updateItemFormState();
+        };
     }
 
     // Delegación de eventos para tabla
