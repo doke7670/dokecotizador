@@ -37,38 +37,33 @@ const calculator = (() => {
      * @returns {object} { costoMaterial, precioVentaUnitario }
      */
     function calculateItemFullPrice(material, area, tipoPrecio, incluirAdicional, ventaParams) {
-        // 1. Costo Base del Material (por pieza)
         const basePricePerM2 = getItemBasePricePerM2(material, tipoPrecio, incluirAdicional);
-        let costoMaterialBase = area * basePricePerM2; // Costo sin desperdicio
 
-        // 2. Aplicar Desperdicio (opcional)
-        let costoConDesperdicio = costoMaterialBase;
+        let areaConDesperdicio = area;
         if (ventaParams.desperdicioActivo && ventaParams.desperdicioPct > 0) {
-            costoConDesperdicio *= (1 + (ventaParams.desperdicioPct / 100));
+            areaConDesperdicio *= (1 + (ventaParams.desperdicioPct / 100));
         }
 
-        // Este es el COSTO INTERNO final que se mostrará en la tabla
-        const costoMaterialUnitario = costoConDesperdicio;
+        const costoMaterialUnitario = areaConDesperdicio * basePricePerM2;
 
-        // 3. Aplicar Mano de Obra (opcional)
-        let costoInternoTotal = costoMaterialUnitario; // Ahora incluye el desperdicio
+        let costoInternoTotal = costoMaterialUnitario;
         if (ventaParams.manoDeObraActiva && ventaParams.manoDeObraMonto > 0) {
             costoInternoTotal += ventaParams.manoDeObraMonto;
         }
 
-        // 4. Aplicar Ganancia (opcional)
-        let precioVentaUnitario = costoInternoTotal; // Base para la ganancia
+        let precioVentaUnitario = costoInternoTotal;
         if (ventaParams.gananciaActiva && ventaParams.gananciaValor > 0) {
             if (ventaParams.gananciaTipo === 'percent') {
                 precioVentaUnitario *= (1 + (ventaParams.gananciaValor / 100));
-            } else { // 'fixed'
+            } else {
                 precioVentaUnitario += ventaParams.gananciaValor;
             }
         }
         
         return {
-            costoMaterialUnitario: costoMaterialUnitario, // Este es el "costo interno" unitario incluyendo desperdicio
-            precioVentaUnitario: precioVentaUnitario // Este es el "precio de venta" unitario final
+            areaCalculada: areaConDesperdicio,
+            costoMaterialUnitario: costoMaterialUnitario,
+            precioVentaUnitario: precioVentaUnitario
         };
     }
 

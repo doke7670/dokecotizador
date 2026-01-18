@@ -58,8 +58,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const saved = localStorage.getItem('dokecotizador_state');
             if (saved) {
                 const loaded = JSON.parse(saved);
-                // Restaurar datos
-                appState.trabajos = loaded.trabajos || [];
+                appState.trabajos = (loaded.trabajos || []).map(job => ({
+                    ...job,
+                    areaCalculada: job.areaCalculada || job.medidas.area
+                }));
                 appState.clientData = loaded.clientData || { nombre: '', telefono: '', email: '', direccion: '', ruc: '' };
                 appState.notas = loaded.notas || '';
                 return true;
@@ -316,7 +318,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const area = calculator.calculateArea(appState.currentJobInputs.height, appState.currentJobInputs.width);
-        const { costoMaterialUnitario, precioVentaUnitario } = calculator.calculateItemFullPrice(
+        const { areaCalculada, costoMaterialUnitario, precioVentaUnitario } = calculator.calculateItemFullPrice(
             appState.selectedMaterial, area, appState.currentJobInputs.tipoPrecio, appState.currentJobInputs.incluirAdicional, appState.ventaParams
         );
 
@@ -327,6 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             descripcion: appState.currentJobInputs.description,
             material: appState.selectedMaterial,
             medidas: { alto: appState.currentJobInputs.height, ancho: appState.currentJobInputs.width, area: area },
+            areaCalculada: areaCalculada,
             cantidad: cantidad,
             costoMaterialUnitario: costoMaterialUnitario,
             costoMaterialTotal: costoMaterialUnitario * cantidad,
@@ -358,7 +361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const originalJob = appState.trabajos[jobIndex];
 
         const area = calculator.calculateArea(appState.currentJobInputs.height, appState.currentJobInputs.width);
-        const { costoMaterialUnitario, precioVentaUnitario } = calculator.calculateItemFullPrice(
+        const { areaCalculada, costoMaterialUnitario, precioVentaUnitario } = calculator.calculateItemFullPrice(
             appState.selectedMaterial, area, appState.currentJobInputs.tipoPrecio, appState.currentJobInputs.incluirAdicional, appState.ventaParams
         );
 
@@ -369,6 +372,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             descripcion: appState.currentJobInputs.description,
             material: appState.selectedMaterial,
             medidas: { alto: appState.currentJobInputs.height, ancho: appState.currentJobInputs.width, area: area },
+            areaCalculada: areaCalculada,
             costoMaterialUnitario: costoMaterialUnitario,
             precioVentaUnitario: precioVentaUnitario,
             gananciaUnitaria: gananciaUnitaria,

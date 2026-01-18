@@ -106,7 +106,7 @@ const uiController = (() => {
         row.innerHTML = `
             <td>${job.material.codigo}</td>
             <td>${job.descripcion || ''}</td>
-            <td>${job.medidas.area.toFixed(2)}</td>
+            <td>${job.areaCalculada.toFixed(2)}</td>
             <td class="job-costo-cell">S/ ${job.costoMaterialTotal.toFixed(2)}</td>
             <td>
                 <button class="qty-minus-btn" data-index="${index}">−</button>
@@ -143,7 +143,7 @@ const uiController = (() => {
             <div class="job-card-body">
                 <div class="job-card-row">
                     <span class="job-card-label">Área:</span>
-                    <span class="job-card-value">${job.medidas.area.toFixed(2)} m²</span>
+                    <span class="job-card-value">${job.areaCalculada.toFixed(2)} m²</span>
                 </div>
                 <div class="job-card-row">
                     <span class="job-card-label">Cantidad:</span>
